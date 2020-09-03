@@ -26,7 +26,7 @@ COPY . .
 
 #RUN go build
 
-RUN go build -o /D7024E .
+RUN go build -o /D7024E
 
 #RUN go run main.go config.go server.go
 
