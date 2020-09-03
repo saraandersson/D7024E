@@ -17,16 +17,16 @@ func main() {
         Port: 1234,
         IP: net.ParseIP("127.0.0.1"),
     }
-    ser, err := net.ListenUDP("udp", &addr)
+    ser, err := net.Listen("udp", "127.0.0.1:1234")
     if err != nil {
-        fmt.Printf("Some error %v\n", err)
+        fmt.Printf("Some error1 %v\n", err)
         return
     }
     for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
         fmt.Printf("Read a message from %v %s \n", remoteaddr, p)
         if err !=  nil {
-            fmt.Printf("Some error  %v", err)
+            fmt.Printf("Some error2  %v", err)
             continue
         }
         go sendResponse(ser, remoteaddr)
