@@ -22,7 +22,7 @@ COPY . .
 
 #CMD go run udpclient.go
 
-RUN go build -o main D7024E
+RUN go build -o main
 
 CMD ["./main"]
 
