@@ -22,7 +22,7 @@ RUN apt-get -y install golang
 
 #CMD go run udpclient.go
 
-RUN go build -o main .
+RUN go build -o main ../
 
 CMD ["./main"]
 
