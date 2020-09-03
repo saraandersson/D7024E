@@ -30,7 +30,9 @@ RUN mkdir /app
 ADD . /app/
 WORKDIR /app
 RUN echo $PWD
-RUN go run bin/D7024E/udpclient.go
+RUN cd D7024E
+RUN echo $PWD
+RUN go run udpclient.go
 
 #ADD ./D7024E /image
 
