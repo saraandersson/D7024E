@@ -1,4 +1,4 @@
-package main
+package D7024E
 import (
     "net"
 )
