@@ -16,5 +16,5 @@ RUN apt-get -y install golang
 # $ docker build . -t kadlab
 WORKDIR /D7024E
 
-CMD go run udpclient.go
+CMD go run ../udpclient.go
 
