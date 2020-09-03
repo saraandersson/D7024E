@@ -29,7 +29,7 @@ FROM golang:alpine
 RUN mkdir /app 
 ADD . /app/
 WORKDIR /app
-RUN cd /D7024E 
+RUN ls
 RUN go build -o udpclient.go
 
 #ADD ./D7024E /image
