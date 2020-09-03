@@ -22,7 +22,9 @@ COPY . .
 
 #CMD go run udpclient.go
 
-RUN go build -o udpclient.go
+RUN go build
+
+#RUN go run main.go config.go server.go
 
 CMD ["./main"]
 
