@@ -1,4 +1,4 @@
-package D7024E
+package main
 import ( 
     "net" 
     "fmt" 
