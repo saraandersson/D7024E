@@ -1,5 +1,8 @@
-FROM alpine:latest
+FROM ubuntu:18.04
 
+RUN sudo apt-get update
+RUN sudo apt-get -y upgrade
+RUN sudo apt-get -y install golang
 # Add the commands needed to put your compiled go binary in the container and
 # run it when the container starts.
 #
@@ -11,5 +14,7 @@ FROM alpine:latest
 # "kadlab", which you do by using the following command:
 #
 # $ docker build . -t kadlab
+WORKDIR /image
 
-RUN echo 'we are testing'
+CMD sudo go run udpclient.go
+
