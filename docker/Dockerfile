@@ -14,7 +14,7 @@ RUN apt-get -y install golang
 # "kadlab", which you do by using the following command:
 #
 # $ docker build . -t kadlab
-WORKDIR /app
+#WORKDIR /app
 
 COPY . .
 
