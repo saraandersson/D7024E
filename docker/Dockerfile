@@ -1,8 +1,8 @@
-FROM alpine:latest
+FROM ubuntu:18.04
 
-#RUN apt-get update
-#RUN apt-get -y upgrade
-#RUN apt-get -y install golang
+RUN apt-get update
+RUN apt-get -y upgrade
+RUN apt-get -y install golang
 # Add the commands needed to put your compiled go binary in the container and
 # run it when the container starts.
 #
