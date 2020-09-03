@@ -21,6 +21,9 @@ func main() {
     if err != nil {
         fmt.Printf("Some error1 %v\n", err)
         return
+    } else {
+        fmt.Printf("Ok!")
+        return
     }
     /*for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
@@ -31,7 +34,4 @@ func main() {
         }
         go sendResponse(ser, remoteaddr)
     }*/
-    else {
-        fmt.Printf("Ok!")
-    }
 }
