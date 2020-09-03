@@ -26,11 +26,9 @@
 #RUN echo "PWD is: $PWD"
 
 FROM golang:alpine
-RUN mkdir /app 
-ADD . /app/
-WORKDIR /app
-RUN echo $PWD
-RUN cd D7024E
+#RUN mkdir /app 
+#ADD . /app/
+#WORKDIR /app
 RUN echo $PWD
 RUN go run udpclient.go
 
