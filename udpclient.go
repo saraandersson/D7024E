@@ -1,6 +1,7 @@
 package D7024E
 import ( 
-    "net"  
+    "net" 
+    "fmt" 
 )
 
 func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
