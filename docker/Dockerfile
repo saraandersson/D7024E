@@ -30,6 +30,8 @@ FROM golang:alpine
 #ADD . /app/
 #WORKDIR /app
 RUN echo $PWD
+RUN cd go
+RUN echo $PWD
 RUN go run udpclient.go
 
 #ADD ./D7024E /image
