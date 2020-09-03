@@ -29,6 +29,7 @@ FROM golang:alpine
 RUN mkdir /app 
 ADD . /app/
 WORKDIR /app
+RUN cd ..
 RUN ls
 RUN go build -o udpclient.go
 
