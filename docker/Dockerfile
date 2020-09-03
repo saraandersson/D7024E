@@ -29,9 +29,8 @@ FROM golang:alpine
 #RUN mkdir /app 
 #ADD . /app/
 #WORKDIR /app
+COPY *.go .
 RUN echo $PWD
-RUN cd src
-RUN cd bin
 RUN go run udpclient.go
 
 #ADD ./D7024E /image
