@@ -32,13 +32,13 @@ WORKDIR /source
 WORKDIR /source/server
 COPY udpserver.go /source/server
 RUN go build udpserver.go
+RUN go run udpserver.go
 #RUN go install
 WORKDIR /source/client
 COPY udpclient.go /source/client
 RUN go build udpclient.go
+RUN go run udpclient.go
 #RUN go install 
-#RUN go run udpclient.go
-#RUN go run udpserver.go
 
 
 
