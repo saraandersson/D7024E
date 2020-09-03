@@ -16,11 +16,13 @@ RUN apt-get -y install golang
 # $ docker build . -t kadlab
 #WORKDIR /app
 
-WORKDIR /go/src/project/
+COPY . /home/go/src/D7024E
+
+WORKDIR /home/go/src/D7024E
 
 #COPY . .
-COPY . /go/src/project/
-RUN go build -o /bin/project
+#COPY . /go/src/project/
+RUN /usr/local/go/bin/go build udpclient.go
 
 #ADD ./D7024E /image
 
