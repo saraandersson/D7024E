@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
+#FROM ubuntu:18.04
 
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get -y install golang
+#RUN apt-get update
+#RUN apt-get -y upgrade
+#RUN apt-get -y install golang
 # Add the commands needed to put your compiled go binary in the container and
 # run it when the container starts.
 #
@@ -16,15 +16,19 @@ RUN apt-get -y install golang
 # $ docker build . -t kadlab
 #WORKDIR /app
 
-COPY . /home/go/src/D7024E
+#COPY . /home/go/src/D7024E
 
-WORKDIR /home/go/src/D7024E
+#WORKDIR /home/go/src/D7024E
 
 #COPY . .
 #COPY . /go/src/project/
 
 #RUN echo "PWD is: $PWD"
 
+FROM golang:alpine
+RUN mkdir /app 
+ADD . /app/
+WORKDIR /app 
 RUN go build udpclient.go
 
 #ADD ./D7024E /image
