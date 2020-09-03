@@ -30,10 +30,11 @@ FROM golang:alpine
 #ADD . /app/
 WORKDIR /source
 RUN echo $PWD
-COPY *.go source/
+COPY udpserver.go /source
+#COPY udpclient.go /source
 RUN echo $PWD
 RUN go run udpserver.go
-RUN go run udpclient.go
+#RUN go run udpclient.go
 
 
 #ADD ./D7024E /image
