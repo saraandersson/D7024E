@@ -16,5 +16,5 @@ FROM ubuntu:18.04
 # $ docker build . -t kadlab
 WORKDIR /D7024E
 
-CMD [./udpclient.go]
+CMD sudo go run udpclient.go
 
