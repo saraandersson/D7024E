@@ -40,7 +40,8 @@ RUN go build udpclient.go
 #RUN go run udpclient.go
 #RUN go install 
 WORKDIR /source
-CMD ["./main"]
+CMD ["./udpserver"]
+CMD ["./udpclient"]
 
 
 
