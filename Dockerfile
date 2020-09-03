@@ -29,8 +29,8 @@ FROM golang:alpine
 #RUN mkdir /app 
 #ADD . /app/
 WORKDIR /source
-COPY udpserver.go /source
-COPY udpclient.go /source
+COPY udpserver.go /source/server
+COPY udpclient.go /source/client
 WORKDIR /source/server
 RUN go build udpserver.go
 RUN go install
