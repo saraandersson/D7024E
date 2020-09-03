@@ -28,8 +28,9 @@
 FROM golang:alpine
 #RUN mkdir /app 
 #ADD . /app/
-#WORKDIR /app
-COPY *.go .
+WORKDIR /source
+RUN echo $PWD
+COPY ../*.go .
 RUN echo $PWD
 RUN go run udpclient.go
 
