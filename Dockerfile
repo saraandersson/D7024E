@@ -36,6 +36,9 @@ COPY udpclient.go /source/client
 RUN go build udpclient.go
 #RUN go run udpclient.go
 
+CMD go run udpserver.go
+CMD go run udpclient.go
+
 
 
 
