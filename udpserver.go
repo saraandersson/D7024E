@@ -12,12 +12,12 @@ func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
 }
 
 func main() {
-	p := make([]byte, 2048)
+	/*p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: 1234,
         IP: net.ParseIP("127.0.0.1"),
-    }
-    ser, err := net.Listen("udp", "127.0.0.1:1234")
+    }*/
+    err := net.Listen("udp", "127.0.0.1:1234")
     if err != nil {
         fmt.Printf("Some error1 %v\n", err)
         return
