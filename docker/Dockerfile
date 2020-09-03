@@ -22,7 +22,10 @@ WORKDIR /home/go/src/D7024E
 
 #COPY . .
 #COPY . /go/src/project/
-RUN go build contact.go
+
+RUN echo "$PWD"
+
+#RUN go build udpclient.go
 
 #ADD ./D7024E /image
 
