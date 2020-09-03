@@ -1,8 +1,5 @@
 package main
-import ( 
-    "net" 
-    "fmt" 
-)
+import "fmt" 
 
 func main() {
     fmt.Println("Hello, World!")
