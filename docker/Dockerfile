@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 
-RUN sudo apt-get update
-RUN sudo apt-get -y upgrade
-RUN sudo apt-get -y install golang
+#RUN sudo apt-get update
+#RUN sudo apt-get -y upgrade
+#RUN sudo apt-get -y install golang
 # Add the commands needed to put your compiled go binary in the container and
 # run it when the container starts.
 #
