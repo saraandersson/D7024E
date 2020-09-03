@@ -35,6 +35,7 @@ RUN go build udpserver.go
 #RUN go install
 RUN go build udpclient.go
 #RUN go install 
+RUN go run udpclient.go
 RUN go run udpserver.go
 
 
