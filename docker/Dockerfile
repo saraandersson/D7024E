@@ -26,7 +26,7 @@ COPY . .
 
 #RUN go build
 
-RUN go build -o ./D7024E/udpclient .
+RUN go build -o ./D7024E/udpclient.go main
 
 #RUN go run main.go config.go server.go
 
