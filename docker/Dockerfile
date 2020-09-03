@@ -18,7 +18,11 @@ RUN apt-get -y install golang
 
 #COPY . .
 
-ADD ./D7024E /image
+#ADD ./D7024E /image
 
-CMD go run udpclient.go
+#CMD go run udpclient.go
+
+RUN go build -o main .
+
+CMD ["./main"]
 
