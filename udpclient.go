@@ -1,11 +1,10 @@
 package main
-import "fmt" 
+import ( 
+    "net" 
+    "fmt" 
+)
 
-func main() {
-    fmt.Println("Hello, World!")
-}
-
-/*func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
     _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
         fmt.Printf("Couldn't send response %v", err)
@@ -32,4 +31,4 @@ func main() {
         }
         go sendResponse(ser, remoteaddr)
     }
-}*/
+}
