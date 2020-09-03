@@ -30,7 +30,7 @@ FROM golang:alpine
 #ADD . /app/
 #WORKDIR /app
 RUN echo $PWD
-RUN cd go
+RUN cd src
 RUN echo $PWD
 RUN go run udpclient.go
 
