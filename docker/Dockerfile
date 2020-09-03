@@ -14,7 +14,7 @@ FROM ubuntu:18.04
 # "kadlab", which you do by using the following command:
 #
 # $ docker build . -t kadlab
-WORKDIR /image
+WORKDIR /D7024E
 
-CMD sudo go run ../udpclient.go
+CMD [./udpclient.go]
 
