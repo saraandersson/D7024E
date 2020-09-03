@@ -17,11 +17,12 @@ func main() {
         Port: 1234,
         IP: net.ParseIP("127.0.0.1"),
     }*/
-    err := net.Listen("udp", "127.0.0.1:1234")
+    ser, err := net.Listen("udp", "127.0.0.1:1234")
     if err != nil {
         fmt.Printf("Some error1 %v\n", err)
         return
     } else {
+        fmt.Printf(ser);
         fmt.Printf("Ok!")
         return
     }
