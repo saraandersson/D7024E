@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM alpine:latest
 
 RUN apt-get update
 RUN apt-get -y upgrade
@@ -16,9 +16,11 @@ RUN apt-get -y install golang
 # $ docker build . -t kadlab
 #WORKDIR /app
 
-WORKDIR /app/D7024E
+WORKDIR /go/src/project/
 
-COPY . .
+#COPY . .
+COPY . /go/src/project/
+RUN go build -o /bin/project
 
 #ADD ./D7024E /image
 
@@ -26,11 +28,11 @@ COPY . .
 
 #RUN go build
 
-RUN go build -o /D7024E
+#RUN go build -o /D7024E
 
 #RUN go run main.go config.go server.go
 
 #CMD ["./main"]
 
-CMD ["./D7024E/udpclient"]
+#CMD ["./D7024E/udpclient"]
 
