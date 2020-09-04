@@ -36,7 +36,7 @@ func mainServer() {
         fmt.Printf("ERROR %v\n", err)
         return
     }
-    _,err := ser.WriteToUDP([]byte("World"), addr)
+    ser.WriteToUDP([]byte("World"), addr)
     
 }
 func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
