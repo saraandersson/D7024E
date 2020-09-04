@@ -30,11 +30,14 @@ WORKDIR /source
 WORKDIR /source/server
 COPY udpserver.go /source/server
 RUN go build udpserver.go
+#RUN go run udpserver.go
 WORKDIR /source/client
 COPY udpclient.go /source/client
 RUN go build udpclient.go
-CMD ./udpserver
-CMD ./udpclient
+RUN go run udpclient.go
+
+#CMD ./udpserver
+#CMD ./udpclient
 
 
 
