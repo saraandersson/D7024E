@@ -18,8 +18,15 @@ func main() {
     conn.Close()
 }
 
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
+    _,err := conn.WriteToUDP([]byte("From server: Hello I got your mesage "), addr)
+    if err != nil {
+        fmt.Printf("Couldn't send response %v", err)
+    }
+}
+
+
 func mainServer() {
-    fmt.Printf("Jag kommer till server")
     p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: 1234,
@@ -27,24 +34,16 @@ func mainServer() {
     }
     ser, err := net.ListenUDP("udp", &addr)
     if err != nil {
-        fmt.Printf("ERROR %v\n", err)
+        fmt.Printf("Some error %v\n", err)
         return
     }
     for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
-        fmt.Printf("jag skapar inget error")
-        fmt.Print(p)
-        if err != nil {
-            fmt.Printf("ERROR %v\n", err)
-            return
+        fmt.Printf("Read a message from %v %s \n", remoteaddr, p)
+        if err !=  nil {
+            fmt.Printf("Some error  %v", err)
+            continue
         }
         go sendResponse(ser, remoteaddr)
     }
-}
-func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
-    _,err := conn.WriteToUDP([]byte("World"), addr)
-    if err != nil {
-        fmt.Printf("ERROR SERVER: %v", err)
-    }
-    fmt.Printf("Response sending")
 }
