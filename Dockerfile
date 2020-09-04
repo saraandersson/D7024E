@@ -11,9 +11,9 @@
 
 FROM golang:alpine
 WORKDIR /source
-COPY main.go /source
-RUN go build main.go
-CMD ./main
+COPY udpclient.go /source
+RUN go build udpclient.go
+CMD ./udpclient
 
 
 
