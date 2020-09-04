@@ -9,7 +9,8 @@ func main() {
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
-    }
+	}
+	fmt.Printf("Hit kommer jag!")
     fmt.Fprintf(conn, "Hello")
     conn.Close()
 }
