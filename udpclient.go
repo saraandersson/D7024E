@@ -32,6 +32,7 @@ func mainServer() {
     }
     for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
+        fmt.Printf("jag skapar inget error")
         fmt.Print(p)
         if err != nil {
             fmt.Printf("ERROR %v\n", err)
