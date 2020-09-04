@@ -31,7 +31,7 @@ func mainServer() {
 	}
     for {
 		_,remoteaddr,err := ser.ReadFromUDP(p) //Reading request message
-		fmt.Println(p) 
+		fmt.Print(p) 
         if err != nil {
             fmt.Printf("Error: Error when reading request, %v", err)
             return
