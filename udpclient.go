@@ -19,6 +19,7 @@ func main() {
 }
 
 func mainServer() {
+    fmt.Printf("Jag kommer till server")
     p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: 1234,
