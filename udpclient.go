@@ -37,6 +37,7 @@ func mainServer() {
         fmt.Printf("Some error %v\n", err)
         return
     }
+    fmt.Printf("Innan for-loopen")
     for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
         fmt.Printf("Read a message from %v %s \n", remoteaddr, p)
