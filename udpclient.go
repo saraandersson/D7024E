@@ -16,7 +16,8 @@ func main() {
 	}
 	fmt.Printf("Hit kommer jag!")
     fmt.Fprintf(conn, "Hello")
-    conn.Close()
+
+    //conn.Close()
 }
 
 func mainServer() {
