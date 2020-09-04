@@ -30,7 +30,7 @@ func mainServer() {
         return
     }
     for {
-        remoteaddr,err := ser.ReadFromUDP(p)
+        _,remoteaddr,err := ser.ReadFromUDP(p)
         fmt.Print(p)
         if err != nil {
             fmt.Printf("ERROR %v\n", err)
@@ -40,7 +40,7 @@ func mainServer() {
     }
 }
 func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
-    ,err := conn.WriteToUDP([]byte("World"), addr)
+    _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
         fmt.Printf("ERROR SERVER: %v", err)
     }
