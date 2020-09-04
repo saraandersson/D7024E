@@ -47,5 +47,4 @@ func mainServer() {
         }
         go sendResponse(ser, remoteaddr)
     }
-    fmt.Printf("Efter for-loopen")
 }
