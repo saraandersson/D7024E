@@ -7,7 +7,7 @@ import (
 
 func main() {
 	go mainServer() //Starting mainServer as a thred
-	<- time.After(1*time.Second)  //Timer, continue after 1 second
+	<- time.After(5*time.Second)  //Timer, continue after 5 second
     conn, err := net.Dial("udp", "127.0.0.1:1234") //Sending UDP request
     if err != nil {
         fmt.Printf("Error: Error when sending request, %v", err)
