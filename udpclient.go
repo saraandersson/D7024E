@@ -37,7 +37,7 @@ func mainServer() {
         return
     }
 
-    _,err := ser.WriteToUDP([]byte("World"), remoteaddr)
+    ser.WriteToUDP([]byte("World"), remoteaddr)
     
 }
 func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
