@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"net"
-	"time"
+    "time"
+    "os"
 )
 
 func main() {
+    fmt.Printf('input variable: ' + os.Getenv("PORT"))
     done := make(chan bool)
 	go mainServer(done) //Gör egen tråd
 	<- time.After(5*time.Second)
