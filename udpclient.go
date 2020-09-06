@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-    fmt.Printf('input variable: ' + os.Getenv("PORT"))
+    fmt.Printf("input variable: " + os.Getenv("PORT"))
     done := make(chan bool)
 	go mainServer(done) //Gör egen tråd
 	<- time.After(5*time.Second)
