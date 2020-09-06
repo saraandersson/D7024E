@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	go mainServer() //Gör egen tråd
+    done := make(chan bool)
+	go mainServer(done) //Gör egen tråd
 	<- time.After(5*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:1234")
     if err != nil {
@@ -17,9 +18,10 @@ func main() {
 	fmt.Printf("Hit kommer jag!")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
+    <-done
 }
 
-func mainServer() {
+func mainServer(done chan) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: 1234,
@@ -36,13 +38,14 @@ func mainServer() {
             fmt.Printf("ERROR %v\n", err)
             return
         }
-        go sendResponse(ser, remoteaddr)
+        go sendResponse(ser, remoteaddr, done)
     }
 }
-func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan) {
     _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
         fmt.Printf("ERROR SERVER: %v", err)
     }
     fmt.Printf("Response sending")
+    done <- true
 }
