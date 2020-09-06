@@ -21,7 +21,7 @@ func main() {
     <-done
 }
 
-func mainServer(done chan) {
+func mainServer(done chan bool) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: 1234,
@@ -41,7 +41,7 @@ func mainServer(done chan) {
         go sendResponse(ser, remoteaddr, done)
     }
 }
-func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan) {
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan bool) {
     _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
         fmt.Printf("ERROR SERVER: %v", err)
