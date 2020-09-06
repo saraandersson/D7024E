@@ -26,7 +26,6 @@
 #RUN echo "PWD is: $PWD"
 
 FROM golang:alpine
-ENV PORT 8080
 WORKDIR /source
 COPY udpclient.go /source
 RUN go build udpclient.go
