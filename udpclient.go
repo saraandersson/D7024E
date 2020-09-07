@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"net"
+    "net"
+    "time"
 )
 
 func main() {
     done := make(chan bool)
 	go mainServer(done) //Gör egen tråd
-	//<- time.After(5*time.Second)
+	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:1234")
     if err != nil {
         fmt.Printf("ERROR: %v", err)
