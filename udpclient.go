@@ -35,6 +35,7 @@ func mainServer(done chan bool, port int) {
         Port: port,
         IP: net.ParseIP("127.0.0.1"),
     }
+    fmt.Print(addr)
     ser, err := net.ListenUDP("udp", &addr)
     if err != nil {
         fmt.Printf("ERROR %v\n", err)
