@@ -9,7 +9,7 @@ import (
 
 func main() {
     done := make(chan bool)
-    numbPtr := flag.Int("numb", 42, "an int")
+    //numbPtr := flag.Int("numb", 42, "an int")
     flag.Parse()
     fmt.Println("numb:", flag.Args())
 	go mainServer(done) //Gör egen tråd
