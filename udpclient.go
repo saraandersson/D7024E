@@ -9,8 +9,9 @@ import (
 
 func main() {
     done := make(chan bool)
+    numbPtr := flag.Int("numb", 42, "an int")
     flag.Parse()
-    port := flag.Arg(0)
+    fmt.Println("numb:", *numbPtr)
     fmt.Printf(port)
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
