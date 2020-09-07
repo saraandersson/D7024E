@@ -13,7 +13,7 @@ func main() {
     //fmt.Println("port: ", os.Getenv("PORT"))
     portOwn := os.Getenv("PORTOWN")
     portSending := os.Getenv("PORTSENDING")
-    i2, err1 := strconv.ParseInt(portOwn, 10, 0)
+    i2, err1 := strconv.Atoi(portOwn)
     if err1 != nil {
         go mainServer(done, i2) //Gör egen tråd
     }
