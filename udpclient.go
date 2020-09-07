@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
     "net"
-    "time"
-    "os"
-    "strconv"
+  //  "time"
+   // "os"
+   // "strconv"
 )
 
 func main() {
-    done := make(chan bool)
+    //done := make(chan bool)
     //fmt.Println("port: ", os.Getenv("PORT"))
     //portOwn := os.Getenv("PORTOWN")
     //portSending := os.Getenv("PORTSENDING")
@@ -26,7 +26,7 @@ func main() {
 	fmt.Printf("Hit kommer jag!")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
-    <-done
+    //<-done
 }
 
 func mainServer(done chan bool, port int) {
