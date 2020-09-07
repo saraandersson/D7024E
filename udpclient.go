@@ -12,7 +12,6 @@ func main() {
     numbPtr := flag.Int("numb", 42, "an int")
     flag.Parse()
     fmt.Println("numb:", *numbPtr)
-    fmt.Printf(port)
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:1234")
