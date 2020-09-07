@@ -27,16 +27,16 @@ services:
 #      - "4000:80"
     networks:
       - kademlia_network
-      udpserverNode:
-        image: udpserver:latest
-        stdin_open: true
-        tty: true
-        deploy:
-          replicas: 1
-        ports:
-          - "8001:8001"
-        networks:
-          - kademlia_network  
+    udpserverNode:
+      image: udpserver:latest
+      stdin_open: true
+      tty: true
+      deploy:
+        replicas: 1
+      ports:
+        - "8001:8001"
+      networks:
+        - kademlia_network  
       
 networks:
   kademlia_network:
