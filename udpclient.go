@@ -25,7 +25,7 @@ func main() {
     <-done
 }
 
-func mainServer(done chan bool, port int) {
+func mainServer(done chan bool, port string) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: port,
