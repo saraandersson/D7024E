@@ -4,12 +4,14 @@ import (
 	"fmt"
     "net"
     "time"
-    "os"
+    "flag"
 )
 
 func main() {
     done := make(chan bool)
-    fmt.Printf(os.Args)
+    flag.Parse()
+    port := flag.Arg(0)
+    fmt.Printf(port)
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:1234")
