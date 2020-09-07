@@ -9,12 +9,11 @@ import (
 
 func main() {
     done := make(chan bool)
-    //numbPtr := flag.Int("numb", 42, "an int")
-    //flag.Parse()
     fmt.Println("port: ", os.Getenv("PORT"))
+    port := os.Getenv("PORT")
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:1234")
+    conn, err := net.Dial("udp", "127.0.0.1:" + port)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
@@ -28,7 +27,7 @@ func main() {
 func mainServer(done chan bool) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
-        Port: 1234,
+        Port: 8000,
         IP: net.ParseIP("127.0.0.1"),
     }
     ser, err := net.ListenUDP("udp", &addr)
