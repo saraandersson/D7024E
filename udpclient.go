@@ -11,14 +11,14 @@ import (
 func main() {
     done := make(chan bool)
     //fmt.Println("port: ", os.Getenv("PORT"))
-    portOwn := os.Getenv("PORTOWN")
-    portSending := os.Getenv("PORTSENDING")
-    i2, err1 := strconv.Atoi(portOwn)
-    if err1 != nil {
+    //portOwn := os.Getenv("PORTOWN")
+    //portSending := os.Getenv("PORTSENDING")
+    //i2, err1 := strconv.Atoi(portOwn)
+    /*if err1 != nil {
         go mainServer(done, i2) //Gör egen tråd
     }
-	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:" + portSending)
+	<- time.After(1*time.Second)*/
+    conn, err := net.Dial("udp", "127.0.0.1:8001")
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
