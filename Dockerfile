@@ -26,6 +26,7 @@
 #RUN echo "PWD is: $PWD"
 
 FROM golang:alpine
+EXPOSE 8001
 WORKDIR /source
 COPY udpclient.go /source
 RUN go build udpclient.go

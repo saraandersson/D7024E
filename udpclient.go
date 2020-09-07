@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
     "net"
-  //  "time"
-   // "os"
-   // "strconv"
+    "time"
+    "os"
+    "strconv"
 )
 
 func main() {
@@ -13,11 +13,13 @@ func main() {
     //fmt.Println("port: ", os.Getenv("PORT"))
     //portOwn := os.Getenv("PORTOWN")
     //portSending := os.Getenv("PORTSENDING")
-    //i2, err1 := strconv.Atoi(portOwn)
-    /*if err1 != nil {
+    /*i2, err1 := strconv.Atoi(portSending)
+    if err1 != nil {
         go mainServer(done, i2) //Gör egen tråd
     }
-	<- time.After(1*time.Second)*/
+    go mainServer(done)
+    <- time.After(1*time.Second)*/
+    */
     conn, err := net.Dial("udp", "127.0.0.1:8001")
     if err != nil {
         fmt.Printf("ERROR: %v", err)
@@ -29,13 +31,12 @@ func main() {
     //<-done
 }
 
-func mainServer(done chan bool, port int) {
-    p := make([]byte, 2048)
+func mainServer(done chan bool) {
+	p := make([]byte, 2048)
     addr := net.UDPAddr{
-        Port: port,
+        Port: 8000,
         IP: net.ParseIP("127.0.0.1"),
     }
-    
     ser, err := net.ListenUDP("udp", &addr)
     if err != nil {
         fmt.Printf("ERROR %v\n", err)
