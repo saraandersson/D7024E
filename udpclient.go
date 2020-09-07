@@ -31,7 +31,7 @@ func main() {
 
 func mainServer(done chan bool, port int) {
     p := make([]byte, 2048)
-    fmt.Print(port)
+    fmt.Printf("HEJ" + port)
     addr := net.UDPAddr{
         Port: port,
         IP: net.ParseIP("127.0.0.1"),
