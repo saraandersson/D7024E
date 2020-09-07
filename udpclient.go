@@ -5,7 +5,7 @@ import (
     "net"
     "time"
     "os"
-    "strconv"
+    //"strconv"
 )
 
 func main() {
@@ -18,13 +18,13 @@ func main() {
         go mainServer(done, i2) //Gör egen tråd
     }*/
     go mainServer(done)
-	<- time.After(1*time.Second)*/
+	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:" + portSending)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
 	}
-	fmt.Printf("Hit kommer jag!")
+	fmt.Printf("Send request")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
     <-done
@@ -55,6 +55,6 @@ func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan bool) {
     if err != nil {
         fmt.Printf("ERROR SERVER: %v", err)
     }
-    fmt.Printf("Response sending")
+    fmt.Printf("Request received")
     done <- true
 }
