@@ -11,7 +11,7 @@ func main() {
     done := make(chan bool)
     //numbPtr := flag.Int("numb", 42, "an int")
     //flag.Parse()
-    fmt.Println("port: ", os.Args())
+    fmt.Println("port: ", os.GetEnv("PORT"))
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:1234")
