@@ -28,7 +28,7 @@ services:
     networks:
       - kademlia_network
   udpserverNode:
-    image: udpserver:latest
+    image: server:latest
     stdin_open: true
     tty: true
     deploy:
