@@ -9,11 +9,11 @@ import (
 
 func main() {
     done := make(chan bool)
-    fmt.Println("port: ", os.Getenv("PORT"))
-    port := os.Getenv("PORT")
+    //fmt.Println("port: ", os.Getenv("PORT"))
+    //port := os.Getenv("PORT")
 	go mainServer(done) //Gör egen tråd
 	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:" + port)
+    conn, err := net.Dial("udp", "127.0.0.1:" + 8001)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
