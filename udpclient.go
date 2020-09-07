@@ -5,6 +5,7 @@ import (
     "net"
     "time"
     "os"
+    "strconv"
 )
 
 func main() {
@@ -12,7 +13,10 @@ func main() {
     //fmt.Println("port: ", os.Getenv("PORT"))
     portOwn := os.Getenv("PORTOWN")
     portSending := os.Getenv("PORTSENDING")
-	go mainServer(done, portOwn) //Gör egen tråd
+    i2, err1 := strconv.ParseInt(portOwn, 10, 64)
+    if err1 != nil {
+        go mainServer(done, i2) //Gör egen tråd
+    }
 	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:" + portSending)
     if err != nil {
@@ -25,7 +29,7 @@ func main() {
     <-done
 }
 
-func mainServer(done chan bool, port string) {
+func mainServer(done chan bool, port int) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: port,
