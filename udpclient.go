@@ -15,7 +15,7 @@ type Node struct {
 
 
 func main() {
-    numberOfNodes := 3;
+    numberOfNodes := 4;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
         newNode := createNewNode("localhost:8000")
