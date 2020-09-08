@@ -19,7 +19,8 @@ func main() {
     port := 8000;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        newNode := createNewNode("localhost:" + strconv.Itoa(port))
+        newPort = port + i;
+        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
         go newNode.checkNodeIsUp()
         
     }
