@@ -9,15 +9,8 @@ import (
 )
 
 func main() {
-        /*arguments := os.Args
-        if len(arguments) == 1 {
-                fmt.Println("Please provide a host:port string")
-                return
-        }
-        CONNECT := arguments[1]
-        */
-
-        s, err := net.ResolveUDPAddr("udp4", "127.0.0.1:1236")
+        con := os.Getenv("ADDRESS")
+        s, err := net.ResolveUDPAddr("udp4", con)
         c, err := net.DialUDP("udp4", nil, s)
         if err != nil {
                 fmt.Println(err)
