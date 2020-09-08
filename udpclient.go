@@ -1,22 +1,22 @@
 package main
 
 import (
-        //"bufio"
+        "bufio"
         "fmt"
         "net"
-        //"os"
+        "os"
         "strings"
 )
 
 func main() {
-        /*arguments := os.Args
+        arguments := os.Args
         if len(arguments) == 1 {
                 fmt.Println("Please provide a host:port string")
                 return
         }
         CONNECT := arguments[1]
-*/
-        s, err := net.ResolveUDPAddr("udp4", "127.0.0.1:8080")
+
+        s, err := net.ResolveUDPAddr("udp4", CONNECT)
         c, err := net.DialUDP("udp4", nil, s)
         if err != nil {
                 fmt.Println(err)
@@ -27,10 +27,10 @@ func main() {
         defer c.Close()
 
         for {
-                //reader := bufio.NewReader(os.Stdin)
-                //fmt.Print(">> ")
-                //text, _ := reader.ReadString('\n')
-                data := []byte("hej" + "\n")
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Print(">> ")
+                text, _ := reader.ReadString('\n')
+                data := []byte(text + "\n")
                 _, err = c.Write(data)
                 if strings.TrimSpace(string(data)) == "STOP" {
                         fmt.Println("Exiting UDP client!")
