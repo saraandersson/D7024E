@@ -14,7 +14,7 @@ type Node struct {
 }
 
 func main() {
-    numberOfNodes := 1;
+    numberOfNodes := 2;
     port := 8000;
     for i := 0; i < numberOfNodes; i++ {
         //fmt.Println("Enter for-loop")
