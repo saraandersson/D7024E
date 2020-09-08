@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
     "net"
-    "time"
+    //"time"
     //"os"
-    "strconv"
+    //"strconv"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 
 func createNewNode() {
     fmt.Println("Enter createNewNode")
-	newAddr, err := net.ResolveUDPAddr("udp", address)
+	newAddr, err := net.ResolveUDPAddr("udp", "localhost:8000")
 	if err != nil {
 		fmt.Println("ERROR: %v", err)
         return
