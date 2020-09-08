@@ -17,7 +17,7 @@ func main() {
         if err1 != nil {
             go mainServer(i2) //Gör egen tråd
         }
-        <- time.After(1*time.Second)
+        <- time.After(10*time.Second)
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
                 fmt.Println(err)
