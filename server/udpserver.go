@@ -20,9 +20,15 @@ func main() {
         //fmt.Println("Enter for-loop")
         newPort := port + i
         fmt.Printf(strconv.Itoa(newPort))
-        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
-        go newNode.checkNodeIsUp()
+        go testar(newPort)
+        //newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
+        //go newNode.checkNodeIsUp()
     }
+}
+
+func testar(port int){
+    newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
+    go newNode.checkNodeIsUp()
 }
 
 func createNewNode(address string) *Node{
@@ -36,7 +42,7 @@ func createNewNode(address string) *Node{
                 fmt.Println(err)
                 
         }
-       // defer connection.Close()
+        defer connection.Close()
         buffer := make([]byte, 1024)
 
         for {
@@ -51,13 +57,12 @@ func createNewNode(address string) *Node{
                         fmt.Println(err)
                         
                 }
-                defer connection.Close()
         }
         return &Node{address, connection}
 }
 
 func (node *Node) checkNodeIsUp() {
     fmt.Println("Hello I am a new node existing on: " + node.address)
-    //defer node.connection.Close()
+   // defer node.connection.Close()
 }
     
