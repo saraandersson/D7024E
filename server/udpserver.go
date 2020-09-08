@@ -42,7 +42,7 @@ func createNewNode(address string) *Node{
                 fmt.Println(err)
                 
         }
-        defer connection.Close()
+        //defer connection.Close()
         buffer := make([]byte, 1024)
 
         for {
