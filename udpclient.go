@@ -8,17 +8,25 @@ import (
     //"strconv"
 )
 
+type Node struct {
+    Address string
+    connection *net.UDPConn
+}
+
+
 func main() {
     numberOfNodes := 3;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        createNewNode()
+        newNode := createNewNode("localhost:8000")
+        go newNode.checkNodeIsUp()
+        
     }
 }
 
-func createNewNode() {
+func createNewNode(address string) *Node{
     fmt.Println("Enter createNewNode")
-	newAddr, err := net.ResolveUDPAddr("udp", "localhost:8000")
+	newAddr, err := net.ResolveUDPAddr("udp", address)
 	if err != nil {
 		fmt.Println("ERROR: %v", err)
         return
@@ -28,7 +36,13 @@ func createNewNode() {
 		fmt.Println("ERROR: %v", err)
         return
     }
-    defer conn.Close()
+    return &Node{address, conn}
+    //defer conn.Close()
+}
+
+func (node *Node) checkNodeIsUp() {
+    fmt.Println("Hello I am a new node existing on: " + node.address)
+    defer node.connection.Close()
 }
 
 /*func main() {
