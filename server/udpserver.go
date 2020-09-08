@@ -5,7 +5,13 @@ import (
         "net"
        // "os"
       //  "bufio"
+      "strconv"
 )
+
+type Node struct {
+    address string
+    connection *net.UDPConn
+}
 
 func main() {
     numberOfNodes := 1;
@@ -13,7 +19,7 @@ func main() {
     for i := 0; i < numberOfNodes; i++ {
         //fmt.Println("Enter for-loop")
         newPort := port + i
-        newNode := createNewNode("localhost:" + strconv.Itoa(newNode))
+        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
         go newNode.checkNodeIsUp()
     }
 }
