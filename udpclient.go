@@ -18,7 +18,7 @@ func main() {
     numberOfNodes := 1;
     startingPort := 8000;
     newPort := 0;
-    port := os.Getenv("PORT")
+    //port := os.Getenv("PORT")
     done := make(chan bool)
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
