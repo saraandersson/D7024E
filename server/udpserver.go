@@ -27,7 +27,7 @@ func main() {
 }
 
 func testar(port int){
-    newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
+    newNode := createNewNode("localhost:" + strconv.Itoa(port))
     go newNode.checkNodeIsUp()
 }
 
