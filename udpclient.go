@@ -8,35 +8,34 @@ import (
 )
 
 func main() {
-        con := os.Getenv("ADDRESS")
-        s, err := net.ResolveUDPAddr("udp4", con)
-        c, err := net.DialUDP("udp4", nil, s)
+        address := os.Getenv("ADDRESS")
+        server, err := net.ResolveUDPAddr("udp", address)
+        conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
                 fmt.Println(err)
                 return
         }
-
-        fmt.Printf("The UDP server is %s\n", c.RemoteAddr().String())
-        defer c.Close()
+        fmt.Printf("The UDP server is %server\n", conn.RemoteAddr().String())
+        defer conn.Close()
 
         for {
                 reader := bufio.NewReader(os.Stdin)
-                fmt.Print(">> ")
-                text, _ := reader.ReadString('\n')
-                data := []byte(text + "\n")
-                _, err = c.Write(data)
+                fmt.Print("Type message here: ")
+                message, _ := reader.ReadString('\n')
+                data := []byte(message + "\n")
+                _, err = conn.Write(data)
                 if err != nil {
                         fmt.Println(err)
                         return
                 }
 
                 buffer := make([]byte, 1024)
-                n, _, err := c.ReadFromUDP(buffer)
+                n, _, err := conn.ReadFromUDP(buffer)
                 if err != nil {
                         fmt.Println(err)
                         return
                 }
-                fmt.Printf("Reply: %s\n", string(buffer[0:n]))
+                fmt.Printf("Answer: %s\n", string(buffer[0:n]))
         }
 }
       
