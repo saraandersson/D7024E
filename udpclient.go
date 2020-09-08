@@ -29,12 +29,10 @@ func createNewNode(address string) *Node{
 	newAddr, err := net.ResolveUDPAddr("udp", address)
 	if err != nil {
 		fmt.Println("ERROR: %v", err)
-        return
 	}
 	conn, err := net.ListenUDP("udp", newAddr)
 	if err != nil {
 		fmt.Println("ERROR: %v", err)
-        return
     }
     return &Node{address, conn}
     //defer conn.Close()
