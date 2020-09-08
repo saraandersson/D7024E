@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-    numberOfNodes := 2;
+    numberOfNodes := 3;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
         createNewNode()
@@ -22,11 +22,7 @@ func createNewNode() {
     done := make(chan bool)
     go mainServer(done)
     <- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "localhost:" + strconv.Itoa(port))
-    if err != nil {
-        fmt.Println("ERROR: %v", err)
-        return
-	}
+    conn := net.Dial("udp", "localhost:" + strconv.Itoa(port))
 	fmt.Println("Send request")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
