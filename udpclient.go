@@ -4,7 +4,7 @@ import (
 	"fmt"
     "net"
     //"time"
-    //"os"
+    "os"
     "strconv"
 )
 
@@ -86,7 +86,7 @@ func main() {
 
 
 }
-
+*/
 
 func createNewNode(address string) *Node{
     fmt.Println("Enter createNewNode")
@@ -105,4 +105,4 @@ func createNewNode(address string) *Node{
 func (node *Node) checkNodeIsUp() {
     fmt.Println("Hello I am a new node existing on: " + node.address)
     //defer node.connection.Close()
-}*/
+}
