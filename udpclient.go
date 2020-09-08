@@ -5,10 +5,19 @@ import (
         "fmt"
         "net"
         "os"
+        "time"
+        "strconv"
 )
 
 func main() {
         address := os.Getenv("ADDRESS")
+        port := os.Getenv("PORT")
+        
+        i2, err1 := strconv.Atoi(port)
+        if err1 != nil {
+            go mainServer(i2) //Gör egen tråd
+        }
+        <- time.After(10*time.Second)
         server, err := net.ResolveUDPAddr("udp", address)
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
@@ -39,5 +48,34 @@ func main() {
         }
 }
 
+func mainServer(port int) {
+    //port_input := os.Getenv("PORT")
+    //PORT := ":" + port_input
+    s, err := net.ResolveUDPAddr("udp", strconv.Itoa(port))
+    if err != nil {
+            fmt.Println(err)
+            return
+    }
+    connection, err := net.ListenUDP("udp", s)
+    if err != nil {
+            fmt.Println(err)
+            return
+    }
+    defer connection.Close()
+    buffer := make([]byte, 1024)
 
+    for {
+            n, addr, err := connection.ReadFromUDP(buffer)
+            fmt.Print("Message: ", string(buffer[0:n-1]))
+            reader := bufio.NewReader(os.Stdin)
+            fmt.Print("Type answer here: ")
+            text, _ := reader.ReadString('\n')
+            data := []byte(text + "\n")
+            _, err = connection.WriteToUDP(data, addr)
+            if err != nil {
+                    fmt.Println(err)
+                    return
+            }
+    }
+}
       
