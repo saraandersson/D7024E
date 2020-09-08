@@ -12,9 +12,10 @@ import (
 func main() {
         //address := os.Getenv("ADDRESS")
         //port := os.Getenv("PORT")
+        server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
         go mainServer(8000) 
         <- time.After(10*time.Second)
-        server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
+        
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
                 fmt.Println(err)
