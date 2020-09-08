@@ -12,11 +12,12 @@ func main() {
     numberOfNodes := 2;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        go createNewNode()
+        createNewNode()
     }
 }
 
 func createNewNode() {
+    fmt.Println("Enter createNewNode")
     done := make(chan bool)
     go mainServer(done)
 	<- time.After(1*time.Second)
