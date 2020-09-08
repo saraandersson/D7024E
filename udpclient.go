@@ -22,7 +22,11 @@ func createNewNode() {
     done := make(chan bool)
     go mainServer(done)
     <- time.After(1*time.Second)
-    conn := net.Dial("udp", "localhost:" + strconv.Itoa(port))
+    conn, err := net.Dial("udp", "localhost:" + strconv.Itoa(port))
+    if err != nil {
+        fmt.Println("ERROR: %v", err)
+        return
+	}
 	fmt.Println("Send request")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
