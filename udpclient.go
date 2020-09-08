@@ -25,7 +25,10 @@ func main() {
         newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
         //go newNode.checkNodeIsUp() 
     }
-    go mainServer(strconv.Atoi(port))
+    i2, err1 := strconv.Atoi(port)
+    if err1 != nil {
+        go mainServer(i2) //Gör egen tråd
+    }
     conn, err := net.Dial("udp", "127.0.0.1:" + port)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
