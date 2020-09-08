@@ -26,11 +26,11 @@
 #RUN echo "PWD is: $PWD"
 
 FROM golang:alpine
-EXPOSE 8000
+EXPOSE 1234
 WORKDIR /source
 COPY udpclient.go /source
 RUN go build udpclient.go
-CMD ./udpclient 127.0.0.1:8000
+CMD ./udpclient
 
 
 

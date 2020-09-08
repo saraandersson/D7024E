@@ -1,6 +1,6 @@
 FROM golang:alpine
-EXPOSE 8000
+EXPOSE 1234
 WORKDIR /source
 COPY udpserver.go /source
 RUN go build udpserver.go
-CMD ./udpserver 8000
+CMD ./udpserver 1234
