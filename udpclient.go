@@ -29,8 +29,8 @@ func main() {
         for {
                 reader := bufio.NewReader(os.Stdin)
                 fmt.Print(">> ")
-                text, _ := reader.ReadString('\n')
-                data := []byte(text + "\n")
+                //text, _ := reader.ReadString('\n')
+                data := []byte("Hej" + "\n")
                 _, err = c.Write(data)
                 if strings.TrimSpace(string(data)) == "STOP" {
                         fmt.Println("Exiting UDP client!")
