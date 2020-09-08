@@ -20,7 +20,7 @@ func main() {
     for i := 0; i < numberOfNodes; i++ {
         //fmt.Println("Enter for-loop")
         newPort := port + i
-        newNode := createNewNode("localhost:" + strconv.Atoi(newPort))
+        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
        // go newNode.checkNodeIsUp()
         go newNode.testListen()
         
