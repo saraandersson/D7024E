@@ -15,7 +15,7 @@ func main() {
                 fmt.Println(err)
                 return
         }
-        fmt.Printf("The UDP server is %server\n", conn.RemoteAddr().String())
+        fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
         defer conn.Close()
 
         for {
