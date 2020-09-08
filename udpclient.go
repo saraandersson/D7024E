@@ -47,8 +47,8 @@ func main() {
 
 func mainServer(port int) {
     //port_input := os.Getenv("PORT")
-    //PORT := ":" + port_input
-    s, err := net.ResolveUDPAddr("udp", strconv.Itoa(port))
+    port2 := ":" + port
+    s, err := net.ResolveUDPAddr("udp", strconv.Itoa(port2))
     if err != nil {
             fmt.Println(err)
             return
