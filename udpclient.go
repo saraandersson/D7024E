@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
     "net"
-    //"time"
+    "time"
     "os"
     "strconv"
 )
@@ -19,6 +19,7 @@ func main() {
     startingPort := 8000;
     newPort := 0;
     port := os.Getenv("PORT")
+    done := make(chan bool)
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
         newPort = startingPort + i;
@@ -29,6 +30,7 @@ func main() {
     if err1 != nil {
         go mainServer(i2) //Gör egen tråd
     }
+    <- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:" + port)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
@@ -37,9 +39,10 @@ func main() {
 	fmt.Printf("Send request")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
+    <-done
 }
 
-func mainServer(port int) {
+func mainServer(port int, done chan bool) {
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
         Port: port,
@@ -56,15 +59,16 @@ func mainServer(port int) {
             fmt.Println("ERROR %v\n", err)
             return
         }
-        go sendResponse(ser, remoteaddr)
+        go sendResponse(ser, remoteaddr, done)
     }
 }
-func sendResponse(conn *net.UDPConn, addr *net.UDPAddr) {
+func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan bool) {
     _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
         fmt.Println("ERROR SERVER: %v", err)
     }
     fmt.Println("Request received")
+    done <- true
 }
 
 /*
