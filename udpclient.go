@@ -5,7 +5,7 @@ import (
     "net"
     //"time"
     //"os"
-    //"strconv"
+    "strconv"
 )
 
 type Node struct {
@@ -16,9 +16,10 @@ type Node struct {
 
 func main() {
     numberOfNodes := 4;
+    port := 8000;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        newNode := createNewNode("localhost:8000")
+        newNode := createNewNode("localhost:" + strconv.Itoa(port))
         go newNode.checkNodeIsUp()
         
     }
