@@ -27,7 +27,7 @@ func main() {
         go newNode.checkNodeIsUp() 
     }
     <- time.After(1*time.Second)
-    conn, err := net.Dial("udp", newNode.address)
+    conn, err := net.Dial("udp", "localhost:8000")
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
