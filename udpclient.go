@@ -23,7 +23,7 @@ func main() {
         fmt.Println("Enter for-loop")
         newPort = startingPort + i;
         newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
-        //go newNode.checkNodeIsUp() 
+        go newNode.checkNodeIsUp() 
     }
     i2, err1 := strconv.Atoi(port)
     if err1 != nil {
