@@ -4,19 +4,41 @@ import (
 	"fmt"
     "net"
     "time"
-    "os"
+    //"os"
     //"strconv"
 )
 
 func main() {
+    numberOfNodes := 2;
+    for i := 0; i < numberOfNodes; i++ {
+        go createNewNode()
+    }
+}
+
+func createNewNode() {
+    done := make(chan bool)
+    go mainServer(done)
+	<- time.After(1*time.Second)
+    conn, err := net.Dial("udp", "127.0.0.1:8000")
+    if err != nil {
+        fmt.Printf("ERROR: %v", err)
+        return
+	}
+	fmt.Printf("Send request")
+    fmt.Fprintf(conn, "Hello")
+    defer conn.Close()
+    <-done
+}
+
+/*func main() {
     done := make(chan bool)
     //fmt.Println("port: ", os.Getenv("PORT"))
     //portOwn := os.Getenv("PORTOWN")
     portSending := os.Getenv("PORTSENDING")
-    /*i2, err1 := strconv.Atoi(portSending)
+    i2, err1 := strconv.Atoi(portSending)
     if err1 != nil {
         go mainServer(done, i2) //Gör egen tråd
-    }*/
+    }
     go mainServer(done)
 	<- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:" + portSending)
@@ -28,7 +50,7 @@ func main() {
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
     <-done
-}
+}*/
 
 func mainServer(done chan bool) {
 	p := make([]byte, 2048)
