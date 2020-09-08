@@ -1,7 +1,7 @@
 package main
 
 import (
-        //"bufio"
+        "bufio"
         "fmt"
         "net"
         "os"
@@ -27,10 +27,10 @@ func main() {
         defer c.Close()
 
         for {
-                //reader := bufio.NewReader(os.Stdin)
+                reader := bufio.NewReader(os.Stdin)
                 fmt.Print(">> ")
-                //text, _ := reader.ReadString('\n')
-                data := []byte("Hej" + "\n")
+                text, _ := reader.ReadString('\n')
+                data := []byte(text + "\n")
                 _, err = c.Write(data)
                 if strings.TrimSpace(string(data)) == "STOP" {
                         fmt.Println("Exiting UDP client!")
