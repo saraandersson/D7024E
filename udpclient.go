@@ -19,7 +19,7 @@ func main() {
     startingPort := 8000;
     newPort := 0;
     port := os.Getenv("PORT")
-    //done := make(chan bool)
+    done := make(chan bool)
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
         newPort = startingPort + i;
@@ -107,7 +107,6 @@ func createNewNode(address string, done chan bool) *Node{
         _,remoteaddr,err := conn.ReadFromUDP(p)
         if err != nil {
             fmt.Println("ERROR %v\n", err)
-            return
         }
         go sendResponse(conn, remoteaddr, done)
     }
