@@ -29,7 +29,7 @@ FROM golang:alpine
 WORKDIR /source
 COPY udpclient.go /source
 RUN go build udpclient.go
-CMD ./udpclient
+CMD ./udpclient 127.0.0.1:1234
 
 
 
