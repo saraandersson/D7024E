@@ -20,12 +20,12 @@ func main() {
         //fmt.Println("Enter for-loop")
         newPort := port + i
         fmt.Printf(strconv.Itoa(newPort))
-        go createNewNode("localhost:" + strconv.Itoa(newPort))
-       // go newNode.checkNodeIsUp()
+        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
+        go newNode.checkNodeIsUp()
     }
 }
 
-func createNewNode(address string){
+func createNewNode(address string) *Node{
         s, err := net.ResolveUDPAddr("udp", address)
         if err != nil {
                 fmt.Println(err)
@@ -52,6 +52,7 @@ func createNewNode(address string){
                         
                 }
         }
+        return &Node{address, connection}
 }
 
 func (node *Node) checkNodeIsUp() {
