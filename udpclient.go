@@ -25,7 +25,7 @@ func main() {
         newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
         go newNode.checkNodeIsUp() 
     }
-    go mainServer(strconv.Itoa(port))
+    go mainServer(strconv.Atoi(port))
     conn, err := net.Dial("udp", "127.0.0.1:" + port)
     if err != nil {
         fmt.Printf("ERROR: %v", err)
