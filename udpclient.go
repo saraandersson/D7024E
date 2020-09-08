@@ -28,7 +28,7 @@ func main() {
     }
     i2, err1 := strconv.Atoi(port)
     if err1 != nil {
-        go mainServer(i2) //Gör egen tråd
+        go mainServer(i2, done) //Gör egen tråd
     }
     <- time.After(1*time.Second)
     conn, err := net.Dial("udp", "127.0.0.1:" + port)
