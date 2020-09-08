@@ -12,25 +12,23 @@ func main() {
     numberOfNodes := 3;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        createNewNode()
+        go createNewNode()
     }
 }
 
 func createNewNode() {
     fmt.Println("Enter createNewNode")
-    port := 8000
-    done := make(chan bool)
-    go mainServer(done)
-    <- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "localhost:" + strconv.Itoa(port))
-    if err != nil {
-        fmt.Println("ERROR: %v", err)
+	newAddr, err := net.ResolveUDPAddr("udp", address)
+	if err != nil {
+		fmt.Println("ERROR: %v", err)
         return
 	}
-	fmt.Println("Send request")
-    fmt.Fprintf(conn, "Hello")
+	conn, err := net.ListenUDP("udp", newAddr)
+	if err != nil {
+		fmt.Println("ERROR: %v", err)
+        return
+    }
     defer conn.Close()
-    <-done
 }
 
 /*func main() {
