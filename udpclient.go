@@ -43,9 +43,10 @@ func main() {
 }
 
 func mainServer(port int, done chan bool) {
+    fmt.Printf(strconv.Itoa(port))
 	p := make([]byte, 2048)
     addr := net.UDPAddr{
-        Port: port,
+        Port: 8000,
         IP: net.ParseIP("localhost"),
     }
     ser, err := net.ListenUDP("udp", &addr)
