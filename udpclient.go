@@ -9,7 +9,7 @@ import (
 )
 
 type Node struct {
-    Address string
+    address string
     connection *net.UDPConn
 }
 
