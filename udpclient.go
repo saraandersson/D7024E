@@ -26,11 +26,6 @@ func main() {
                 text, _ := reader.ReadString('\n')
                 data := []byte(text + "\n")
                 _, err = c.Write(data)
-                if strings.TrimSpace(string(data)) == "STOP" {
-                        fmt.Println("Exiting UDP client!")
-                        return
-                }
-
                 if err != nil {
                         fmt.Println(err)
                         return

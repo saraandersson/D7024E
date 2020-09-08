@@ -8,6 +8,7 @@ import (
         "strconv"
         "strings"
         "time"
+        "bufio"
 )
 
 func random(min, max int) int {
@@ -22,13 +23,11 @@ func main() {
                 fmt.Println(err)
                 return
         }
-
         connection, err := net.ListenUDP("udp4", s)
         if err != nil {
                 fmt.Println(err)
                 return
         }
-
         defer connection.Close()
         buffer := make([]byte, 1024)
         rand.Seed(time.Now().Unix())
@@ -41,8 +40,11 @@ func main() {
                         fmt.Println("Exiting UDP server!")
                         return
                 }
-
-                data := []byte(strconv.Itoa(random(1, 1001)))
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Print(">> ")
+                text, _ := reader.ReadString('\n')
+                data := []byte(text + "\n")
+                //data := []byte(strconv.Itoa(random(1, 1001)))
                 fmt.Printf("data: %s\n", string(data))
                 _, err = connection.WriteToUDP(data, addr)
                 if err != nil {
