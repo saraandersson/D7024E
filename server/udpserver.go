@@ -36,7 +36,7 @@ func createNewNode(address string) *Node{
                 fmt.Println(err)
                 
         }
-        defer connection.Close()
+       // defer connection.Close()
         buffer := make([]byte, 1024)
 
         for {
@@ -57,6 +57,6 @@ func createNewNode(address string) *Node{
 
 func (node *Node) checkNodeIsUp() {
     fmt.Println("Hello I am a new node existing on: " + node.address)
-   // defer node.connection.Close()
+    defer node.connection.Close()
 }
     
