@@ -27,7 +27,7 @@ func main() {
         defer c.Close()
 
         for {
-                reader := bufio.NewReader(os.Stdin)
+                //reader := bufio.NewReader(os.Stdin)
                 fmt.Print(">> ")
                 //text, _ := reader.ReadString('\n')
                 data := []byte("Hej" + "\n")
