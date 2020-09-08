@@ -6,14 +6,15 @@ import (
         "net"
         "os"
         "time"
+        //"strconv"
 )
 
 func main() {
         address := os.Getenv("ADDRESS")
         port := os.Getenv("PORT")
         server, err := net.ResolveUDPAddr("udp", address)
-        go mainServer(strconv.Itoa(port))
-        <- time.alert(1*time.seconds)
+        go mainServer(port)
+        <- time.After(1*time.Second)
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
                 fmt.Println(err)
