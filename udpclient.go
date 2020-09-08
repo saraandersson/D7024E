@@ -13,7 +13,7 @@ func main() {
         address := os.Getenv("ADDRESS")
         port := os.Getenv("PORT")
         server, err := net.ResolveUDPAddr("udp", address)
-        go mainServer(strconv.Itoa(port))
+        go mainServer(strconv.Atoi(port))
         <- time.After(1*time.Second)
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
@@ -47,7 +47,7 @@ func main() {
 func mainServer(port int) {
     //port_input := os.Getenv("PORT")
     //PORT := ":" + port_input
-    s, err := net.ResolveUDPAddr("udp", strconv.Atoi(port))
+    s, err := net.ResolveUDPAddr("udp", port)
     if err != nil {
             fmt.Println(err)
             return
