@@ -13,7 +13,10 @@ func main() {
         address := os.Getenv("ADDRESS")
         port := os.Getenv("PORT")
         server, err := net.ResolveUDPAddr("udp", address)
-        go mainServer(strconv.Atoi(port))
+        i2, err1 := strconv.Atoi(port)
+        if err1 != nil {
+            go mainServer(i2) //Gör egen tråd
+        }*
         <- time.After(1*time.Second)
         conn, err := net.DialUDP("udp", nil, server)
         if err != nil {
@@ -47,7 +50,7 @@ func main() {
 func mainServer(port int) {
     //port_input := os.Getenv("PORT")
     //PORT := ":" + port_input
-    s, err := net.ResolveUDPAddr("udp", port)
+    s, err := net.ResolveUDPAddr("udp", strconv.Itoa(port))
     if err != nil {
             fmt.Println(err)
             return
