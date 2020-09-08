@@ -4,7 +4,7 @@ import (
         "bufio"
         "fmt"
         "net"
-       // "os"
+        "os"
         "time"
         "strconv"
 )
@@ -12,11 +12,7 @@ import (
 func main() {
         //address := os.Getenv("ADDRESS")
         //port := os.Getenv("PORT")
-        
-        i2, err1 := strconv.Atoi(8000)
-        if err1 != nil {
-            go mainServer(i2) //Gör egen tråd
-        }
+        go mainServer(8000) 
         <- time.After(10*time.Second)
         server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
         conn, err := net.DialUDP("udp", nil, server)
