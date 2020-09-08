@@ -51,12 +51,13 @@ func createNewNode(address string) *Node{
                         fmt.Println(err)
                         
                 }
+                defer connection.Close()
         }
         return &Node{address, connection}
 }
 
 func (node *Node) checkNodeIsUp() {
     fmt.Println("Hello I am a new node existing on: " + node.address)
-    defer node.connection.Close()
+    //defer node.connection.Close()
 }
     
