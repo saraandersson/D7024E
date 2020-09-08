@@ -3,39 +3,22 @@ package main
 import (
         "fmt"
         "net"
-       // "os"
-      //  "bufio"
-      "strconv"
+        "os"
+        "bufio"
 )
 
-type Node struct {
-    address string
-    connection *net.UDPConn
-}
-
 func main() {
-    numberOfNodes := 2;
-    port := 8000;
-    for i := 0; i < numberOfNodes; i++ {
-        //fmt.Println("Enter for-loop")
-        newPort := port + i
-        fmt.Printf(strconv.Itoa(newPort))
-        newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
-        go newNode.checkNodeIsUp()
-    }
-}
-
-
-func createNewNode(address string) *Node{
-        s, err := net.ResolveUDPAddr("udp", address)
+        port_input := os.Getenv("PORT")
+        PORT := ":" + port_input
+        s, err := net.ResolveUDPAddr("udp", PORT)
         if err != nil {
                 fmt.Println(err)
-                
+                return
         }
         connection, err := net.ListenUDP("udp", s)
         if err != nil {
                 fmt.Println(err)
-                
+                return
         }
         defer connection.Close()
         buffer := make([]byte, 1024)
@@ -43,21 +26,17 @@ func createNewNode(address string) *Node{
         for {
                 n, addr, err := connection.ReadFromUDP(buffer)
                 fmt.Print("Message: ", string(buffer[0:n-1]))
-               // reader := bufio.NewReader(os.Stdin)
-               // fmt.Print("Type answer here: ")
-               // text, _ := reader.ReadString('\n')
-                data := []byte("WORLD!" + "\n")
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Print("Type answer here: ")
+                text, _ := reader.ReadString('\n')
+                data := []byte(text + "\n")
                 _, err = connection.WriteToUDP(data, addr)
                 if err != nil {
                         fmt.Println(err)
-                        
+                        return
                 }
         }
-        return &Node{address, connection}
 }
 
-func (node *Node) checkNodeIsUp() {
-    fmt.Println("Hello I am a new node existing on: " + node.address)
-   // defer node.connection.Close()
-}
+
     
