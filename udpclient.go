@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
     "net"
-    //"time"
+    "time"
     //"os"
     //"strconv"
 )
@@ -20,7 +20,7 @@ func main() {
     }*/
     go mainServer(done)
 	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:" + portSending)
+    conn, err := net.Dial("udp", "127.0.0.1:8000")
     if err != nil {
         fmt.Printf("ERROR: %v", err)
         return
