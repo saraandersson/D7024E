@@ -15,7 +15,7 @@ type Node struct {
 
 
 func main() {
-    numberOfNodes := 4;
+    numberOfNodes := 1;
     startingPort := 8000;
     newPort := 0;
     port := os.Getenv("PORT")
