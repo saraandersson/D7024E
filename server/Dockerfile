@@ -1,5 +1,5 @@
 FROM golang:alpine
-WORKDIR /server
-COPY udpserver.go /server
+WORKDIR /source
+COPY udpserver.go /source
 RUN go build udpserver.go
 CMD ./udpserver

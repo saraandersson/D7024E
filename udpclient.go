@@ -1,61 +1,54 @@
 package main
 
 import (
-	"fmt"
-    "net"
-    "time"
-    //"os"
-    //"strconv"
+        "bufio"
+        "fmt"
+        "net"
+        "os"
+        "strings"
 )
 
-
 func main() {
-    done := make(chan bool)
-    //fmt.Println("port: ", os.Getenv("PORT"))
-    //portOwn := os.Getenv("PORTOWN")
-    /*portSending := os.Getenv("PORTSENDING")
-    i2, err1 := strconv.Atoi(portSending)
-    if err1 != nil {
-        go mainServer(done, i2) //Gör egen tråd
-    }*/
-    go mainServer(done)
-	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:8000")
-    if err != nil {
-        fmt.Printf("ERROR: %v", err)
-        return
-	}
-	fmt.Printf("Send request")
-    fmt.Fprintf(conn, "Hello")
-    defer conn.Close()
-    <-done
-}
-
-func mainServer(done chan bool) {
-	p := make([]byte, 2048)
-    addr := net.UDPAddr{
-        Port: 8000,
-        IP: net.ParseIP("localhost"),
-    }
-    ser, err := net.ListenUDP("udp", &addr)
-    if err != nil {
-        fmt.Println("ERROR %v\n", err)
-        return
-    }
-    for {
-        _,remoteaddr,err := ser.ReadFromUDP(p)
-        if err != nil {
-            fmt.Println("ERROR %v\n", err)
-            return
+        arguments := os.Args
+        if len(arguments) == 1 {
+                fmt.Println("Please provide a host:port string")
+                return
         }
-        go sendResponse(ser, remoteaddr, done)
-    }
+        CONNECT := arguments[1]
+
+        s, err := net.ResolveUDPAddr("udp4", CONNECT)
+        c, err := net.DialUDP("udp4", nil, s)
+        if err != nil {
+                fmt.Println(err)
+                return
+        }
+
+        fmt.Printf("The UDP server is %s\n", c.RemoteAddr().String())
+        defer c.Close()
+
+        for {
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Print(">> ")
+                text, _ := reader.ReadString('\n')
+                data := []byte(text + "\n")
+                _, err = c.Write(data)
+                if strings.TrimSpace(string(data)) == "STOP" {
+                        fmt.Println("Exiting UDP client!")
+                        return
+                }
+
+                if err != nil {
+                        fmt.Println(err)
+                        return
+                }
+
+                buffer := make([]byte, 1024)
+                n, _, err := c.ReadFromUDP(buffer)
+                if err != nil {
+                        fmt.Println(err)
+                        return
+                }
+                fmt.Printf("Reply: %s\n", string(buffer[0:n]))
+        }
 }
-func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan bool) {
-    _,err := conn.WriteToUDP([]byte("World"), addr)
-    if err != nil {
-        fmt.Println("ERROR SERVER: %v", err)
-    }
-    fmt.Println("Request received")
-    done <- true
-}
+      
