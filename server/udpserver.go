@@ -16,9 +16,11 @@ type Node struct {
 func main() {
     numberOfNodes := 2;
     port := 8000;
+    newPort := 0;
     for i := 0; i < numberOfNodes; i++ {
         //fmt.Println("Enter for-loop")
-        newNode := createNewNode("localhost:" + strconv.Atoi(port + i))
+        newPort := port + i
+        newNode := createNewNode("localhost:" + strconv.Atoi(newPort))
        // go newNode.checkNodeIsUp()
         go newNode.testListen()
         
