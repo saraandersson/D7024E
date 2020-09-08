@@ -17,7 +17,7 @@ func main() {
         CONNECT := arguments[1]
         */
 
-        s, err := net.ResolveUDPAddr("udp4", "127.0.0.1:1235")
+        s, err := net.ResolveUDPAddr("udp4", "127.0.0.1:1236")
         c, err := net.DialUDP("udp4", nil, s)
         if err != nil {
                 fmt.Println(err)
