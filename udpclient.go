@@ -23,7 +23,7 @@ func main() {
         fmt.Println("Enter for-loop")
         newPort = startingPort + i;
         newNode := createNewNode("localhost:" + strconv.Itoa(newPort))
-        go newNode.checkNodeIsUp() 
+        //go newNode.checkNodeIsUp() 
     }
     go mainServer(strconv.Atoi(port))
     conn, err := net.Dial("udp", "127.0.0.1:" + port)
