@@ -11,6 +11,7 @@ import (
 func main() {
     numberOfNodes := 2;
     for i := 0; i < numberOfNodes; i++ {
+        fmt.Println("Enter for-loop")
         go createNewNode()
     }
 }
