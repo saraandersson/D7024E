@@ -5,7 +5,7 @@ import (
     "net"
     "time"
     //"os"
-    //"strconv"
+    "strconv"
 )
 
 func main() {
@@ -18,15 +18,16 @@ func main() {
 
 func createNewNode() {
     fmt.Println("Enter createNewNode")
+    port := 8000
     done := make(chan bool)
     go mainServer(done)
-	<- time.After(1*time.Second)
-    conn, err := net.Dial("udp", "127.0.0.1:8000")
+    <- time.After(1*time.Second)
+    conn, err := net.Dial("udp", "localhost:" + strconv.Itoa(port))
     if err != nil {
-        fmt.Printf("ERROR: %v", err)
+        fmt.Println("ERROR: %v", err)
         return
 	}
-	fmt.Printf("Send request")
+	fmt.Println("Send request")
     fmt.Fprintf(conn, "Hello")
     defer conn.Close()
     <-done
@@ -62,13 +63,13 @@ func mainServer(done chan bool) {
     }
     ser, err := net.ListenUDP("udp", &addr)
     if err != nil {
-        fmt.Printf("ERROR %v\n", err)
+        fmt.Println("ERROR %v\n", err)
         return
     }
     for {
         _,remoteaddr,err := ser.ReadFromUDP(p)
         if err != nil {
-            fmt.Printf("ERROR %v\n", err)
+            fmt.Println("ERROR %v\n", err)
             return
         }
         go sendResponse(ser, remoteaddr, done)
@@ -77,8 +78,8 @@ func mainServer(done chan bool) {
 func sendResponse(conn *net.UDPConn, addr *net.UDPAddr, done chan bool) {
     _,err := conn.WriteToUDP([]byte("World"), addr)
     if err != nil {
-        fmt.Printf("ERROR SERVER: %v", err)
+        fmt.Println("ERROR SERVER: %v", err)
     }
-    fmt.Printf("Request received")
+    fmt.Println("Request received")
     done <- true
 }
