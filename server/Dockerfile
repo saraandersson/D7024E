@@ -1,5 +1,5 @@
 FROM golang:alpine
-EXPOSE 1234
+EXPOSE 1235
 WORKDIR /source
 COPY udpserver.go /source
 RUN go build udpserver.go

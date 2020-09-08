@@ -29,7 +29,6 @@ func main() {
         }
 
         connection, err := net.ListenUDP("udp4", s)
-        fmt.Printf("Hit kommer jag")
         if err != nil {
                 fmt.Println(err)
                 return
