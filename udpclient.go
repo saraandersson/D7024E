@@ -12,7 +12,7 @@ func main() {
     numberOfNodes := 3;
     for i := 0; i < numberOfNodes; i++ {
         fmt.Println("Enter for-loop")
-        go createNewNode()
+        createNewNode()
     }
 }
 
