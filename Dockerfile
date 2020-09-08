@@ -30,7 +30,7 @@ EXPOSE 8080
 WORKDIR /source
 COPY udpclient.go /source
 RUN go build udpclient.go
-CMD ./udpclient 0.0.0.0:8080
+CMD ./udpclient 127.0.0.1:8080
 
 
 
