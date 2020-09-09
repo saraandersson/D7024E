@@ -10,48 +10,47 @@ import (
 )
 
 func main() {
-        //address := os.Getenv("ADDRESS")
-        //port := os.Getenv("PORT")
-        done1 := make(chan bool)
-        done2 := make(chan bool)
-        go mainServer(8000, done1) 
+        address := os.Getenv("ADDRESS")
+        port := os.Getenv("PORT")
+        done := make(chan bool)
+        server, err := net.ResolveUDPAddr("udp", address)
+        i2, err1 := strconv.Atoi(port)
+        if err1 != nil {
+            go mainServer(i2, done) //Gör egen tråd
+        }
+        //go mainServer(8000, done) 
         <- time.After(10*time.Second)
-        go mainClient(8000, done2)
         
+        conn, err := net.DialUDP("udp", nil, server)
+        if err != nil {
+                fmt.Println(err)
+                return
+        }
+        fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
+        defer conn.Close()
+
+        for {
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Print("Type message here: ")
+                message, _ := reader.ReadString('\n')
+                data := []byte(message + "\n")
+                _, err = conn.Write(data)
+                if err != nil {
+                        fmt.Println(err)
+                        return
+                }
+
+                buffer := make([]byte, 1024)
+                n, _, err := conn.ReadFromUDP(buffer)
+                if err != nil {
+                        fmt.Println(err)
+                        return
+                }
+                fmt.Printf("Answer: %s\n", string(buffer[0:n]))
+                <-done
+        }
 }
 
-func mainClient(port int, done chan bool) {
-    server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
-    conn, err := net.DialUDP("udp", nil, server)
-    if err != nil {
-            fmt.Println(err)
-            return
-    }
-    fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
-    defer conn.Close()
-
-    for {
-            reader := bufio.NewReader(os.Stdin)
-            fmt.Print("Type message here: ")
-            message, _ := reader.ReadString('\n')
-            data := []byte(message + "\n")
-            _, err = conn.Write(data)
-            if err != nil {
-                    fmt.Println(err)
-                    return
-            }
-
-            buffer := make([]byte, 1024)
-            n, _, err := conn.ReadFromUDP(buffer)
-            if err != nil {
-                    fmt.Println(err)
-                    return
-            }
-            fmt.Printf("Answer: %s\n", string(buffer[0:n]))
-            <-done
-    }
-
-}
 
 
 func mainServer(port int, done chan bool) {
@@ -81,7 +80,6 @@ func mainServer(port int, done chan bool) {
             data := []byte(" world " + "\n")
             _, err = connection.WriteToUDP(data, addr)
             if err != nil {
-                    fmt.Println("feeeel")
                     fmt.Println(err)
                     return
             }
