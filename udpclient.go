@@ -50,6 +50,7 @@ func main() {
 
 func mainServer(port int, done chan bool) {
     //port_input := os.Getenv("PORT")
+    fmt.Println("inne i server")
     port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp", port2)
     if err != nil {
@@ -65,6 +66,7 @@ func mainServer(port int, done chan bool) {
     buffer := make([]byte, 1024)
 
     for {
+            fmt.Println("inne i for-loopen")
             n, addr, err := connection.ReadFromUDP(buffer)
             fmt.Print("Message: ", string(buffer[0:n-1]))
            // reader := bufio.NewReader(os.Stdin)
