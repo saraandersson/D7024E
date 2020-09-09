@@ -12,10 +12,11 @@ import (
 func main() {
         //address := os.Getenv("ADDRESS")
         //port := os.Getenv("PORT")
-        done := make(chan bool)
-        go mainServer(8000, done) 
+        done1 := make(chan bool)
+        done2 := make(chan bool)
+        go mainServer(8000, done1) 
         <- time.After(10*time.Second)
-        go mainClient(8000, done)
+        go mainClient(8000, done2)
         
 }
 
