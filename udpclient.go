@@ -26,7 +26,6 @@ func main() {
         defer conn.Close()
 
         for {
-                <-done
                 reader := bufio.NewReader(os.Stdin)
                 fmt.Print("Type message here: ")
                 message, _ := reader.ReadString('\n')
@@ -44,6 +43,7 @@ func main() {
                         return
                 }
                 fmt.Printf("Answer: %s\n", string(buffer[0:n]))
+                <-done
         }
 }
 
