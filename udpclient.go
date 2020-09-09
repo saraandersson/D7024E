@@ -12,15 +12,11 @@ import (
 func main() {
         address := os.Getenv("ADDRESS")
         port := os.Getenv("PORT")
-        done := make(chan bool)
-        i2, err1 := strconv.Atoi(port)
-        if err1 != nil {
-            go mainServer(i2, done) //Gör egen tråd
-        }
+        go mainServer(port) //Gör egen tråd
         //go mainServer(8000, done) 
-        <- time.After(10*time.Second)
-        server, err := net.ResolveUDPAddr("udp", address)
-        conn, err := net.DialUDP("udp", nil, server)
+        <- time.After(1*time.Second)
+        server, err := net.ResolveUDPAddr("udp4", address)
+        conn, err := net.DialUDP("udp4", nil, server)
         if err != nil {
                 fmt.Println(err)
                 return
@@ -46,22 +42,21 @@ func main() {
                         return
                 }
                 fmt.Printf("Answer: %s\n", string(buffer[0:n]))
-                <-done
         }
 }
 
 
 
-func mainServer(port int, done chan bool) {
+func mainServer(port string) {
     //port_input := os.Getenv("PORT")
     fmt.Println("inne i server")
-    port2 := ":" + strconv.Itoa(port)
-    s, err := net.ResolveUDPAddr("udp", port2)
+    port2 := ":" + port
+    s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
             fmt.Println(err)
             return
     }
-    connection, err := net.ListenUDP("udp", s)
+    connection, err := net.ListenUDP("udp4", s)
     if err != nil {
             fmt.Println(err)
             return
@@ -83,6 +78,5 @@ func mainServer(port int, done chan bool) {
                     return
             }
     }
-    done <- true
 }
       
