@@ -57,6 +57,7 @@ func mainClient(port int, done chan bool) {
 
 
 func mainServer(port int, done chan bool) {
+    fmt.Println("Inne i server")
     //port_input := os.Getenv("PORT")
     port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp", port2)
