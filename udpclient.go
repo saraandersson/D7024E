@@ -12,15 +12,14 @@ import (
 func main() {
         //address := os.Getenv("ADDRESS")
         //port := os.Getenv("PORT")
-        done := make(chan bool)
-        go mainServer(8000, done) 
+        go mainServer(8000) 
         fmt.Println("Server är igång")
         <- time.After(1*time.Second)
-        go mainClient(8000, done)
+        go mainClient(8000)
     
 }
 
-func mainClient(port int, done chan bool) {
+func mainClient(port int) {
     fmt.Println("Inne i client")
     server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
     conn, err := net.DialUDP("udp", nil, server)
@@ -50,13 +49,12 @@ func mainClient(port int, done chan bool) {
             }
             fmt.Printf("Answer: %s\n", string(buffer[0:n]))
     }
-    <-done
 
 }
 
 
 
-func mainServer(port int, done chan bool) {
+func mainServer(port int) {
     fmt.Println("Inne i server")
     //port_input := os.Getenv("PORT")
     port2 := ":" + strconv.Itoa(port)
@@ -86,6 +84,5 @@ func mainServer(port int, done chan bool) {
                     return
             }
     }
-    done <- true
 }
       
