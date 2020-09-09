@@ -75,6 +75,7 @@ func mainServer(port int, done chan bool) {
             data := []byte(" world " + "\n")
             _, err = connection.WriteToUDP(data, addr)
             if err != nil {
+                    fmt.Println("feeeel")
                     fmt.Println(err)
                     return
             }
