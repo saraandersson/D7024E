@@ -26,9 +26,9 @@ func main() {
 
         for {
                 reader := bufio.NewReader(os.Stdin)
-                fmt.Print("Type message here: ")
+                fmt.Printf("Type message here: ")
                 message, _ := reader.ReadString('\n')
-                data := []byte(message + "\n")
+                data := []byte(message)
                 _, err = conn.Write(data)
                 if err != nil {
                         fmt.Println(err)
