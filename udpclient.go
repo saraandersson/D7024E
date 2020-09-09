@@ -1,82 +1,114 @@
 package main
 
 import (
-        "bufio"
-        "fmt"
-        "net"
-        "os"
-        "time"
-        //"strconv"
+	"bytes"
+	"encoding/gob"
+	"fmt"
+	"net"
 )
 
+type Packet struct {
+	SourceIP, DestinationIP, ID, Response string
+	Content                               []byte
+}
+
 func main() {
-        address := os.Getenv("ADDRESS")
-        port := os.Getenv("PORT")
-        go mainServer(port) //Gör egen tråd
-        //go mainServer(8000, done) 
-        <- time.After(1*time.Second)
-        server, err := net.ResolveUDPAddr("udp4", address)
-        conn, err := net.DialUDP("udp4", nil, server)
-        if err != nil {
-                fmt.Println(err)
-                return
-        }
-        fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
-        defer conn.Close()
-
-        for {
-                reader := bufio.NewReader(os.Stdin)
-                fmt.Print("Type message here: ")
-                message, _ := reader.ReadString('\n')
-                data := []byte(message + "\n")
-                _, err = conn.Write(data)
-                if err != nil {
-                        fmt.Println(err)
-                        return
-                }
-
-                buffer := make([]byte, 1024)
-                n, _, err := conn.ReadFromUDP(buffer)
-                if err != nil {
-                        fmt.Println(err)
-                        return
-                }
-                fmt.Printf("Answer: %s\n", string(buffer[0:n]))
-        }
+	receive := make(chan Packet, 10)
+	send := make(chan Packet, 10)
+	go listen(receive, "3000")
+	go broadcast(send, "3000")
 }
 
+func broadcast(send chan CommData, localIP string, port string) {
+	fmt.Printf("COMM: Broadcasting message to: %s%s\n", broadcast_addr, port)
+	broadcastAddress, err := net.ResolveUDPAddr("udp", broadcast_addr+port)
+	printError("ResolvingUDPAddr in Broadcast failed.", err)
+	localAddress, err := net.ResolveUDPAddr("udp", GetLocalIP())
+	connection, err := net.DialUDP("udp", localAddress, broadcastAddress)
+	printError("DialUDP in Broadcast failed.", err)
 
+	localhostAddress, err := net.ResolveUDPAddr("udp", "localhost"+port)
+	printError("ResolvingUDPAddr in Broadcast localhost failed.", err)
+	lConnection, err := net.DialUDP("udp", localAddress, localhostAddress)
+	printError("DialUDP in Broadcast localhost failed.", err)
+	defer connection.Close()
 
-func mainServer(port string) {
-    //port_input := os.Getenv("PORT")
-    fmt.Println("inne i server")
-    port2 := ":" + port
-    s, err := net.ResolveUDPAddr("udp4", port2)
-    if err != nil {
-            fmt.Println(err)
-            return
-    }
-    connection, err := net.ListenUDP("udp4", s)
-    if err != nil {
-            fmt.Println(err)
-            return
-    }
-    defer connection.Close()
-    buffer := make([]byte, 1024)
-
-    for {
-            fmt.Println("inne i for-loopen")
-            n, addr, err := connection.ReadFromUDP(buffer)
-            fmt.Print("Message: ", string(buffer[0:n-1]))
-           // reader := bufio.NewReader(os.Stdin)
-           // fmt.Print("Type answer here: ")
-           // text, _ := reader.ReadString('\n')
-            data := []byte(" world " + "\n")
-            _, err = connection.WriteToUDP(data, addr)
-            if err != nil {
-                    fmt.Println(err)
-                    return
-            }
-    }
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	for {
+		message := <-send
+		err := encoder.Encode(message)
+		printError("Encode error in broadcast: ", err)
+		_, err = connection.Write(buffer.Bytes())
+		if err != nil {
+			_, err = lConnection.Write(buffer.Bytes())
+			printError("Write in broadcast localhost failed", err)
+		}
+		buffer.Reset()
+	}
 }
-      
+
+func listen(receive chan CommData, port string) {
+	localAddress, err := net.ResolveUDPAddr("udp", port)
+	connection, err := net.ListenUDP("udp", localAddress)
+	defer connection.Close()
+	var message CommData
+
+	for {
+		inputBytes := make([]byte, 4096)
+		length, _, err := connection.ReadFromUDP(inputBytes)
+		buffer := bytes.NewBuffer(inputBytes[:length])
+		decoder := gob.NewDecoder(buffer)
+		err = decoder.Decode(&message)
+		if message.Key == com_id {
+			receive <- message
+		}
+	}
+}
+
+func PrintMessage(data CommData) {
+	fmt.Printf("=== Data received ===\n")
+	fmt.Printf("Key: %s\n", data.Key)
+	fmt.Printf("SenderIP: %s\n", data.SenderIP)
+	fmt.Printf("ReceiverIP: %s\n", data.ReceiverIP)
+	fmt.Printf("Message ID: %s\n", data.MsgID)
+	fmt.Printf("= Data = \n")
+	fmt.Printf("Data type: %s\n", data.Response)
+	fmt.Printf("Content: %v\n", data.Content)
+}
+
+func printError(errMsg string, err error) {
+	if err != nil {
+		fmt.Println(errMsg)
+		fmt.Println(err.Error())
+	}
+}
+
+func GetLocalIP() string {
+	var localIP string
+	addr, err := net.InterfaceAddrs()
+	if err != nil {
+		fmt.Printf("GetLocalIP in communication failed")
+		return "localhost"
+	}
+	for _, val := range addr {
+		if ip, ok := val.(*net.IPNet); ok && !ip.IP.IsLoopback() {
+			if ip.IP.To4() != nil {
+				localIP = ip.IP.String()
+			}
+		}
+	}
+	return localIP
+}
+
+func ResolveMsg(senderIP string, receiverIP string, msgID string, response string, content map[string]interface{}) (commData *CommData) {
+	message := CommData{
+		Key:        com_id,
+		SenderIP:   senderIP,
+		ReceiverIP: receiverIP,
+		MsgID:      msgID,
+		Response:   response,
+		Content:    content,
+	}
+	return &message
+}
