@@ -48,7 +48,6 @@ func main() {
 
 func mainServer(port string) {
     //port_input := os.Getenv("PORT")
-    fmt.Println("inne i server")
     port2 := ":" + port
     s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
@@ -64,13 +63,12 @@ func mainServer(port string) {
     buffer := make([]byte, 1024)
 
     for {
-            fmt.Println("inne i for-loopen")
             n, addr, err := connection.ReadFromUDP(buffer)
             fmt.Print("Message: ", string(buffer[0:n-1]))
-           // reader := bufio.NewReader(os.Stdin)
-           // fmt.Print("Type answer here: ")
-           // text, _ := reader.ReadString('\n')
-            data := []byte(" world " + "\n")
+            reader := bufio.NewReader(os.Stdin)
+            fmt.Print("Type answer here: ")
+            text, _ := reader.ReadString('\n')
+            data := []byte(text + "\n")
             _, err = connection.WriteToUDP(data, addr)
             if err != nil {
                     fmt.Println(err)
