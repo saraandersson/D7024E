@@ -13,38 +13,43 @@ func main() {
         //address := os.Getenv("ADDRESS")
         //port := os.Getenv("PORT")
         done := make(chan bool)
-        server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
         go mainServer(8000, done) 
         <- time.After(10*time.Second)
+        go mainClient(8000, done)
         
-        conn, err := net.DialUDP("udp", nil, server)
-        if err != nil {
-                fmt.Println(err)
-                return
-        }
-        fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
-        defer conn.Close()
+}
 
-        for {
-                reader := bufio.NewReader(os.Stdin)
-                fmt.Print("Type message here: ")
-                message, _ := reader.ReadString('\n')
-                data := []byte(message + "\n")
-                _, err = conn.Write(data)
-                if err != nil {
-                        fmt.Println(err)
-                        return
-                }
+func mainClient(port int, done chan bool) {
+    server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
+    conn, err := net.DialUDP("udp", nil, server)
+    if err != nil {
+            fmt.Println(err)
+            return
+    }
+    fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
+    defer conn.Close()
 
-                buffer := make([]byte, 1024)
-                n, _, err := conn.ReadFromUDP(buffer)
-                if err != nil {
-                        fmt.Println(err)
-                        return
-                }
-                fmt.Printf("Answer: %s\n", string(buffer[0:n]))
-                <-done
-        }
+    for {
+            reader := bufio.NewReader(os.Stdin)
+            fmt.Print("Type message here: ")
+            message, _ := reader.ReadString('\n')
+            data := []byte(message + "\n")
+            _, err = conn.Write(data)
+            if err != nil {
+                    fmt.Println(err)
+                    return
+            }
+
+            buffer := make([]byte, 1024)
+            n, _, err := conn.ReadFromUDP(buffer)
+            if err != nil {
+                    fmt.Println(err)
+                    return
+            }
+            fmt.Printf("Answer: %s\n", string(buffer[0:n]))
+            <-done
+    }
+
 }
 
 
