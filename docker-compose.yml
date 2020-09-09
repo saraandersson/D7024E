@@ -29,5 +29,5 @@ services:
       - host
       
 networks:
-  host:
+  kademlia_network:
 
