@@ -14,12 +14,14 @@ func main() {
         //port := os.Getenv("PORT")
         done := make(chan bool)
         go mainServer(8000, done) 
+        fmt.Println("Server är igång")
         <- time.After(1*time.Second)
         go mainClient(8000, done)
     
 }
 
 func mainClient(port int, done chan bool) {
+    fmt.Println("Inne i client")
     server, err := net.ResolveUDPAddr("udp", "172.0.0.1:8000")
     conn, err := net.DialUDP("udp", nil, server)
     if err != nil {
@@ -30,7 +32,6 @@ func mainClient(port int, done chan bool) {
     defer conn.Close()
 
     for {
-            <-done
             reader := bufio.NewReader(os.Stdin)
             fmt.Print("Type message here: ")
             message, _ := reader.ReadString('\n')
@@ -49,6 +50,7 @@ func mainClient(port int, done chan bool) {
             }
             fmt.Printf("Answer: %s\n", string(buffer[0:n]))
     }
+    <-done
 
 }
 
