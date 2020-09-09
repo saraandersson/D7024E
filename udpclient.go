@@ -64,8 +64,8 @@ func mainServer(port string) {
 
     for {
             n, addr, err := connection.ReadFromUDP(buffer)
-            fmt.Println("Message: ", string(buffer[0:n-1]))
-            fmt.Println("Type message here: ")
+            fmt.Print("\n" + "Message: ", string(buffer[0:n-1]))
+            fmt.Print("Type message here: ")
             /*reader := bufio.NewReader(os.Stdin)
             fmt.Print("Type answer here: ")
             text, _ := reader.ReadString('\n')*/
