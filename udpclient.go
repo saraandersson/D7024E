@@ -78,7 +78,7 @@ func mainServer(port int, done chan bool) {
                     fmt.Println(err)
                     return
             }
-            done <- true
     }
+    done <- true
 }
       
