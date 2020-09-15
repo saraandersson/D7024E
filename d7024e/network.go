@@ -54,9 +54,6 @@ func (network *Network) SendPingMessage(contact *Contact) {
 	defer conn.Close()
 
 	for {
-			/*reader := bufio.NewReader(os.Stdin)
-			fmt.Printf("Type message here: ")
-			message, _ := reader.ReadString('\n')*/
 			data := []byte("Ping " + "\n")
 			_, err = conn.Write(data)
 			if err != nil {
@@ -90,4 +87,17 @@ func CreateNetwork(contact *Contact) Network {
 	network := Network{}
 	network.contact=contact
 	return network
+}
+
+func NodeLookup(k int, targetNodeId *KademliaID) {
+	contacts := FindClosestContacts(targetNodeId, k)
+	fmt.Println(contacts)
+	/*for i:=0; i<contact.length; i++ {
+		go FindNode(contacts[i].id)
+	}*/
+
+}
+
+func FindNode(id *KademliaID) Network {
+	
 }

@@ -18,5 +18,21 @@ func main() {
 	fmt.Println(id)
 	fmt.Println(contact)
 	network := d7024e.CreateNetwork(&contact)
-	network.SendPingMessage(&contact)
+	reader := bufio.NewReader(os.Stdin)
+    fmt.Print("Type operation here: ")
+	text, _ := reader.ReadString('\n')
+	if text == "ping" {
+		network.SendPingMessage(&contact)
+	}
+	if text == "join network" {
+
+	}
+	if text == "node lookup" {
+		fmt.Print("Enter targetNode id: ")
+		targetNode, _ := reader.ReadString('\n')
+		var targetNodeId d7024e.KademliaID
+		targetNodeId = targetNode
+		contacts := FindClosestContacts(targetNodeId, 1)
+		fmt.Println(contacts)
+	}
 }
