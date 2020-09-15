@@ -12,8 +12,8 @@ import "d7024e"
 
 func main() {
 	address := "127.0.0.1:1234"
-	id := d7024e.kademliaid.NewRandomKademliaID()
-	node := d7024e.contact.NewContact(id, address)
+	id := d7024e.NewRandomKademliaID()
+	node := d7024e.NewContact(id, address)
 
-	d7024e.network.SendPingMessage(node)
+	d7024e.SendPingMessage(node)
 }
