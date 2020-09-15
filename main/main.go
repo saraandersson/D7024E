@@ -1,10 +1,10 @@
 package main
 
 import (
-	//"bufio"
+	"bufio"
 	"fmt"
 	//"net"
-	//"os"
+	"os"
 	//"d7024e"
 )
 
@@ -32,7 +32,7 @@ func main() {
 		targetNode, _ := reader.ReadString('\n')
 		var targetNodeId d7024e.KademliaID
 		targetNodeId = targetNode
-		contacts := FindClosestContacts(targetNodeId, 1)
+		contacts := d7024e.FindClosestContacts(targetNodeId, 1)
 		fmt.Println(contacts)
 	}
 }
