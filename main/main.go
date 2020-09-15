@@ -18,7 +18,7 @@ func main() {
 	fmt.Println(id)
 	fmt.Println(contact)
 	network := d7024e.CreateNetwork(&contact)
-	routingTable := d7024e.NewRoutingTable(&contact)
+	routingTable := d7024e.NewRoutingTable(contact)
 	reader := bufio.NewReader(os.Stdin)
     fmt.Print("Type operation here: ")
 	text, _ := reader.ReadString('\n')
@@ -31,7 +31,7 @@ func main() {
 	if text == "node lookup" {
 		fmt.Print("Enter targetNode id: ")
 		targetNode, _ := reader.ReadString('\n')
-		var convertToKademliaId d7024e.KademliaID
+		var *convertToKademliaId d7024e.KademliaID
 		targetNodeId := convertToKademliaId.(targetNode)
 		contacts := routingTable.FindClosestContacts(targetNodeId, 1)
 		fmt.Println(contacts)
