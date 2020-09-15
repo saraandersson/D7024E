@@ -28,7 +28,7 @@ func (network *Network) SendStoreMessage(data []byte) {
 	// TODO
 }
 
-func (network *Network) createNetwork() {
+func (network *Network) CreateNetwork() {
 	network := Network{}
 	return network
 }
