@@ -11,7 +11,7 @@ import (
 import "d7024e"
 
 func main() {
-	var node d7024e.Contact
+	var node *d7024e.Contact
 	address := "127.0.0.1:1234"
 	id := d7024e.NewRandomKademliaID()
 	node = d7024e.NewContact(id, address)
