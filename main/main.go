@@ -1,12 +1,12 @@
 package main
 
-/*import (
+import (
 	//"bufio"
-	//"fmt"
+	"fmt"
 	//"net"
 	//"os"
 	//"d7024e"
-)*/
+)
 
 import "d7024e"
 
