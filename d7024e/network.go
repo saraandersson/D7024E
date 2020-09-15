@@ -13,6 +13,7 @@ func Listen(ip string, port int) {
 
 func (network *Network) SendPingMessage(contact *Contact) {
 	fmt.Println("Kommer till ping!")
+	return network
 	// TODO
 }
 

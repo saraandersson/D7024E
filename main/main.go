@@ -15,5 +15,5 @@ func main() {
 	id := d7024e.NewRandomKademliaID()
 	node := d7024e.NewContact(id, address)
 
-	d7024e.SendPingMessage(node)
+	test := d7024e.SendPingMessage(node)
 }
