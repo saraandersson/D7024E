@@ -27,3 +27,8 @@ func (network *Network) SendFindDataMessage(hash string) {
 func (network *Network) SendStoreMessage(data []byte) {
 	// TODO
 }
+
+func (network *Network) createNetwork() {
+	network := Network{}
+	return network
+}
