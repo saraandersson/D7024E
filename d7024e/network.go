@@ -96,6 +96,6 @@ func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
 
 }
 
-func FindNode(id *KademliaID) Network {
+/*func FindNode(id *KademliaID) Network {
 	
-}
+}*/
