@@ -1,5 +1,9 @@
 package d7024e
 
+import (
+	"fmt"
+)
+
 type Network struct {
 }
 
@@ -8,6 +12,7 @@ func Listen(ip string, port int) {
 }
 
 func (network *Network) SendPingMessage(contact *Contact) {
+	fmt.Println("Kommer till ping!")
 	// TODO
 }
 
