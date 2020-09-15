@@ -31,8 +31,8 @@ func main() {
 	if text == "node lookup" {
 		fmt.Print("Enter targetNode id: ")
 		targetNode, _ := reader.ReadString('\n')
-		var *convertToKademliaId d7024e.KademliaID
-		targetNodeId := convertToKademliaId.(targetNode)
+		//var convertToKademliaId d7024e.KademliaID
+		targetNodeId := []byte(targetNode)
 		contacts := routingTable.FindClosestContacts(targetNodeId, 1)
 		fmt.Println(contacts)
 	}
