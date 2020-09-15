@@ -5,7 +5,7 @@ import (
 	//"fmt"
 	//"net"
 	//"os"
-	"d7024e/d7024e"
+	"d7024e"
 )
 
 func main() {
