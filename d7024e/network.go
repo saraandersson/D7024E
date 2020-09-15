@@ -6,6 +6,7 @@ import (
 	"net"
 	//"os"
 	"time"
+	"strconv"
 )
 
 type Network struct {
@@ -13,7 +14,7 @@ type Network struct {
 }
 
 func Listen(ip string, port int) {
-	port2 := ":" + port
+	port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
             fmt.Println(err)
@@ -40,9 +41,9 @@ func Listen(ip string, port int) {
 
 func (network *Network) SendPingMessage(contact *Contact) {
 	fmt.Println("Kommer till ping!")
-	go Listen(contact.address, 1234) //Gör egen tråd
+	go Listen(contact.Address, 1234) //Gör egen tråd
 	<- time.After(1*time.Second)
-	server, err := net.ResolveUDPAddr("udp4", contact.address)
+	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 	if err != nil {
 			fmt.Println(err)
