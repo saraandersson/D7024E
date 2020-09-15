@@ -1,12 +1,14 @@
 package main
 
-import (
+/*import (
 	//"bufio"
 	//"fmt"
 	//"net"
 	//"os"
-	"d7024e"
-)
+	//"d7024e"
+)*/
+
+import "D7024E/d7024e"
 
 func main() {
 	address := "127.0.0.1:1234"
