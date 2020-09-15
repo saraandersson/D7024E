@@ -5,13 +5,13 @@ import (
 	//"fmt"
 	//"net"
 	//"os"
-	"kademlia"
+	"d7024e"
 )
 
 func main() {
 	address := "127.0.0.1:1234"
-	id := kademlia.kademliaid.NewRandomKademliaID()
-	node := kademlia.contact.NewContact(id, address)
+	id := d7024e.kademliaid.NewRandomKademliaID()
+	node := d7024e.contact.NewContact(id, address)
 
-	kademlia.network.SendPingMessage(node)
+	d7024e.network.SendPingMessage(node)
 }
