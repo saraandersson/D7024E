@@ -18,5 +18,5 @@ func main() {
 	fmt.Println(id)
 	fmt.Println(node)
 	network := d7024e.CreateNetwork()
-	go network.SendPingMessage(node)
+	go network.SendPingMessage(&node)
 }
