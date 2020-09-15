@@ -15,6 +15,7 @@ func main() {
 	id := d7024e.NewRandomKademliaID()
 	node := d7024e.NewContact(id, address)
 	fmt.Println(id)
+	fmt.Println(node)
 
 	//test := d7024e.SendPingMessage(node)
 }
