@@ -89,9 +89,7 @@ func CreateNetwork(contact *Contact) Network {
 	return network
 }
 
-func NodeLookup(k int, targetNodeId *KademliaID) {
-	contacts := FindClosestContacts(targetNodeId, k)
-	fmt.Println(contacts)
+func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
 	/*for i:=0; i<contact.length; i++ {
 		go FindNode(contacts[i].id)
 	}*/
