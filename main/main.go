@@ -19,9 +19,10 @@ func main() {
 	fmt.Println(contact)
 	network := d7024e.CreateNetwork(&contact)
 	routingTable := d7024e.NewRoutingTable(contact)
+	
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Type operation here: ")
 	for {
-		reader := bufio.NewReader(os.Stdin)
-    	fmt.Print("Type operation here: ")
 		text, _ := reader.ReadString('\n')
 		if text == "ping" {
 			network.SendPingMessage(&contact)
