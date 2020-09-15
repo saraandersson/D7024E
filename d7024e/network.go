@@ -30,5 +30,5 @@ func (network *Network) SendStoreMessage(data []byte) {
 
 func CreateNetwork() *Network {
 	network := Network{}
-	return network
+	return &network
 }
