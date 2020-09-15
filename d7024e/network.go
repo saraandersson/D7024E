@@ -29,7 +29,8 @@ func Listen(ip string, port int) {
     buffer := make([]byte, 1024)
 
     for {
-            n, addr, err := connection.ReadFromUDP(buffer)
+			n, addr, err := connection.ReadFromUDP(buffer)
+			fmt.Print("\n" + "Message: ", string(buffer[0:n-1]))
             data := []byte("Hello from " + ip + "\n")
             _, err = connection.WriteToUDP(data, addr)
             if err != nil {
