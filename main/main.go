@@ -13,10 +13,10 @@ import (
 
 //import "d7024e"
 
-const deafualtPort ="8000"
+const defaultPort ="8000"
 func main() {
 
-        var port = flag.String("port", deafualtPort,"specify port for the connections.")
+        var port = flag.String("port", defaultPort,"specify port for the connections.")
         var bootstrapIP = flag.String("bootstrap_ip", "kademlia_bootstrap_host","The bootstrap node IP address to join")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
         flag.Parse()
