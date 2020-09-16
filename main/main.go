@@ -1,18 +1,31 @@
 package main
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
+        "flag"
 	//"net"
-	"os"
+	//"os"
 	//"time"
-        "d7024e"
+        //"d7024e"
 	//"strconv"
 )
 
 //import "d7024e"
 
+const deafualtPort ="8000"
 func main() {
+
+        var port = flag.String("port", deafualtPort,"specify port for the connections.")
+        var bootstrapIP = flag.String("bootstrap_ip", "kademlia_bootstrap_host","The bootstrap node IP address to join")
+        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
+        flag.Parse()
+
+        fmt.Println("Bootstrap Address: "+ *bootstrapIP + ":" + *bootstrapPort)
+        fmt.Println("Node is listeneing to Port" + *port)
+
+        
+        /*
 	var contact d7024e.Contact
 	address := "127.0.0.1:1234"
 	id := d7024e.NewRandomKademliaID()
@@ -45,5 +58,6 @@ func main() {
 			//fmt.Println(contacts)
 		}
 	}
+        */
 }
 
