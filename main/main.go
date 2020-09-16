@@ -20,7 +20,7 @@ func main() {
 	fmt.Println(id)
 	fmt.Println(contact)
 	network := d7024e.CreateNetwork(&contact)
-	routingTable := d7024e.NewRoutingTable(contact)
+	//routingTable := d7024e.NewRoutingTable(contact)
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
