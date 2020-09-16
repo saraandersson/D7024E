@@ -19,7 +19,7 @@ func main() {
 	fmt.Println(contact)
 	network := d7024e.CreateNetwork(&contact)
 	routingTable := d7024e.NewRoutingTable(contact)
-	
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
 	for {
@@ -28,6 +28,10 @@ func main() {
 			network.SendPingMessage(&contact)
 		}
 		if text == "join network" {
+			//Questions: 
+			// How to use and create a bootstrap node?
+			// How to implement? 
+			// Why do we have the same kademliaid of all containers?
 
 		}
 		if text == "node lookup" {
