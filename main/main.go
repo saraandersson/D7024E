@@ -17,7 +17,7 @@ const defaultPort ="8000"
 func main() {
 
         var port = flag.String("port", defaultPort,"specify port for the connections.")
-        var bootstrapIP = flag.String("bootstrap_ip", "kademlia_bootstrap_host","The bootstrap node IP address to join")
+        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost","The bootstrap node IP address to join")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
         flag.Parse()
 
