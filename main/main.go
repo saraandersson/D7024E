@@ -22,7 +22,7 @@ func main() {
         flag.Parse()
 
         fmt.Println("Bootstrap Address: "+ *bootstrapIP + ":" + *bootstrapPort)
-        fmt.Println("Node is listeneing to Port" + *port)
+        fmt.Println("Node is listeneing to Port " + *port)
 
         
         
@@ -33,8 +33,10 @@ func main() {
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(contact, &bootstrapContact)
         fmt.Println(network)
-        //kademliaNetwork := d7024e.NewKademlia(&network)
-        //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
+        kademliaNetwork := d7024e.NewKademlia(&network)
+        lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
+        kademliaNetwork.LookupContact(&lookupContact)
+        network.Listen(*port)
         
 /*
 	reader := bufio.NewReader(os.Stdin)
