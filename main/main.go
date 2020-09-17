@@ -15,7 +15,7 @@ import (
 
 const defaultPort ="8000"
 func main() {
-
+        test:= make(chan bool)
         var port = flag.String("port", defaultPort,"specify port for the connections.")
         var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost","The bootstrap node IP address to join")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
@@ -37,7 +37,8 @@ func main() {
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         fmt.Println(kademliaNetwork)
         fmt.Println(lookupContact)
-        network.JoinNetwork(contact)
+        go network.JoinNetwork(contact, test)
+        <- test
         //kademliaNetwork.LookupContact(&lookupContact)
         //network.Listen(*port)
         

@@ -100,7 +100,7 @@ func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
 
 }
 
-func (network *Network) JoinNetwork(target Contact){
+func (network *Network) JoinNetwork(target Contact, test chan bool){
 	closestTargets := network.routingTable.FindClosestContacts(target.ID, 3)
 	fmt.Println("Här kommer listan:" )
 	fmt.Println(closestTargets)
@@ -110,6 +110,7 @@ func (network *Network) JoinNetwork(target Contact){
 	for i:=0; i < len(closestTargets);i++{
 		go targetNetwork.SendPingMessage(&closestTargets[i])
 	}
+	test <- true
 
 }
 
