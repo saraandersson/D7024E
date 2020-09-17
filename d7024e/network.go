@@ -105,7 +105,7 @@ func (network *Network) JoinNetwork(target Contact){
 	fmt.Println(closestTargets)
 	network.routingTable.AddContact(target)
 	targetNetwork := NewNetwork(target,&target)
-	targetNetwork.routingTable.AddContact(network.contact)
+	targetNetwork.routingTable.AddContact(*network.contact)
 	for i:=0; i < len(closestTargets);i++{
 		targetNetwork.SendPingMessage(&closestTargets[i])
 	}
