@@ -4,7 +4,7 @@ import (
 	//"bufio"
 	"fmt"
         "flag"
-	//"net"
+	"net"
 	"os"
 	//"time"
         "d7024e"
@@ -36,7 +36,8 @@ func main() {
         //kademliaNetwork := d7024e.NewKademlia(&network)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         containerHostname, _ := os.Hostname()
-        fmt.Println(containerHostname)
+        addrs, _ := net.LookupHost(containerHostname)
+        fmt.Println(addrs)
 /*
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
