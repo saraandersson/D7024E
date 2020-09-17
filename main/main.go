@@ -27,15 +27,13 @@ func main() {
         
         
 	var contact d7024e.Contact
-        address := "localhost:" + port
+        address := "localhost:" + *port
 	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-	fmt.Println(id)
-        fmt.Println(contact)
-        bootstrapAddress = bootstrapIp +":"+ bootstrapPort
+        bootstrapAddress = *bootstrapIp +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(contact, &bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network)
-        lookupContact := NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ port)
+        lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         containerHostname, err := os.Hostname()
         if err{
                 fmt.Println("error")
