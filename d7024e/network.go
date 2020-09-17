@@ -88,8 +88,8 @@ func (network *Network) SendStoreMessage(data []byte) {
 func NewNetwork(contact *Contact, bootstrapContact *Contact) Network {
 	network := Network{}
 	network.contact=contact
-	network.routingTable= NewRoutingTable(contact)
-	go network.SendPingMessage(&bootstrapContact)
+	network.routingTable= NewRoutingTable(&contact)
+	go network.SendPingMessage(bootstrapContact)
 	return network
 }
 
