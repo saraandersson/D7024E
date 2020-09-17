@@ -29,7 +29,7 @@ func main() {
 	var contact d7024e.Contact
         address := "localhost:" + *port
 	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        bootstrapAddress = *bootstrapIP +":"+ *bootstrapPort
+        bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(contact, &bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network)
