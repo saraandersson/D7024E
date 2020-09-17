@@ -29,15 +29,12 @@ func main() {
 	var contact d7024e.Contact
         address := "localhost:" + *port
 	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        bootstrapAddress = *bootstrapIp +":"+ *bootstrapPort
+        bootstrapAddress = *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(contact, &bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network)
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         containerHostname, err := os.Hostname()
-        if err{
-                fmt.Println("error")
-        }
         fmt.Println(containerHostname)
 /*
 	reader := bufio.NewReader(os.Stdin)
