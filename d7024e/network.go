@@ -89,6 +89,8 @@ func NewNetwork(contact Contact, bootstrapContact *Contact) Network {
 	network := Network{}
 	network.contact=&contact
 	network.routingTable= NewRoutingTable(contact)
+	fmt.Println("Här kommer routingTable för bootstrapnoden")
+	fmt.Println(network.routingTable)
 	go network.SendPingMessage(bootstrapContact)
 	return network
 }
@@ -105,6 +107,8 @@ func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTa
 	fmt.Println("Här kommer listan:" )
 	fmt.Println(closestTargets)
 	network.routingTable.AddContact(target)
+	fmt.Println("JoinNetwork routingtable: ")
+	fmt.Println(network.routingTable)
 	targetRoutingTable.AddContact(*network.contact)
 	for i:=0; i < len(closestTargets);i++{
 		go network.SendPingMessage(&closestTargets[i])
