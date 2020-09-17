@@ -36,7 +36,7 @@ func main() {
         kademliaNetwork := d7024e.NewKademlia(&network)
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         kademliaNetwork.LookupContact(&lookupContact)
-        network.Listen(*port)
+        //network.Listen(*port)
         
 /*
 	reader := bufio.NewReader(os.Stdin)
