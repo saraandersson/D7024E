@@ -1,7 +1,10 @@
 package d7024e
-import{
+
+import (
 	"fmt"
-}
+
+)
+
 type Kademlia struct {
 	network *Network
 }
