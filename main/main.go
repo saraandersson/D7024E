@@ -31,11 +31,14 @@ func main() {
 	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
-        network := d7024e.NewNetwork(contact, &bootstrapContact)
+        network := d7024e.NewNetwork(bootstrapContact, &bootstrapContact)
         fmt.Println(network)
         kademliaNetwork := d7024e.NewKademlia(&network)
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
-        kademliaNetwork.LookupContact(&lookupContact)
+        fmt.Println(kademliaNetwork)
+        fmt.Println(lookupContact)
+        network.JoinNetwork(&contact)
+        //kademliaNetwork.LookupContact(&lookupContact)
         //network.Listen(*port)
         
 /*

@@ -9,7 +9,7 @@ type Kademlia struct {
 	network *Network
 }
 
-func (kademlia *Kademlia) LookupContact(target *Contact) {
+func (kademlia *Kademlia) LookupContact(target *Contact) string{
 	// TODO
 	contacts := kademlia.network.routingTable.FindClosestContacts(target.ID, 2)
 	fmt.Println(contacts)
