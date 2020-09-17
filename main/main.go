@@ -27,7 +27,7 @@ func main() {
         
         
 	var contact d7024e.Contact
-        address := "localhost:" + *port
+        address := GetIPContainer() + *port
 	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
@@ -35,9 +35,7 @@ func main() {
         fmt.Println(network)
         //kademliaNetwork := d7024e.NewKademlia(&network)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
-        containerHostname, _ := os.Hostname()
-        addrs, _ := net.LookupHost(containerHostname)
-        fmt.Println(addrs)
+        
 /*
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
@@ -63,5 +61,12 @@ func main() {
 		}
 	}
         */
+}
+
+func GetIPContainer() string{
+        containerHostname, _ := os.Hostname()
+        addrs, _ := net.LookupHost(containerHostname)
+        fmt.Println("Container IP address: " + addrs)
+        return addrs
 }
 
