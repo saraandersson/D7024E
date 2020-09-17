@@ -11,6 +11,8 @@ import (
 
 type Network struct {
 	contact *Contact
+	routingTable *RoutingTable 
+	kademlia *Kademlia
 }
 
 func Listen(ip string, port int) {
@@ -83,9 +85,11 @@ func (network *Network) SendStoreMessage(data []byte) {
 	// TODO
 }
 
-func CreateNetwork(contact *Contact) Network {
+func NewNetwork(contact *Contact, bootstrapContact *Contact) Network {
 	network := Network{}
 	network.contact=contact
+	network.routingTable= NewRoutingTable(contact)
+	go network.SendPingMessage(&bootstrapContact)
 	return network
 }
 

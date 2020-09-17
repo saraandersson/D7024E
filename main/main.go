@@ -5,9 +5,9 @@ import (
 	"fmt"
         "flag"
 	//"net"
-	//"os"
+	"os"
 	//"time"
-        //"d7024e"
+        "d7024e"
 	//"strconv"
 )
 
@@ -25,16 +25,23 @@ func main() {
         fmt.Println("Node is listeneing to Port" + *port)
 
         
-        /*
+        
 	var contact d7024e.Contact
-	address := "127.0.0.1:1234"
-	id := d7024e.NewRandomKademliaID()
-	contact = d7024e.NewContact(id, address)
+        address := "localhost:" + port
+	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
 	fmt.Println(id)
-	fmt.Println(contact)
-	network := d7024e.CreateNetwork(&contact)
-	//routingTable := d7024e.NewRoutingTable(contact)
-
+        fmt.Println(contact)
+        bootstrapAddress = bootstrapIp +":"+ bootstrapPort
+        bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
+        network := d7024e.NewNetwork(&contact, &bootstrapContact)
+        kademliaNetwork := d7024e.NewKademlia(&network)
+        lookupContact := NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ port)
+        containerHostname, err := os.Hostname()
+        if err{
+                fmt.Println("error")
+        }
+        fmt.Println(containerHostname)
+/*
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
 	for {
