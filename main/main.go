@@ -34,7 +34,7 @@ func main() {
         network := d7024e.NewNetwork(contact, &bootstrapContact)
         //kademliaNetwork := d7024e.NewKademlia(&network)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
-        containerHostname := os.Hostname()
+        containerHostname, _ := os.Hostname()
         fmt.Println(containerHostname)
 /*
 	reader := bufio.NewReader(os.Stdin)
