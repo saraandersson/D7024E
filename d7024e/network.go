@@ -100,15 +100,14 @@ func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
 
 }
 
-func (network *Network) JoinNetwork(target Contact, test chan bool){
+func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTable, test chan bool){
 	closestTargets := network.routingTable.FindClosestContacts(target.ID, 3)
 	fmt.Println("Här kommer listan:" )
 	fmt.Println(closestTargets)
 	network.routingTable.AddContact(target)
-	targetNetwork := NewNetwork(target,&target)
-	targetNetwork.routingTable.AddContact(*network.contact)
+	targetRoutingTable.AddContact(*network.contact)
 	for i:=0; i < len(closestTargets);i++{
-		go targetNetwork.SendPingMessage(&closestTargets[i])
+		go network.SendPingMessage(&closestTargets[i])
 	}
 	test <- true
 

@@ -28,7 +28,8 @@ func main() {
         
 	var contact d7024e.Contact
         address := GetIPContainer() + *port
-	contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
+        contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
+        routingTable = d7024e.NewRoutingTable(contact)
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(bootstrapContact, &bootstrapContact)
@@ -37,7 +38,7 @@ func main() {
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         fmt.Println(kademliaNetwork)
         fmt.Println(lookupContact)
-        go network.JoinNetwork(contact, test)
+        go network.JoinNetwork(contact, routingTable, test)
         <- test
         //kademliaNetwork.LookupContact(&lookupContact)
         //network.Listen(*port)
