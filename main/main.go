@@ -33,7 +33,7 @@ func main() {
         fmt.Println(contact)
         bootstrapAddress = bootstrapIp +":"+ bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
-        network := d7024e.NewNetwork(&contact, &bootstrapContact)
+        network := d7024e.NewNetwork(contact, &bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network)
         lookupContact := NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ port)
         containerHostname, err := os.Hostname()
