@@ -66,7 +66,7 @@ func main() {
 func GetIPContainer() string{
         containerHostname, _ := os.Hostname()
         addrs, _ := net.LookupHost(containerHostname)
-        fmt.Println("Container IP address: " + addrs)
-        return addrs
+        fmt.Println("Container IP address: " + addrs[0])
+        return addrs[0]
 }
 
