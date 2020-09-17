@@ -37,7 +37,7 @@ func main() {
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         fmt.Println(kademliaNetwork)
         fmt.Println(lookupContact)
-        network.JoinNetwork(contact)
+        go network.JoinNetwork(contact)
         //kademliaNetwork.LookupContact(&lookupContact)
         //network.Listen(*port)
         
