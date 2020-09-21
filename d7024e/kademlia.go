@@ -2,6 +2,7 @@ package d7024e
 
 import (
 	"fmt"
+	"time"
 
 )
 
@@ -18,10 +19,10 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	// TODO
 	donePing := make(chan bool)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8001"))
-	go d7024e.Listen("localhost:8001", 8001)
+	go Listen("localhost:8001", 8001)
 	<- time.After(1*time.Second)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002"))
-	go d7024e.Listen("localhost:8002", 8002)
+	go Listen("localhost:8002", 8002)
 	<- time.After(1*time.Second)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002"))
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002"))
