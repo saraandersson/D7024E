@@ -43,7 +43,7 @@ func main() {
         routingTableContact.AddContact(bootstrapContact)
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
         fmt.Println("Här kommer listan:" )
-        kademliaNetwork.LookupContact(contact)
+        kademliaNetwork.LookupContact(&contact)
 
         //fmt.Println(closestTargets)
 
