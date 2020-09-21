@@ -27,7 +27,7 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	<- doneAdd2
 	for i:=0; i<len(contacts); i++ {
 		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
-		targetRoutingTable.AddContact(contacts[i])
+		//targetRoutingTable.AddContact(contacts[i],)
 		fmt.Println("Sara")
 		<- donePing
 	}
