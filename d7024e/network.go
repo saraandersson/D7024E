@@ -104,7 +104,7 @@ func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
 
 }
 
-func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTable, test chan bool){
+/*func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTable, test chan bool){
 	
 	targetRoutingTable.AddContact(*network.contact)
 	closestTargets := network.routingTable.FindClosestContacts(target.ID, 3)
@@ -125,9 +125,9 @@ func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTa
 	for i:=0; i < len(closestTargets);i++{
 		go network.SendPingMessage(&closestTargets[i])
 	}
-	test <- true*/
+	test <- true
 
-}
+}*/
 
 /*func FindNode(id *KademliaID) Network {
 	
