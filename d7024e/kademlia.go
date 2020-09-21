@@ -17,10 +17,14 @@ type Kademlia struct {
 func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
 	donePing := make(chan bool)
-	kademlia.routingTable.AddContact(*target)
+	doneAdd1 := make(chan bool)
+	doneAdd2 := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
-	targetRoutingTable.AddContact(*kademlia.contact)
+	kademlia.routingTable.AddContact(*target, doneAdd1)
+	<- doneAdd1
+	targetRoutingTable.AddContact(*kademlia.contact, doneAdd2)
 	fmt.Println(contacts)
+	<- doneAdd2
 	for i:=0; i<len(contacts); i++ {
 		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
 		targetRoutingTable.AddContact(contacts[i])
