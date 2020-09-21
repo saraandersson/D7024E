@@ -31,7 +31,7 @@ func main() {
         address := GetIPContainer() + ":" + *port
         fmt.Println("addressen for noden: ")
         fmt.Println(address)
-        contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
+        contact = d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
         routingTableContact := d7024e.NewRoutingTable(contact)
 
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort

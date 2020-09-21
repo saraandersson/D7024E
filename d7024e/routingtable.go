@@ -21,11 +21,10 @@ func NewRoutingTable(me Contact) *RoutingTable {
 }
 
 // AddContact add a new contact to the correct Bucket
-func (routingTable *RoutingTable) AddContact(contact Contact, done chan bool) {
+func (routingTable *RoutingTable) AddContact(contact Contact) {
 	bucketIndex := routingTable.getBucketIndex(contact.ID)
 	bucket := routingTable.buckets[bucketIndex]
 	bucket.AddContact(contact)
-	done <- true
 }
 
 // FindClosestContacts finds the count closest Contacts to the target in the RoutingTable
