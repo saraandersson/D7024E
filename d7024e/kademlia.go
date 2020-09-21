@@ -17,8 +17,8 @@ type Kademlia struct {
 func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
 	donePing := make(chan bool)
+	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
 	kademlia.routingTable.AddContact(*target)
-	contacts := kademlia.routingTable.FindClosestContacts(target.ID, 2)
 	fmt.Println(contacts)
 	for i:=0; i<len(contacts); i++ {
 		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
