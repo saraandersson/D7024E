@@ -42,7 +42,7 @@ func Listen(ip string, port int) {
     }
 }
 
-func (network *Network) SendPingMessage(contact *Contact) {
+func (network *Network) SendPingMessage(contact *Contact, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
 	go Listen(contact.Address, 1234) //Gör egen tråd
 	<- time.After(1*time.Second)
@@ -71,6 +71,7 @@ func (network *Network) SendPingMessage(contact *Contact) {
 			}
 			fmt.Printf("Answer: %s", string(buffer[0:n]))
 	}
+	donePing <- true
 }
 
 func (network *Network) SendFindContactMessage(contact *Contact) {
@@ -86,10 +87,12 @@ func (network *Network) SendStoreMessage(data []byte) {
 }
 
 func NewNetwork(contact Contact, bootstrapContact *Contact) Network {
+	sendPing := make(chan bool)
 	network := Network{}
 	network.contact=&contact
 	network.routingTable= NewRoutingTable(contact)
-	go network.SendPingMessage(bootstrapContact)
+	go network.SendPingMessage(bootstrapContact, sendPing)
+	<- sendPing
 	return network
 }
 
