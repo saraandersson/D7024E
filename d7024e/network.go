@@ -31,7 +31,7 @@ func Listen(ip string, port int) {
     defer connection.Close()
     buffer := make([]byte, 1024)
 
-    for {
+    //for {
 			n, addr, err := connection.ReadFromUDP(buffer)
 			fmt.Print("\n" + "Message: ", string(buffer[0:n-1]))
             data := []byte("Hello from " + ip + "\n")
@@ -39,7 +39,7 @@ func Listen(ip string, port int) {
             if err != nil {
                     fmt.Println(err)
                     return
-            }
+           // }
     }
 }
 
@@ -56,7 +56,7 @@ func (network *Network) SendPingMessage(contact *Contact, port int, donePing cha
 	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
 	defer conn.Close()
 
-	for {
+	//for {
 			data := []byte("Ping " + "\n")
 			_, err = conn.Write(data)
 			if err != nil {
@@ -71,7 +71,7 @@ func (network *Network) SendPingMessage(contact *Contact, port int, donePing cha
 					return
 			}
 			fmt.Printf("Answer: %s", string(buffer[0:n]))
-	}
+	//}
 	donePing <- true
 }
 
