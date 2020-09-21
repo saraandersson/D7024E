@@ -21,10 +21,11 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, 2)
 	fmt.Println(contacts)
 	for i:=0; i<len(contacts); i++ {
-		fmt.Println(contacts[i])
 		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
-		<- donePing
-		targetRoutingTable.AddContact(contacts[i])
+		if (donePing) {
+			fmt.Println("Sara")
+			targetRoutingTable.AddContact(contacts[i])
+		}
 	}
 	kademlia.done <- true
 
