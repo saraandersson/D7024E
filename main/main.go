@@ -6,7 +6,7 @@ import (
         "flag"
 	"net"
 	"os"
-	//"time"
+	"time"
         "d7024e"
 	"strconv"
 )
@@ -17,33 +17,24 @@ const defaultPort ="8000"
 
 func main() {
         done := make(chan bool)
-        var port = flag.String("port", defaultPort,"specify port for the connections.")
-        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost","The bootstrap node IP address to join")
-        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
+        var port = flag.String("port", defaultPort,"")
+        var bootstrapIP = flag.String("bootstrap_ip", "")
+        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "")
         flag.Parse()
-
-        fmt.Println("Bootstrap Address: "+ *bootstrapIP + ":" + *bootstrapPort)
-        fmt.Println("Node is listeneing to Port " + *port)
-
-        
-        
+        /*Create contact*/
 	var contact d7024e.Contact
         address := GetIPContainer() + ":" + *port
         fmt.Println("addressen for noden: ")
         fmt.Println(address)
-        contact = d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
+        contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
         routingTableContact := d7024e.NewRoutingTable(contact)
-
+        /*create network and kademlianetwork*/        
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(bootstrapContact, &bootstrapContact)
         bootstrapRoutingTable := d7024e.NewRoutingTable(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3, done)
-       // go d7024e.Listen(address, 8080)
-        //<- time.After(1*time.Second)
-        //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
-        //kademliaNetwork.routingTable.AddContact(bootstrapContact)
-        //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
+        /*Call on LookUpContact*/
         i, _ := strconv.Atoi(*port)
         go kademliaNetwork.LookupContact(&contact, routingTableContact, i)
         fmt.Println("Här kommer listan:" )
