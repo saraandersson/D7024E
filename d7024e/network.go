@@ -16,6 +16,7 @@ type Network struct {
 }
 
 func Listen(ip string, port int) {
+	fmt.Println("kommer till listen")
 	port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
@@ -42,9 +43,9 @@ func Listen(ip string, port int) {
     }
 }
 
-func (network *Network) SendPingMessage(contact *Contact, donePing chan bool) {
+func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
-	go Listen(contact.Address, 1234) //Gör egen tråd
+	go Listen(contact.Address, port) //Gör egen tråd
 	<- time.After(1*time.Second)
 	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
@@ -87,12 +88,12 @@ func (network *Network) SendStoreMessage(data []byte) {
 }
 
 func NewNetwork(contact Contact, bootstrapContact *Contact) Network {
-	sendPing := make(chan bool)
+	//sendPing := make(chan bool)
 	network := Network{}
 	network.contact=&contact
 	network.routingTable= NewRoutingTable(contact)
-	go network.SendPingMessage(bootstrapContact, sendPing)
-	<- sendPing
+	//go network.SendPingMessage(bootstrapContact, sendPing)
+	//<- sendPing
 	return network
 }
 

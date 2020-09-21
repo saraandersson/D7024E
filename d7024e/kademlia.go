@@ -14,7 +14,7 @@ type Kademlia struct {
 	done 			chan bool
 }
 
-func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable){
+func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
 	donePing := make(chan bool)
 	kademlia.routingTable.AddContact(*target)
@@ -22,7 +22,7 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	fmt.Println(contacts)
 	for i:=0; i<len(contacts); i++ {
 		fmt.Println(contacts[i])
-		go kademlia.network.SendPingMessage(&contacts[i], donePing)
+		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
 		<- donePing
 		targetRoutingTable.AddContact(contacts[i])
 	}
