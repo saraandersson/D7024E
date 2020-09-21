@@ -40,7 +40,7 @@ func main() {
         bootstrapRoutingTable := d7024e.NewRoutingTable(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3, done)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
-        routingTableContact.AddContact(bootstrapContact)
+        kademliaNetwork.routingTable.AddContact(bootstrapContact)
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
         i, _ := strconv.Atoi(*port)
         go kademliaNetwork.LookupContact(&contact, routingTableContact, i)
