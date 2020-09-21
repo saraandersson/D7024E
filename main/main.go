@@ -40,8 +40,13 @@ func main() {
         lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         fmt.Println(kademliaNetwork)
         fmt.Println(lookupContact)
-        go network.JoinNetwork(contact, *routingTable, test)
-        <- test
+        routingTable.AddContact(bootstrapContact)
+        closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
+        fmt.Println("Här kommer listan:" )
+        fmt.Println(closestTargets)
+
+        /*go network.JoinNetwork(contact, *routingTable, test)
+        <- test*/
         //kademliaNetwork.LookupContact(&lookupContact)
         //network.Listen(*port)
         
