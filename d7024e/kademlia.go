@@ -16,9 +16,13 @@ type Kademlia struct {
 
 func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
-	//donePing := make(chan bool)
+	donePing := make(chan bool)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8001"))
+	go d7024e.Listen("localhost:8001", 8001)
+	<- time.After(1*time.Second)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002"))
+	go d7024e.Listen("localhost:8002", 8002)
+	<- time.After(1*time.Second)
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002"))
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002"))
 	kademlia.routingTable.AddContact(NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002"))
@@ -28,10 +32,10 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	//targetRoutingTable.AddContact(*kademlia.contact)
 	fmt.Println(contacts)
 	for i:=0; i<len(contacts); i++ {
-		//go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
-		//targetRoutingTable.AddContact(contacts[i],)
-		//fmt.Println("Sara")
-		//<- donePing
+		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
+		targetRoutingTable.AddContact(contacts[i])
+		fmt.Println("Ping message sent in LookUpContact")
+		<- donePing
 	}
 	kademlia.done <- true
 
