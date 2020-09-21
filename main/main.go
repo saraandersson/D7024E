@@ -41,7 +41,7 @@ func main() {
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
         go kademliaNetwork.LookupContact(&contact)
         fmt.Println("Här kommer listan:" )
-        <- kademliaNetwork.done
+        <- done
 
         //fmt.Println(closestTargets)
 
