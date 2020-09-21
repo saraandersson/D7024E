@@ -6,7 +6,7 @@ import (
         "flag"
 	"net"
 	"os"
-	//"time"
+	"time"
         "d7024e"
 	"strconv"
 )
@@ -40,6 +40,7 @@ func main() {
         bootstrapRoutingTable := d7024e.NewRoutingTable(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3, done)
         d7024e.Listen(address, 8080)
+        <- time.After(1*time.Second)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         //kademliaNetwork.routingTable.AddContact(bootstrapContact)
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
