@@ -110,7 +110,7 @@ func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTa
 	fmt.Println("Här kommer listan:" )
 	fmt.Println(closestTargets)
 	for i:=0; i < len(closestTargets);i++{
-		go network.SendPingMessage(&closestTargets[i])
+		go network.SendPingMessage(&closestTargets[i], test)
 	}
 	test <- true
 
