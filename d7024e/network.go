@@ -89,8 +89,6 @@ func NewNetwork(contact Contact, bootstrapContact *Contact) Network {
 	network := Network{}
 	network.contact=&contact
 	network.routingTable= NewRoutingTable(contact)
-	fmt.Println("Här kommer routingTable för bootstrapnoden")
-	fmt.Println(network.routingTable)
 	go network.SendPingMessage(bootstrapContact)
 	return network
 }

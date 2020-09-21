@@ -15,7 +15,7 @@ import (
 
 const defaultPort ="8000"
 func main() {
-        //test:= make(chan bool)
+        done := make(chan bool)
         var port = flag.String("port", defaultPort,"specify port for the connections.")
         var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost","The bootstrap node IP address to join")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "The port of bootstrap node")
@@ -35,12 +35,13 @@ func main() {
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(bootstrapContact, &bootstrapContact)
         bootstrapRoutingTable := d7024e.NewRoutingTable(bootstrapContact)
-        kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3)
+        kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3, done)
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         routingTableContact.AddContact(bootstrapContact)
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
-        fmt.Println("Här kommer listan:" )
         go kademliaNetwork.LookupContact(&contact)
+        fmt.Println("Här kommer listan:" )
+        <- kademliaNetwork.done
 
         //fmt.Println(closestTargets)
 
