@@ -29,9 +29,9 @@ func main() {
 	var contact d7024e.Contact
         address := GetIPContainer() + *port
         contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        routingTable := d7024e.NewRoutingTable(contact)
+        routingTableContact := d7024e.NewRoutingTable(contact)
         fmt.Println("Här kommer routingTable för kademlianoden")
-        fmt.Println(routingTable)
+        fmt.Println(routingTableContact)
         bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
         bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
         network := d7024e.NewNetwork(bootstrapContact, &bootstrapContact)
