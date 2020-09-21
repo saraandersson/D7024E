@@ -28,7 +28,7 @@ func main() {
         
         
 	var contact d7024e.Contact
-        address := GetIPContainer() + *port
+        address := GetIPContainer() + ":" + *port
         fmt.Println("addressen for noden: ")
         fmt.Println(address)
         contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
