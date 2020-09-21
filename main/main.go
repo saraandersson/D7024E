@@ -14,6 +14,7 @@ import (
 //import "d7024e"
 
 const defaultPort ="8000"
+const defaultPortInt = 8000
 func main() {
         done := make(chan bool)
         var port = flag.String("port", defaultPort,"specify port for the connections.")
@@ -39,7 +40,7 @@ func main() {
         //lookupContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), "0.0.0.0:"+ *port)
         routingTableContact.AddContact(bootstrapContact)
         //closestTargets := network.routingTable.FindClosestContacts(contact.ID, 3)
-        go kademliaNetwork.LookupContact(&contact, routingTableContact, defaultPort)
+        go kademliaNetwork.LookupContact(&contact, routingTableContact, defaultPortInt)
         fmt.Println("Här kommer listan:" )
         <- done
 
