@@ -6,12 +6,17 @@ import (
 )
 
 type Kademlia struct {
-	network *Network
+	network 		*Network
+	contact 		*Contact
+	routingTable 	*RoutingTable
+	k 				int
+	alpha			int
 }
 
 func (kademlia *Kademlia) LookupContact(target *Contact){
 	// TODO
-	contacts := kademlia.network.routingTable.FindClosestContacts(target.ID, 2)
+	kademlia.routingTable.AddContact(*target)
+	contacts := kademlia.routingTable.FindClosestContacts(target.ID, 2)
 	fmt.Println(contacts)
 	/*for i=0;i<len(contacts);i++{
 
@@ -27,8 +32,12 @@ func (kademlia *Kademlia) Store(data []byte) {
 	// TODO
 }
 
-func NewKademlia(network *Network) Kademlia{
+func NewKademlia(network *Network, contact *Contact, routingTable *RoutingTable, k int, alpha int) Kademlia{
 	kademlia := Kademlia{}
 	kademlia.network=network
+	kademlia.contact = contact
+	kademlia.routingTable = routingTable
+	kademlia.k = k
+	kademlia.alpha = alpha
 	return kademlia
 }
