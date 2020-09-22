@@ -37,7 +37,7 @@ func main() {
         /*Call on LookUpContact*/
         i, _ := strconv.Atoi(*port)
         go kademliaNetwork.LookupContact(&contact, routingTableContact, i)
-        network.Listen(address, *port)
+        network.Listen(address, i)
         fmt.Println("Här kommer listan:")
         <- done
 
