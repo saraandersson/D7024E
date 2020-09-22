@@ -6,7 +6,7 @@ import (
         "flag"
 	"net"
 	"os"
-	//"time"
+	"time"
         "d7024e"
 	"strconv"
 )
@@ -37,8 +37,8 @@ func main() {
         /*Call on LookUpContact*/
         i, _ := strconv.Atoi(*port)
         go kademliaNetwork.LookupContact(&contact, routingTableContact, i)
-        //network.Listen(address, i)
-       // <- time.After(1*time.Second)
+        network.Listen(address, i)
+        <- time.After(1*time.Second)
         fmt.Println("Här kommer listan:")
         <- done
 
