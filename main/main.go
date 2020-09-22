@@ -18,7 +18,7 @@ const defaultPort ="8000"
 func main() {
         done := make(chan bool)
         var port = flag.String("port", defaultPort,"Test")
-        var bootstrapIP = flag.String("bootstrap_ip", "Test")
+        var bootstrapIP = flag.String("bootstrap_ip", "test", "Test")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
         flag.Parse()
         /*Create contact*/
