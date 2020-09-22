@@ -5,7 +5,7 @@ import (
 	//"bufio"
 	"net"
 	//"os"
-	//"time"
+	"time"
 	"strconv"
 )
 
@@ -42,7 +42,7 @@ func (network *Network) Listen(ip string, port int) {
 
 func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
-	go Listen(contact.Address, port) //Gör egen tråd
+	go network.Listen(contact.Address, port) //Gör egen tråd
 	<- time.After(1*time.Second)
 	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
