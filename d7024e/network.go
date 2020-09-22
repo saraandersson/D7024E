@@ -15,7 +15,7 @@ type Network struct {
 	kademlia *Kademlia
 }
 
-func Listen(ip string, port int) {
+func (network *Network) Listen(ip string, port int) {
 	fmt.Println("kommer till listen")
 	port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp4", port2)
@@ -81,7 +81,7 @@ func (network *Network) SendStoreMessage(data []byte) {
 	// TODO
 }
 
-func NewNetwork(contact Contact, bootstrapContact *Contact) Network {
+func NewNetwork(contact Contact) Network {
 	//sendPing := make(chan bool)
 	network := Network{}
 	network.contact=&contact
