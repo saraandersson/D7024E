@@ -6,7 +6,7 @@ import (
         "flag"
 	"net"
 	"os"
-	"time"
+	//"time"
         "d7024e"
 	"strconv"
 )
@@ -17,9 +17,9 @@ const defaultPort ="8000"
 
 func main() {
         done := make(chan bool)
-        var port = flag.String("port", defaultPort,"")
-        var bootstrapIP = flag.String("bootstrap_ip", "")
-        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "")
+        var port = flag.String("port", defaultPort,"Test")
+        var bootstrapIP = flag.String("bootstrap_ip", "Test")
+        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
         flag.Parse()
         /*Create contact*/
 	var contact d7024e.Contact
