@@ -14,11 +14,11 @@ type Kademlia struct {
 	done 			chan bool
 }
 
-func (kademlia *Kademlia) LookupContact(targetRoutingTable *RoutingTable, port int){
+func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
 	donePing := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
-	kademlia.routingTable.AddContact(*targetRoutingTable.me)
+	kademlia.routingTable.AddContact(*target)
 	targetRoutingTable.AddContact(*kademlia.contact)
 	fmt.Println(contacts)
 	for i:=0; i<len(contacts); i++ {
