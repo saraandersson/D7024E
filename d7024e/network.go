@@ -34,7 +34,7 @@ func NewFile(key *KademliaID, data []byte, contact *Contact) File{
 }
 
 func (network *Network) StoreDataOnNode(file File) {
-	network.fileList.Append(&file)
+	network.fileList = append(network.fileList, &file)
 	fmt.Println("file-listan")
 	fmt.Println(network.fileList)
 }
