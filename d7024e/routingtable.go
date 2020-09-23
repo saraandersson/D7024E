@@ -27,6 +27,7 @@ func (routingTable *RoutingTable) AddContact(contact Contact) {
 	bucket.AddContact(contact)
 }
 
+/*Find_node*/
 // FindClosestContacts finds the count closest Contacts to the target in the RoutingTable
 func (routingTable *RoutingTable) FindClosestContacts(target *KademliaID, count int) []Contact {
 	var candidates ContactCandidates

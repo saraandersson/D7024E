@@ -14,6 +14,7 @@ type Kademlia struct {
 	done 			chan bool
 }
 
+/*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
 	donePing := make(chan bool)
