@@ -13,7 +13,7 @@ type Network struct {
 	contact 		*Contact
 	routingTable 	*RoutingTable 
 	kademlia 		*Kademlia
-	fileList 		[]*File
+	fileList 		[]File
 }
 
 type File struct {
@@ -34,7 +34,7 @@ func NewFile(key *KademliaID, data []byte, contact *Contact) File{
 }
 
 func (network *Network) StoreDataOnNode(file File) {
-	network.fileList = append(network.fileList, &file)
+	network.fileList = append(network.fileList, file)
 	fmt.Println("file-listan")
 	fmt.Println(network.fileList)
 }
