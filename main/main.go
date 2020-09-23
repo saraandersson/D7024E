@@ -87,7 +87,7 @@ func main() {
 
         /*Command line interface*/
 
-
+        reader := bufio.NewReader(os.Stdin)
 	for {
                 fmt.Println("Enter command: ")
 		Input, _ := reader.ReadString('\n')
