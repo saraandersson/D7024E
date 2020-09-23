@@ -54,7 +54,7 @@ func (kademlia *Kademlia) Store(data []byte) {
 	fmt.Println("Närmsta k noderna:")
 	fmt.Println(clostestK)
 	for i:=0; i<len(clostestK); i++ {
-		file := NewFile(fileKey, data, &clostestK[i])
+		file := NewFile(fileKey, data, clostestK[i])
 		kademlia.network.StoreDataOnNode(file)
 	}
 

@@ -17,13 +17,13 @@ type Network struct {
 }
 
 type File struct {
-	key 		*KademliaID
+	key 		KademliaID
 	data 		[]byte
-	contact 	*Contact
+	contact 	Contact
 }
 
 
-func NewFile(key *KademliaID, data []byte, contact *Contact) File{
+func NewFile(key KademliaID, data []byte, contact Contact) File{
 	file := File{}
 	file.key = key
 	file.data = data
