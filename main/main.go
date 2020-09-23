@@ -9,7 +9,7 @@ import (
 	//"time"
         "d7024e"
         //"strconv"
-       // "strings"
+        "strings"
 )
 
 //import "d7024e"
