@@ -89,8 +89,8 @@ func main() {
         reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Type operation here: ")
 	for {
-		text, _ := reader.ReadString('\n')
-		if text == "store" {
+                text, _ := reader.ReadString('\n')
+		if text.TrimRight(input, "\n") == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
                 }
