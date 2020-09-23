@@ -87,8 +87,8 @@ func main() {
 
         /*Command line interface*/
 
-	fmt.Print("Type operation here: ")
 	for {
+                fmt.Print("Type operation here: ")
                 reader := bufio.NewReader(os.Stdin)
                 text, _ := reader.ReadString('\n')
                 words := strings.Fields(text)
