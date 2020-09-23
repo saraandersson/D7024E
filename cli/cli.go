@@ -16,6 +16,7 @@ func main() {
   for {
     fmt.Print("-> ")
 	text, _ := reader.ReadString('\n')
+	text = strings.TrimRight(text, "\n")
 	fmt.Println(text)
 	// convert CRLF to LF
 	
