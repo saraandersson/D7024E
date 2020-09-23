@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"bufio"
+	"bufio"
 	"fmt"
         //"flag"
 	"net"
@@ -82,6 +82,20 @@ func main() {
         kademliaNetwork.LookupContact(&contact4, rtContact4, 8002)
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
+
+
+        /*Command line interface*/
+
+        reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Type operation here: ")
+	for {
+		text, _ := reader.ReadString('\n')
+		if text == "store" {
+                        fmt.Println("Enter object you want to store: ")
+                        
+                }
+        }
+
        /**/
        
         //fmt.Println("Här kommer listan:")

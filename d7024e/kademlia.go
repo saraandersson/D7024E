@@ -28,8 +28,10 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	} else {
 		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
+	/*Network joining*/
 	kademlia.routingTable.AddContact(*target)
 	targetRoutingTable.AddContact(*kademlia.contact)
+	/*Start for node lookup*/
 	fmt.Println(addAlphaContacts)
 	for i:=0; i<len(addAlphaContacts); i++ {
 		go kademlia.network.SendPingMessage(&addAlphaContacts[i], port, donePing)
@@ -38,7 +40,6 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 		<- donePing
 	}
 	//kademlia.done <- true
-
 }
 
 func (kademlia *Kademlia) LookupData(hash string) {
