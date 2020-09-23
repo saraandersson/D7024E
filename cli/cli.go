@@ -36,7 +36,7 @@ func main() {
 			rt.AddContact(d7024e.NewContact(d7024e.NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002"))
 			rt.AddContact(d7024e.NewContact(d7024e.NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002"))
 			network := d7024e.NewNetwork(bootstrapContact)
-        	kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
+        	kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rt, 20, 3, done)
 			kademliaNetwork.Store(sendData)
 		case "find":
 			fmt.Println("enter find")
