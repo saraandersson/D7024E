@@ -86,14 +86,14 @@ func main() {
 
 
         /*Command line interface*/
-        fmt.Print("Type operation here: ")
-        reader := bufio.NewReader(os.Stdin)
+
 
 	for {
-                text, _ := reader.ReadString('\n')
-                text = strings.Replace(text, "\n", "", -1)
-		split := strings.Split(text, " ")
-		switch split[0] {
+                fmt.Println("Enter command: ")
+		Input, _ := reader.ReadString('\n')
+		fmt.Scanln(Input)
+		input := strings.TrimSpace(Input)
+		switch input {
                         case "store":
                                 fmt.Print("Enter object you want to store: ")
                                 break
