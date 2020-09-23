@@ -27,7 +27,7 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 		fmt.Println("Ping sent and received response in LookUpContact")
 		<- donePing
 	}
-	kademlia.done <- true
+	//kademlia.done <- true
 
 }
 
