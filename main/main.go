@@ -93,7 +93,8 @@ func main() {
 		Input, _ := reader.ReadString('\n')
 
 		fmt.Scanln(Input)
-		input := strings.TrimSpace(Input)
+                input := strings.TrimSpace(Input)
+                fmt.Println(input)
 
 		switch input {
                 case "store":
