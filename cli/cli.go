@@ -15,7 +15,8 @@ func main() {
 
   for {
     fmt.Print("-> ")
-    text, _ := reader.ReadString('\n')
+	text, _ := reader.ReadString('\n')
+	fmt.Println(text)
 	// convert CRLF to LF
 	
 	switch text {
