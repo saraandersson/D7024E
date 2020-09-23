@@ -33,6 +33,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 10s
+  kademliaCli:
+    image: kademliaCli:latest
+    stdin_open: true
+    tty: true
+    links: 
+      - kademliaBootstrap:kademliaBootstrapHost
 #    ports:
 #      - "4000:80"
     networks:
