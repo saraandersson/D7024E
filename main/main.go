@@ -91,6 +91,7 @@ func main() {
 	fmt.Print("Type operation here: ")
 	for {
                 text, _ := reader.ReadString('\n')
+                fmt.Println(text)
 		if strings.TrimRight(text, "\n") == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
