@@ -68,7 +68,7 @@ func main() {
        // network.Listen(address, i)
 
        /**/
-        network := d7024e.NewNetwork(bootstrapContact)
+       /* network := d7024e.NewNetwork(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
         go network.Listen("localhost:8000", 8000) 
         //go network.Listen("localhost:8002", 8002) 
@@ -82,15 +82,13 @@ func main() {
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact4, rtContact4, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
+        kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)*/
 
 
         /*Command line interface*/
 
         for {
 	    reader := bufio.NewReader(os.Stdin)
-	    fmt.Println("\nChoose what to do in the following way separated by blankspace: ")
-	    fmt.Println("/Choose node: /Choose procedure: store, cat, pin, unpin/If store: file contents, Else: 40 char key")
 	    fmt.Print("Command: ")
             text, _ := reader.ReadString('\n')
             if (text=="store") {
