@@ -95,15 +95,10 @@ func main() {
                 Input := reader.Text()
 		//fmt.Scanln(Input)
 		//input := strings.TrimSpace(Input)
-                input := string(Input)
-                switch input {
-                        case "store":
-                                fmt.Print("Enter object you want to store: ")
-                                break
-                        }
-                //option2 := words[0]
-                //fmt.Println(text)
-		//if strings.TrimRight(text, "\n") == "store" {
+                //input := string(Input)
+                if Input == "store" {
+                        fmt.Println("Entered Store")
+                }
         }
 
        /**/
