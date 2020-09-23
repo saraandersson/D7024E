@@ -8,7 +8,8 @@ import (
 	"os"
 	//"time"
         "d7024e"
-	//"strconv"
+        //"strconv"
+        "strings"
 )
 
 //import "d7024e"
@@ -90,7 +91,7 @@ func main() {
 	fmt.Print("Type operation here: ")
 	for {
                 text, _ := reader.ReadString('\n')
-		if text.TrimRight(input, "\n") == "store" {
+		if strings.TrimRight(text, "\n") == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
                 }
