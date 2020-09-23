@@ -86,10 +86,10 @@ func main() {
 
 
         /*Command line interface*/
+        fmt.Print("Type operation here: ")
+        reader := bufio.NewReader(os.Stdin)
 
 	for {
-                fmt.Print("Type operation here: ")
-                reader := bufio.NewReader(os.Stdin)
                 text, _ := reader.ReadString('\n')
                 text = strings.Replace(text, "\n", "", -1)
 		split := strings.Split(text, " ")
