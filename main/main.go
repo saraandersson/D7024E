@@ -88,20 +88,18 @@ func main() {
         /*Command line interface*/
 
         reader := bufio.NewReader(os.Stdin)
-        fmt.Print("Enter text: ")
-        text, _ := reader.ReadBytes('\n')
-        fmt.Println(text)
+        for {
+		fmt.Println("Enter command: ")
+		Input, _ := reader.ReadString('\n')
 
-        /*reader := bufio.NewReader(os.Stdin)
-        fmt.Println("Enter command: ")
-	for {
-                Input, _ := reader.ReadString('\n')
-                fmt.Println(Input)
-                //option2 := words[0]
-                //fmt.Println(text)
-		//if strings.TrimRight(text, "\n") == "store" {
-        }*/
+		fmt.Scanln(Input)
+		input := strings.TrimSpace(Input)
 
+		switch input {
+                case "store":
+                        fmt.Println("testar")
+                }
+        }
        /**/
        
         //fmt.Println("Här kommer listan:")
