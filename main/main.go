@@ -9,7 +9,7 @@ import (
 	//"time"
         "d7024e"
         //"strconv"
-       // "strings"
+        "strings"
 )
 
 //import "d7024e"
@@ -88,14 +88,21 @@ func main() {
         /*Command line interface*/
 
         reader := bufio.NewReader(os.Stdin)
-        fmt.Println("Enter command: ")
-	for {
-                Input, _ := reader.ReadString('\n')
-                fmt.Println(Input)
-                //option2 := words[0]
-                //fmt.Println(text)
-		//if strings.TrimRight(text, "\n") == "store" {
-        }
+        fmt.Println("Simple Shell")
+        fmt.Println("---------------------")
+
+        for {
+                fmt.Print("-> ")
+                text, _ := reader.ReadString('\n')
+                // convert CRLF to LF
+                text = strings.Replace(text, "\n", "", -1)
+
+                if strings.Compare("hi", text) == 0 {
+                        fmt.Println("hello, Yourself")
+                }
+
+                }
+
 
        /**/
        
