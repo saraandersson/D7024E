@@ -87,13 +87,12 @@ func main() {
 
         /*Command line interface*/
 
-        for {
-                reader := bufio.NewReader(os.Stdin)
-                fmt.Printf("Type message here: ")
-                message, _ := reader.ReadString('\n')
-                data := []byte(message + "\n")
-                if (message=="store") {
-                        fmt.Println(data)
+        reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Type operation here: ")
+	for {
+		text, _ := reader.ReadString('\n')
+		if text == "store" {
+			fmt.Println("hej")
                 }
         }
 
