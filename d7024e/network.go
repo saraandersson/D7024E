@@ -10,9 +10,31 @@ import (
 )
 
 type Network struct {
-	contact *Contact
-	routingTable *RoutingTable 
-	kademlia *Kademlia
+	contact 		*Contact
+	routingTable 	*RoutingTable 
+	kademlia 		*Kademlia
+	fileList 		[]*File
+}
+
+type File struct {
+	key 		*KademliaID
+	data 		[]byte
+	contact 	*Contact
+}
+
+
+func NewFile(key string, data []byte, contact *Contact) File{
+	file := File{}
+	file.key = key
+	file.data = data
+	file.contact = contact
+	return file
+}
+
+func (network *Network) StoreDataOnNode(file File) {
+	network.fileList = append(network.fileList, file)
+	fmt.Println("file-listan")
+	fmt.Println(network.fileList)
 }
 
 func (network *Network) Listen(ip string, port int) {

@@ -17,15 +17,6 @@ import (
 const defaultPort ="8000"
 
 func main() {
-
-        /*
-        rt.AddContact(NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8001"))
-	rt.AddContact(NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002"))
-	rt.AddContact(NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002"))
-	rt.AddContact(NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002"))
-	rt.AddContact(NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002"))
-	rt.AddContact(NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002"))
-        */
         done := make(chan bool)
        // var port = flag.String("port", defaultPort,"Test")
         //var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
@@ -84,65 +75,6 @@ func main() {
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
 
-
-        /*Command line interface*/
-
-        for {
-
-                reader := bufio.NewReader(os.Stdin)
-                fmt.Print("Enter text: ")
-                text, _ := reader.ReadString('\n')
-                fmt.Println(text)
-        }
-
-        /*for {
-	    reader := bufio.NewReader(os.Stdin)
-	    fmt.Print("Command: ")
-            text, _ := reader.ReadString('\n')
-            if (text=="store") {
-                    fmt.Println("enter store")
-            }
-
-        }*/
-            
-
-       /**/
-       
-        //fmt.Println("Här kommer listan:")
-        
-
-        //fmt.Println(closestTargets)
-
-        /*go network.JoinNetwork(contact, *routingTable, test)
-        <- test*/
-        //kademliaNetwork.LookupContact(&lookupContact)
-        //network.Listen(*port)
-        
-/*
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Type operation here: ")
-	for {
-		text, _ := reader.ReadString('\n')
-		if text == "ping" {
-			network.SendPingMessage(&contact)
-		}
-		if text == "join network" {
-			//Questions: 
-			// How to use and create a bootstrap node?
-			// How to implement? 
-			// Why do we have the same kademliaid of all containers?
-
-		}
-		if text == "node lookup" {
-			//fmt.Print("Enter targetNode id: ")
-			//targetNode, _ := reader.ReadString('\n')
-			//var convertToKademliaId d7024e.KademliaID
-			//targetNodeId := []byte(targetNode)
-			//contacts := routingTable.FindClosestContacts(id, 1)
-			//fmt.Println(contacts)
-		}
-	}
-        */
 }
 
 func GetIPContainer() string{
