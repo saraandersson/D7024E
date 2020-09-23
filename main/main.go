@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 	//"time"
-       // "d7024e"
+        "d7024e"
         //"strconv"
         //"strings"
 )
@@ -25,8 +25,8 @@ func main() {
 	rt.AddContact(NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002"))
 	rt.AddContact(NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002"))
 	rt.AddContact(NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002"))
-        
-       /* done := make(chan bool)
+        */
+        done := make(chan bool)
        // var port = flag.String("port", defaultPort,"Test")
         //var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
         //var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
@@ -37,7 +37,6 @@ func main() {
         //fmt.Println("addressen for noden: ")
         //fmt.Println(address)
         /*Add contacts and create routing tables*/
-        /*
         bootstrapContact :=  d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
         contact1 := d7024e.NewContact(d7024e.NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
         contact2 := d7024e.NewContact(d7024e.NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
@@ -50,7 +49,7 @@ func main() {
         rtContact3 := d7024e.NewRoutingTable(contact3)
         rtContact4 := d7024e.NewRoutingTable(contact4)
         rtContact5 := d7024e.NewRoutingTable(contact5)
-        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)*/
+        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
 
         /* */ 
         
@@ -69,7 +68,7 @@ func main() {
        // network.Listen(address, i)
 
        /**/
-       /* network := d7024e.NewNetwork(bootstrapContact)
+        network := d7024e.NewNetwork(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
         go network.Listen("localhost:8000", 8000) 
         //go network.Listen("localhost:8002", 8002) 
@@ -83,12 +82,19 @@ func main() {
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact4, rtContact4, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)*/
+        kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
 
 
         /*Command line interface*/
 
-        for {
+        reader := bufio.newReader(os.Stdin)
+        var name string
+        fmt.Println("What is your name?")
+        name, _ := reader.readString("\n")
+
+        fmt.Println("Your name is ", name, " and you are age ", age)
+
+        /*for {
 	    reader := bufio.NewReader(os.Stdin)
 	    fmt.Print("Command: ")
             text, _ := reader.ReadString('\n')
@@ -96,7 +102,7 @@ func main() {
                     fmt.Println("enter store")
             }
 
-        }
+        }*/
             
 
        /**/
