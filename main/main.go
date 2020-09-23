@@ -87,12 +87,12 @@ func main() {
 
         /*Command line interface*/
 
-        reader := bufio.newReader(os.Stdin)
+        reader := bufio.NewReader(os.Stdin)
         var name string
         fmt.Println("What is your name?")
         name, _ := reader.readString("\n")
 
-        fmt.Println("Your name is ", name, " and you are age ", age)
+        fmt.Println("Your name is ", name, " and you are age ")
 
         /*for {
 	    reader := bufio.NewReader(os.Stdin)
