@@ -87,14 +87,18 @@ func main() {
 
         /*Command line interface*/
 
-        reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Type operation here: ")
-	for {
-		text, _ := reader.ReadString('\n')
-		if text == "store" {
-			fmt.Println("hej")
-                }
+        for {
+	    reader := bufio.NewReader(os.Stdin)
+	    fmt.Println("\nChoose what to do in the following way separated by blankspace: ")
+	    fmt.Println("/Choose node: /Choose procedure: store, cat, pin, unpin/If store: file contents, Else: 40 char key")
+	    fmt.Print("Command: ")
+            text, _ := reader.ReadString('\n')
+            if (text=="store") {
+                    fmt.Println("enter store")
+            }
+
         }
+            
 
        /**/
        
