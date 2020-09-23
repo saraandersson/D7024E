@@ -92,7 +92,9 @@ func main() {
                 fmt.Printf("Type message here: ")
                 message, _ := reader.ReadString('\n')
                 data := []byte(message + "\n")
-                fmt.Println(data)
+                if (message=="store") {
+                        fmt.Println("testar")
+                }
         }
 
        /**/
