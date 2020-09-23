@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 	//"time"
-        "d7024e"
+        "../d7024e"
         //"strconv"
         //"strings"
 )
