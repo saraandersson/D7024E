@@ -87,7 +87,7 @@ func main() {
 
         /*Command line interface*/
 
-        names := make([]string, 0)
+        //names := make([]string, 0)
 
         scanner := bufio.NewScanner(os.Stdin)
     
