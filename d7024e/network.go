@@ -25,9 +25,9 @@ type File struct {
 
 func NewFile(key *KademliaID, data []byte, contact *Contact) File{
 	file := File{}
-	file.key = &key
+	file.key = key
 	file.data = data
-	file.contact = &contact
+	file.contact = contact
 	fmt.Println("FILE:")
 	fmt.Println(file)
 	return file
