@@ -19,12 +19,17 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	// TODO
 	donePing := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
+	addAlphaContacts := make([]Contact, 0)
+	addAlphaContacts = append(addAlphaContacts, contacts...)
+	if (len(contacts)>kademlia.alpha) {
+		addAlphaContacts = append(addAlphaContacts, contacts[0:kademlia.alpha]...)
+	}
 	kademlia.routingTable.AddContact(*target)
 	targetRoutingTable.AddContact(*kademlia.contact)
-	fmt.Println(contacts)
-	for i:=0; i<len(contacts); i++ {
-		go kademlia.network.SendPingMessage(&contacts[i], port, donePing)
-		targetRoutingTable.AddContact(contacts[i])
+	fmt.Println(addAlphaContacts)
+	for i:=0; i<len(addAlphaContacts); i++ {
+		go kademlia.network.SendPingMessage(&addAlphaContacts[i], port, donePing)
+		targetRoutingTable.AddContact(addAlphaContacts[i])
 		fmt.Println("Ping sent and received response in LookUpContact")
 		<- donePing
 	}
