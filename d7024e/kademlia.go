@@ -47,6 +47,8 @@ func (kademlia *Kademlia) LookupData(hash string) {
 }
 
 func (kademlia *Kademlia) Store(data []byte) {
+	fmt.Println("Enter store")
+	fmt.Print(data)
 	// TODO
 }
 
