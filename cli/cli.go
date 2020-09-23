@@ -5,7 +5,7 @@ import (
   "fmt"
   "os"
   "strings"
-  "../d7024e"
+  "d7024e"
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 			rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
 			network := d7024e.NewNetwork(bootstrapContact)
         	kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
-			d7024e.kademliaNetwork.Store(sendData)
+			kademliaNetwork.Store(sendData)
 		case "find":
 			fmt.Println("enter find")
 		case "put":
