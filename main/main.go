@@ -92,7 +92,8 @@ func main() {
                 reader := bufio.NewReader(os.Stdin)
                 text, _ := reader.ReadString('\n')
                 //fmt.Println(text)
-		if strings.TrimRight(text, "\n") == "store" {
+		//if strings.TrimRight(text, "\n") == "store" {
+                if text == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
                 }
