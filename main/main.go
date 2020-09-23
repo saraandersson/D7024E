@@ -87,19 +87,21 @@ func main() {
 
         /*Command line interface*/
 
-        reader := bufio.NewScanner(os.Stdin)
-        fmt.Println("Enter command: ")
-	//for {
-                //Input, _ := reader.ReadString('\n')
-                reader.Scan()
-                Input := reader.Text()
-		//fmt.Scanln(Input)
-		//input := strings.TrimSpace(Input)
-                //input := string(Input)
-                if Input == "store" {
-                        fmt.Println("Entered Store")
+        names := make([]string, 0)
+
+        scanner := bufio.NewScanner(os.Stdin)
+    
+        for {
+                fmt.Print("Enter name: ")
+                
+                scanner.Scan()
+                
+                text := scanner.Text()
+
+                if text == "store" {
+                        fmt.Println("enter store")
                 }
-        //}
+        }
 
        /**/
        
