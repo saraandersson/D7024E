@@ -93,7 +93,7 @@ func main() {
                 message, _ := reader.ReadString('\n')
                 data := []byte(message + "\n")
                 if (message=="store") {
-                        fmt.Println("testar")
+                        fmt.Println(data)
                 }
         }
 
