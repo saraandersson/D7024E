@@ -49,7 +49,7 @@ func (kademlia *Kademlia) LookupData(hash string) {
 func (kademlia *Kademlia) Store(data []byte) {
 	fmt.Println("Enter store")
 	fmt.Print(data)
-	fileKey := NewRandomKademliaID()
+	fileKey := NewKademliaID("2111111400000000000000000000000000000000")
 	clostestK := kademlia.routingTable.FindClosestContacts(fileKey, kademlia.k)
 	fmt.Println("Närmsta k noderna:")
 	fmt.Println(clostestK)
