@@ -37,11 +37,11 @@ func main() {
         fmt.Println(address)
         /*Add contacts and create routing tables*/
         bootstrapContact :=  d7024e.NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000"))
-        contact1 := d7024e.NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002"))
-        contact2 := d7024e.NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002"))
-        contact3 := d7024e.NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002"))
-        contact4 := d7024e.NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002"))
-        contact5 := d7024e.NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002"))
+        contact1 := d7024e.NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
+        contact2 := d7024e.NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
+        contact3 := d7024e.NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002")
+        contact4 := d7024e.NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002")
+        contact5 := d7024e.NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002")
         
         rtContact1 := d7024e.NewRoutingTable(contact1)
         rtContact2 := d7024e.NewRoutingTable(contact2)
