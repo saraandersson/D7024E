@@ -5,7 +5,7 @@ import (
   "fmt"
   "os"
   "strings"
-  "d7024e"
+  "../d7024e"
 )
 
 func main() {
