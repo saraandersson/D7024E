@@ -89,7 +89,7 @@ func main() {
 
         reader := bufio.NewScanner(os.Stdin)
         fmt.Println("Enter command: ")
-	for {
+	//for {
                 //Input, _ := reader.ReadString('\n')
                 reader.Scan()
                 Input := reader.Text()
@@ -99,7 +99,7 @@ func main() {
                 if Input == "store" {
                         fmt.Println("Entered Store")
                 }
-        }
+        //}
 
        /**/
        
