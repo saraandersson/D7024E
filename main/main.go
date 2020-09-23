@@ -36,7 +36,7 @@ func main() {
         fmt.Println("addressen for noden: ")
         fmt.Println(address)
         /*Add contacts and create routing tables*/
-        bootstrapContact :=  d7024e.NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000"))
+        bootstrapContact :=  d7024e.NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
         contact1 := d7024e.NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
         contact2 := d7024e.NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
         contact3 := d7024e.NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002")
