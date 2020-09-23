@@ -5,6 +5,7 @@ import (
   "fmt"
   "os"
   "strings"
+  "../d7024e"
 )
 
 func main() {
@@ -17,8 +18,6 @@ func main() {
     fmt.Print("-> ")
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimRight(text, "\n")
-	fmt.Println(text)
-	// convert CRLF to LF
 	
 	switch text {
 		case "store":
