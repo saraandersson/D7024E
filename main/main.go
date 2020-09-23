@@ -87,20 +87,14 @@ func main() {
 
         /*Command line interface*/
 
-        reader := bufio.NewReader(os.Stdin)
-        fmt.Println("Enter command: ")
         for {
-		Input, _ := reader.ReadString('\n')
-
-		fmt.Scanln(Input)
-                input := strings.TrimSpace(Input)
-                fmt.Println(input)
-
-		switch input {
-                case "store":
-                        fmt.Println("testar")
-                }
+                reader := bufio.NewReader(os.Stdin)
+                fmt.Printf("Type message here: ")
+                message, _ := reader.ReadString('\n')
+                data := []byte(message + "\n")
+                fmt.Println(data)
         }
+
        /**/
        
         //fmt.Println("Här kommer listan:")
