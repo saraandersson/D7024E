@@ -69,17 +69,22 @@ func main() {
        /**/
         network := d7024e.NewNetwork(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
-        network.Listen("localhost:8000", 8000) 
-        <- time.After(1*time.Second)
+        //network.Listen("localhost:8000", 8000) 
+        //<- time.After(1*time.Second)
+        fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact1, rtContact1, 8002)
+        fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact2, rtContact2, 8002)
+        fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact3, rtContact3, 8002)
+        fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact4, rtContact4, 8002)
+        fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
        /**/
        
-        fmt.Println("Här kommer listan:")
-        <- done
+        //fmt.Println("Här kommer listan:")
+        
 
         //fmt.Println(closestTargets)
 
