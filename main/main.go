@@ -70,7 +70,7 @@ func main() {
         network := d7024e.NewNetwork(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
         go network.Listen("localhost:8000", 8000) 
-        go network.Listen("localhost:8002", 8002) 
+        //go network.Listen("localhost:8002", 8002) 
         //<- time.After(1*time.Second)
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact1, rtContact1, 8002)

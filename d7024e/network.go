@@ -42,7 +42,7 @@ func (network *Network) Listen(ip string, port int) {
 
 func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
-	//go network.Listen(contact.Address, port) //Gör egen tråd
+	go network.Listen(contact.Address, port) //Gör egen tråd
 	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 	if err != nil {
