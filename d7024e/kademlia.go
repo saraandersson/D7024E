@@ -20,9 +20,14 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *Rou
 	donePing := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
-	addAlphaContacts = append(addAlphaContacts, contacts...)
+	
+
+	/*Picks alpha first nodes from the k closest*/
 	if (len(contacts)>kademlia.alpha) {
 		addAlphaContacts = append(addAlphaContacts, contacts[0:kademlia.alpha]...)
+	}
+	else {
+		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
 	kademlia.routingTable.AddContact(*target)
 	targetRoutingTable.AddContact(*kademlia.contact)
