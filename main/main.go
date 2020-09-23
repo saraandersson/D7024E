@@ -9,7 +9,7 @@ import (
 	//"time"
         "d7024e"
         //"strconv"
-       // "strings"
+        "strings"
 )
 
 //import "d7024e"
@@ -91,9 +91,11 @@ func main() {
 	for {
                 reader := bufio.NewReader(os.Stdin)
                 text, _ := reader.ReadString('\n')
+                words := strings.Fields(text)
+                option2 := words[0]
                 //fmt.Println(text)
 		//if strings.TrimRight(text, "\n") == "store" {
-                if text == "store" {
+                if option2 == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
                 }
