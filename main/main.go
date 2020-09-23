@@ -91,7 +91,7 @@ func main() {
 	for {
 		text, _ := reader.ReadString('\n')
 		if text == "store" {
-                        fmt.Println("Enter object you want to store: ")
+                        fmt.Print("Enter object you want to store: ")
                         
                 }
         }
