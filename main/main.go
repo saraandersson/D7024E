@@ -3,7 +3,7 @@ package main
 import (
 	//"bufio"
 	"fmt"
-        "flag"
+        //"flag"
 	"net"
 	"os"
 	"time"
@@ -26,15 +26,15 @@ func main() {
 	rt.AddContact(NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002"))
         */
         done := make(chan bool)
-        var port = flag.String("port", defaultPort,"Test")
-        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
-        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
-        flag.Parse()
+       // var port = flag.String("port", defaultPort,"Test")
+        //var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
+        //var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
+        //flag.Parse()
         /*Create contact*/
-	var contact d7024e.Contact
-        address := GetIPContainer() + ":" + *port
-        fmt.Println("addressen for noden: ")
-        fmt.Println(address)
+	//var contact d7024e.Contact
+        //address := GetIPContainer() + ":" + *port
+        //fmt.Println("addressen for noden: ")
+        //fmt.Println(address)
         /*Add contacts and create routing tables*/
         bootstrapContact :=  d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
         contact1 := d7024e.NewContact(d7024e.NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
