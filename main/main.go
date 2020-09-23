@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
         "d7024e"
-	"strconv"
+	//"strconv"
 )
 
 //import "d7024e"
@@ -36,12 +36,12 @@ func main() {
         fmt.Println("addressen for noden: ")
         fmt.Println(address)
         /*Add contacts and create routing tables*/
-        bootstrapContact :=  d7024e.NewContact(NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
-        contact1 := d7024e.NewContact(NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
-        contact2 := d7024e.NewContact(NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
-        contact3 := d7024e.NewContact(NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002")
-        contact4 := d7024e.NewContact(NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002")
-        contact5 := d7024e.NewContact(NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002")
+        bootstrapContact :=  d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
+        contact1 := d7024e.NewContact(d7024e.NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
+        contact2 := d7024e.NewContact(d7024e.NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
+        contact3 := d7024e.NewContact(d7024e.NewKademliaID("1111111300000000000000000000000000000000"), "localhost:8002")
+        contact4 := d7024e.NewContact(d7024e.NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002")
+        contact5 := d7024e.NewContact(d7024e.NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002")
         
         rtContact1 := d7024e.NewRoutingTable(contact1)
         rtContact2 := d7024e.NewRoutingTable(contact2)
@@ -70,11 +70,11 @@ func main() {
         network := d7024e.NewNetwork(bootstrapContact)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
         go network.Listen("localhost:8000", 8000)
-        kademliaNetwork.LookUpContact(contact1, rtContact1, 8002)
-        kademliaNetwork.LookUpContact(contact2, rtContact2, 8002)
-        kademliaNetwork.LookUpContact(contact3, rtContact3, 8002)
-        kademliaNetwork.LookUpContact(contact4, rtContact4, 8002)
-        kademliaNetwork.LookUpContact(contact5, rtContact5, 8002)
+        kademliaNetwork.LookupContact(contact1, rtContact1, 8002)
+        kademliaNetwork.LookupContact(contact2, rtContact2, 8002)
+        kademliaNetwork.LookupContact(contact3, rtContact3, 8002)
+        kademliaNetwork.LookupContact(contact4, rtContact4, 8002)
+        kademliaNetwork.LookupContact(contact5, rtContact5, 8002)
        /**/
         <- time.After(1*time.Second)
         fmt.Println("Här kommer listan:")
