@@ -91,7 +91,7 @@ func main() {
         fmt.Println("Enter command: ")
 	for {
                 Input, _ := reader.ReadString('\n')
-                fmt.Println(input)
+                fmt.Println(Input)
                 //option2 := words[0]
                 //fmt.Println(text)
 		//if strings.TrimRight(text, "\n") == "store" {
