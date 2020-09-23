@@ -92,7 +92,8 @@ func main() {
                 reader := bufio.NewReader(os.Stdin)
                 text, _ := reader.ReadString('\n')
                 words := strings.Fields(text)
-                option2 := words[0]
+                fmt.Println(words)
+                //option2 := words[0]
                 //fmt.Println(text)
 		//if strings.TrimRight(text, "\n") == "store" {
                 if option2 == "store" {
