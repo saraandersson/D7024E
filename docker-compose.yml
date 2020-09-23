@@ -34,7 +34,7 @@ services:
         max_attempts: 3
         window: 10s
   kademliaCli:
-    image: kademliaCli:latest
+    image: kademliacli:latest
     stdin_open: true
     tty: true
     links: 
