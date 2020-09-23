@@ -96,7 +96,7 @@ func main() {
                 //option2 := words[0]
                 //fmt.Println(text)
 		//if strings.TrimRight(text, "\n") == "store" {
-                if option2 == "store" {
+                if text == "store" {
                         fmt.Print("Enter object you want to store: ")
                         
                 }
