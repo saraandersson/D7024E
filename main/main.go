@@ -90,10 +90,12 @@ func main() {
         reader := bufio.NewReader(os.Stdin)
         fmt.Println("Enter command: ")
 	for {
-		Input, _ := reader.ReadString('\n')
+                //Input, _ := reader.ReadString('\n')
+                Input, _, _ := reader.ReadLine()
 		fmt.Scanln(Input)
-		input := strings.TrimSpace(Input)
-		switch input {
+		//input := strings.TrimSpace(Input)
+                input := string(Input)
+                switch input {
                         case "store":
                                 fmt.Print("Enter object you want to store: ")
                                 break
