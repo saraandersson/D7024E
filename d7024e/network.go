@@ -23,7 +23,7 @@ type File struct {
 }
 
 
-func NewFile(key string, data []byte, contact *Contact) File{
+func NewFile(key *KademliaID, data []byte, contact *Contact) File{
 	file := File{}
 	file.key = key
 	file.data = data
@@ -32,7 +32,7 @@ func NewFile(key string, data []byte, contact *Contact) File{
 }
 
 func (network *Network) StoreDataOnNode(file File) {
-	network.fileList = append(network.fileList, file)
+	network.fileList = append(network.fileList, &file)
 	fmt.Println("file-listan")
 	fmt.Println(network.fileList)
 }
