@@ -87,6 +87,11 @@ func main() {
 
         /*Command line interface*/
 
+        reader := bufio.NewReader(os.Stdin)
+        fmt.Print("Enter text: ")
+        text, _ := reader.ReadString('\n')
+        fmt.Println(text)
+
         /*reader := bufio.NewReader(os.Stdin)
         fmt.Println("Enter command: ")
 	for {
@@ -96,11 +101,6 @@ func main() {
                 //fmt.Println(text)
 		//if strings.TrimRight(text, "\n") == "store" {
         }*/
-
-        scanner := bufio.NewScanner(os.Stdin)
-        for scanner.Scan() {
-                fmt.Println(scanner.Text())
-        }
 
        /**/
        
