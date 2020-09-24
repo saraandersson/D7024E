@@ -5,7 +5,7 @@ import (
   "fmt"
   "os"
   "strings"
-  "../d7024e"
+  "d7024e"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
   fmt.Println("Type operation below, you can choose between following: store, find, put, get, exit")
   fmt.Println("---------------------")
 
-  for {
+  //for {
     fmt.Print("-> ")
 	text, _ := reader.ReadString('\n')
 	text = strings.TrimRight(text, "\n")
@@ -50,6 +50,6 @@ func main() {
 			fmt.Println("Please type correct operation, you can choose between following: store, find, put, get, exit")
 	}
 
-  }
+  //}
 
 }

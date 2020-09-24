@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
         //"flag"
 	"net"
 	"os"
 	//"time"
-        "../d7024e"
+        "d7024e"
         //"strconv"
         //"strings"
 )
