@@ -14,6 +14,20 @@ type Kademlia struct {
 	done 			chan bool
 }
 
+/*Node Lookup:
+- Findkclosest
+- take first alhpa contacts from k-closest
+- send nodelookup request to the k-closest to the alpha nodes
+- Check so no duplicates are added to the node, since the alpha nodes can have common
+  k clostest nodes it can be duplicates
+- End recursion when all alpha k clostest nodes have received response from their nodes
+- Use SendFindContactMessage to add contact to the other nodes k buckets
+- Use channels to define when a node is contacted
+
+KademliaRandomId fungerar ej som den ska, vissa blir samma id, for fixa. 
+
+*/
+
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(target *Contact, targetRoutingTable *RoutingTable, port int){
 	// TODO
