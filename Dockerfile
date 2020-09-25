@@ -1,4 +1,5 @@
 FROM golang
+#RUN go get -u google.golang.org/grpc
 RUN go get github.com/golang/protobuf/proto
 RUN go get -u github.com/golang/protobuf/protoc-gen-go
 #RUN go install google.golang.org/protobuf/cmd/protoc-gen-go
