@@ -1,5 +1,5 @@
 syntax = "proto3";
 package protobuf;
-type Message {
+message Message {
   string text = 1;
 }
