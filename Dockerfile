@@ -1,7 +1,7 @@
 FROM golang
 RUN go get github.com/golang/protobuf/proto
-#RUN go get -u github.com/golang/protobuf/protoc-gen-go
-RUN go install google.golang.org/protobuf/cmd/protoc-gen-go
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
+#RUN go install google.golang.org/protobuf/cmd/protoc-gen-go
 WORKDIR /go/src/main
 COPY protobuf /go/src/protobuf
 #SHELL ["/bin/sh", "-c"]

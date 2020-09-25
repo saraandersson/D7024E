@@ -1,4 +1,5 @@
 syntax = "proto3";
+package protobuf;
 type Message {
   string text = 1;
 }
