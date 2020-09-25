@@ -57,10 +57,13 @@ func (network *Network) Listen(ip string, port int) {
     defer connection.Close()
     buffer := make([]byte, 1024)
 	n, addr, err := connection.ReadFromUDP(buffer)
-	var answer protobuf.Message
-	error := proto.Unmarshal(buffer[0:n], answer)
+	newMessage := &protobuf.Message{}
+	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
+	if errorMessage!=nil {
+		fmt.Println(errorMessage)
+	}
 	//fmt.Print("\n", string(buffer[0:n-1]))
-	fmt.Print(answer)
+	fmt.Print(newMessage)
 	data := []byte("Hello from " + ip + "\n")
 	_, err = connection.WriteToUDP(data, addr)
 	if err != nil {
@@ -69,7 +72,7 @@ func (network *Network) Listen(ip string, port int) {
 	}
 }
 
-func (network *Network) createProtoBufMessage(contact *Contact) protobuf.Message {
+func (network *Network) createProtoBufMessage(contact *Contact) *protobuf.Message {
 	/*protoBufMessage := []string {
 		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
 	var text = "hello"

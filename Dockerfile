@@ -6,7 +6,7 @@ RUN go get -u github.com/golang/protobuf/protoc-gen-go
 WORKDIR /go/src/main
 COPY protobuf /go/src/protobuf
 #SHELL ["/bin/sh", "-c"]
-RUN  protoc -I ./ --go_out=. protobuf/message.proto
+#RUN  protoc -I ./ --go_out=. message.proto
 COPY d7024e /go/src/d7024e
 COPY main /go/src/main
 RUN go build main.go

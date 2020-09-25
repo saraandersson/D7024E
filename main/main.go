@@ -41,6 +41,8 @@ func main() {
         ntContact4 := d7024e.NewNetwork(contact4)
         ntContact5 := d7024e.NewNetwork(contact5)
 
+        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
+
         /*rtContact1 := d7024e.NewRoutingTable(contact1)
         rtContact2 := d7024e.NewRoutingTable(contact2)
         rtContact3 := d7024e.NewRoutingTable(contact3)
@@ -71,15 +73,15 @@ func main() {
         //go network.Listen("localhost:8002", 8002) 
         //<- time.After(1*time.Second)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact1, rtContact1, 8002)
+        kademliaNetwork.LookupContact(&contact1, &ntContact1, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact2, rtContact2, 8002)
+        kademliaNetwork.LookupContact(&contact2, &ntContact2, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact3, rtContact3, 8002)
+        kademliaNetwork.LookupContact(&contact3, &ntContact3, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact4, rtContact4, 8002)
+        kademliaNetwork.LookupContact(&contact4, &ntContact4, 8002)
         fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact5, rtContact5, 8002)
+        kademliaNetwork.LookupContact(&contact5, &ntContact5, 8002)
 
 }
 

@@ -33,7 +33,7 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network, port int){
 	// TODO
-	donePing := make(chan bool)
+	//donePing := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
 	
