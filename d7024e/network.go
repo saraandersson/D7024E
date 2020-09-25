@@ -7,6 +7,8 @@ import (
 	//"os"
 	"time"
 	"strconv"
+	"github.com/golang/protobuf/proto"
+	"protobuf"
 )
 
 type Network struct {
@@ -55,13 +57,26 @@ func (network *Network) Listen(ip string, port int) {
     defer connection.Close()
     buffer := make([]byte, 1024)
 	n, addr, err := connection.ReadFromUDP(buffer)
-	fmt.Print("\n", string(buffer[0:n-1]))
+	var answer protobuf.Message
+	error := proto.Unmarshal(buffer[0:n], answer)
+	//fmt.Print("\n", string(buffer[0:n-1]))
+	fmt.Print(answer)
 	data := []byte("Hello from " + ip + "\n")
 	_, err = connection.WriteToUDP(data, addr)
 	if err != nil {
 			fmt.Println(err)
 			return
 	}
+}
+
+func (network *Network) createProtoBufMessage(contact *Contact) protobuf.Message {
+	/*protoBufMessage := []string {
+		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
+	var text = "hello"
+	protoBufMessage := &protobuf.Message {
+			Text: text,
+		}
+	return protoBufMessage
 }
 
 func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
@@ -76,7 +91,9 @@ func (network *Network) SendPingMessage(contact *Contact, port int, donePing cha
 	}
 	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
 	defer conn.Close()
-	data := []byte("Ping " + "\n")
+	message := network.createProtoBufMessage(contact)
+	data,_ := proto.Marshal(message)
+	//data := []byte("Ping " + "\n")
 	_, err = conn.Write(data)
 	if err != nil {
 			fmt.Println(err)
@@ -93,8 +110,8 @@ func (network *Network) SendPingMessage(contact *Contact, port int, donePing cha
 	donePing <- true
 }
 
-func (network *Network) SendFindContactMessage(contact *Contact) {
-	// TODO
+func (network *Network) SendFindContactMessage(contact *Contact, ) {
+	//rt.AddContact(NewContact(NewKademliaID(currentPacket.SourceID), currentPacket.SourceAddress))
 }
 
 func (network *Network) SendFindDataMessage(hash string) {

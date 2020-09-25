@@ -1,5 +1,12 @@
-FROM golang:alpine
+FROM golang
+RUN go get github.com/golang/protobuf/proto
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
 WORKDIR /go/src/main
+COPY protobuf /go/src/protobuf
+RUN cd ..
+RUN cd protobuf
+RUN protoc -I ./ --go_out=./ ./message.proto
+RUN cd ..
 COPY d7024e /go/src/d7024e
 COPY main /go/src/main
 RUN go build main.go

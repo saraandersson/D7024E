@@ -35,12 +35,18 @@ func main() {
         contact4 := d7024e.NewContact(d7024e.NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002")
         contact5 := d7024e.NewContact(d7024e.NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002")
         
-        rtContact1 := d7024e.NewRoutingTable(contact1)
+        ntContact1 := d7024e.NewNetwork(contact1)
+        ntContact2 := d7024e.NewNetwork(contact2)
+        ntContact3 := d7024e.NewNetwork(contact3)
+        ntContact4 := d7024e.NewNetwork(contact4)
+        ntContact5 := d7024e.NewNetwork(contact5)
+
+        /*rtContact1 := d7024e.NewRoutingTable(contact1)
         rtContact2 := d7024e.NewRoutingTable(contact2)
         rtContact3 := d7024e.NewRoutingTable(contact3)
         rtContact4 := d7024e.NewRoutingTable(contact4)
         rtContact5 := d7024e.NewRoutingTable(contact5)
-        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
+        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)*/
 
         /* */ 
         
