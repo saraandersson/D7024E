@@ -1,5 +1,8 @@
 syntax = "proto3";
 package protobuf;
 message Message {
-  string text = 1;
+  string senderID = 1;
+  string senderAddress = 2;
+  string receiverID = 3;
+  string receiverAddress = 4;
 }

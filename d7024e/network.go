@@ -41,6 +41,17 @@ func (network *Network) StoreDataOnNode(file File) {
 	fmt.Println(network.fileList)
 }
 
+func (network *Network) MessageHandler(funcType string, message *protobuf.Message) {
+	switch funcType {
+	case "Ping":
+		fmt.Printf("Ping! kommer till messagehandler")
+		contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
+		network.routingTable.AddContact(contact)
+	default:
+		fmt.Println("Error in MessageHandler: Wrong message type")
+	}
+}
+
 func (network *Network) Listen(ip string, port int) {
 	fmt.Println("kommer till listen")
 	port2 := ":" + strconv.Itoa(port)
@@ -64,6 +75,7 @@ func (network *Network) Listen(ip string, port int) {
 	}
 	//fmt.Print("\n", string(buffer[0:n-1]))
 	fmt.Print(newMessage)
+	go network.MessageHandler("Ping", newMessage)
 	data := []byte("Hello from " + ip + "\n")
 	_, err = connection.WriteToUDP(data, addr)
 	if err != nil {
@@ -75,17 +87,19 @@ func (network *Network) Listen(ip string, port int) {
 func (network *Network) createProtoBufMessage(contact *Contact) *protobuf.Message {
 	/*protoBufMessage := []string {
 		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
-	var text = "hello"
+	//var text = "hello"
 	protoBufMessage := &protobuf.Message {
-			Text: text,
-		}
+			SenderID: network.contact.ID.String(),
+			SenderAddress: network.contact.Address,
+			ReceiverID: contact.ID.String(),
+			ReceiverAddress: contact.Address}
 	return protoBufMessage
 }
 
 func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
-	<- time.After(1*time.Second)
 	go network.Listen(contact.Address, port) //Gör egen tråd
+	<- time.After(5*time.Second)
 	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 	if err != nil {
@@ -134,39 +148,3 @@ func NewNetwork(contact Contact) Network {
 	//<- sendPing
 	return network
 }
-
-func (network *Network) NodeLookup(k int, targetNodeId *KademliaID) {
-	/*for i:=0; i<contact.length; i++ {
-		go FindNode(contacts[i].id)
-	}*/
-
-}
-
-/*func (network *Network) JoinNetwork(target Contact, targetRoutingTable RoutingTable, test chan bool){
-	
-	targetRoutingTable.AddContact(*network.contact)
-	closestTargets := network.routingTable.FindClosestContacts(target.ID, 3)
-	fmt.Println("Här kommer listan:" )
-	fmt.Println(closestTargets)
-	for i:=0; i < len(closestTargets);i++{
-		go network.SendPingMessage(&closestTargets[i], test)
-	}
-	test <- true
-
-	/*closestTargets := network.routingTable.FindClosestContacts(target.ID, 3)
-	fmt.Println("Här kommer listan:" )
-	fmt.Println(closestTargets)
-	network.routingTable.AddContact(target)
-	fmt.Println("JoinNetwork routingtable: ")
-	fmt.Println(network.routingTable)
-	targetRoutingTable.AddContact(*network.contact)
-	for i:=0; i < len(closestTargets);i++{
-		go network.SendPingMessage(&closestTargets[i])
-	}
-	test <- true
-
-}*/
-
-/*func FindNode(id *KademliaID) Network {
-	
-}*/
