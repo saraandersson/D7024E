@@ -33,9 +33,6 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network, port int){
-	fmt.Println("kommer till LookupContact")
-	// TODO
-	//donePing := make(chan bool)
 	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
 	
@@ -51,30 +48,20 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network,
 	targetNetwork.routingTable.AddContact(*kademlia.contact)
 
 	/*Node lookup*/
-	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *targetNetwork)
+	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *targetNetwork, *target)
 	fmt.Println(contactsToAdd)
 	for i:=0; i<len(contactsToAdd); i++ {
 		targetNetwork.routingTable.AddContact(contactsToAdd[i])
 	}
-
-	/*Start for node lookup*/
-	/*fmt.Println(addAlphaContacts)
-	for i:=0; i<len(addAlphaContacts); i++ {
-		go kademlia.network.SendPingMessage(&addAlphaContacts[i], port, donePing)
-		targetRoutingTable.AddContact(addAlphaContacts[i])
-		fmt.Println("Ping sent and received response in LookUpContact")
-		<- donePing
-	}*/
-	//kademlia.done <- true
 }
 
-/*TODO: Add the alpha nodes after done pinging k closest to alpha*/
-
-func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Contact, contactNetwork Network) []Contact {
+/*NodeLookUp function*/
+func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Contact, contactNetwork Network, currentContact Contact) []Contact {
 	/*Base case*/
 	if (len(alphaContacts)==0) {
 		return addedContacts
 	}
+	/*Ping alpha node to see if it is alive*/
 	pingAlphaNode := make(chan bool)
 	stringListAlpha := strings.Split(alphaContacts[0].Address, ":")
 	portStringAlpha := stringListAlpha[1]
@@ -82,44 +69,58 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	go contactNetwork.SendPingMessage(&alphaContacts[0], portAlpha, pingAlphaNode)
 	select {
 	case <-pingAlphaNode:
+		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
 		kContactsFromAlpha := kademlia.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)
+		/*Loop through all k nodes*/
 		for i:=0; i<len(kContactsFromAlpha); i++ {
+			isInList := false
 			if (len(addedContacts) > 0) {
+				/*Loop through all nodes in addedContacts*/
 				for x:=0; x<len(addedContacts); x++ {
-					if (kContactsFromAlpha[i].ID != addedContacts[x].ID){
-						fmt.Println("kommer till nodelookup")
-						donePing := make(chan bool)
-						stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
-						portString := stringList[1]
-						port, _ := strconv.Atoi(portString)
-						go contactNetwork.SendPingMessage(&kContactsFromAlpha[i], port, donePing)
-						select {
-						case <- donePing:
-							addedContacts = append(addedContacts,kContactsFromAlpha[i])
-							fmt.Println("Ping sent and received response in NodeLookUp")
-						case <-time.After(10*time.Second):
-							continue
-						}
+					/*Check that a node is not already in addedContacts*/
+					if (kContactsFromAlpha[i].ID.String() == addedContacts[x].ID.String()){
+						isInList = true
 					}
 				}
 			}
+			/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
+				add node to addedContacts
+			*/
+			if ((isInList==false) && (kContactsFromAlpha[i].ID.String() != currentContact.ID.String())) {
+				donePing := make(chan bool)
+				stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
+				portString := stringList[1]
+				port, _ := strconv.Atoi(portString)
+				go contactNetwork.SendPingMessage(&kContactsFromAlpha[i], port, donePing)
+				select {
+				case <- donePing:
+					addedContacts = append(addedContacts,kContactsFromAlpha[i])
+				/*If node does not answer in 10 seconds, the node is dead*/
+				case <-time.After(10*time.Second):
+					/*Send ping again??*/
+					fmt.Println("TIMEOUT")
+					continue
+				}
+			}
+
 		}
-	/*Remove alpha from list if node not alive*/
+	/*If node does not answer in 10 seconds, remove alpha node from list*/
 	case <-time.After(10*time.Second):
 		addedContacts = RemoveFromList(addedContacts, alphaContacts[0])
 	}
+	/*Remove first element from list and continue recursion*/
 	if (len(alphaContacts) > 1) {
 		alphaContacts = alphaContacts[1:]
 	} else {
 		alphaContacts = make([]Contact, 0)
 	}
-	return kademlia.NodeLookUp(alphaContacts, addedContacts, contactNetwork)
+	return kademlia.NodeLookUp(alphaContacts, addedContacts, contactNetwork, currentContact)
 
 }
 
+/*Help functinon, remove a contact from a list of contacts */
 func RemoveFromList(contacts []Contact, contactToRemove Contact) []Contact {
-	fmt.Println("Innan Remove")
-	fmt.Println(contacts)
+	fmt.Println("Node is dead, removing node")
 	for i := 0; i < len(contacts); i++ {
 		contact := contacts[i]
 		if contact == contactToRemove {
@@ -127,8 +128,7 @@ func RemoveFromList(contacts []Contact, contactToRemove Contact) []Contact {
 			i--
 		}
 	}
-	fmt.Println("Efter Remove ")
-	fmt.Println(contacts)
+	fmt.Println("Remove done")
 	return contacts
 }
 
