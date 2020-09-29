@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"bufio"
+	"bufio"
 	"fmt"
         //"flag"
 	"net"
@@ -9,7 +9,7 @@ import (
 	"time"
         "d7024e"
         //"strconv"
-        //"strings"
+        "strings"
 )
 
 //import "d7024e"
@@ -34,51 +34,10 @@ func main() {
         <- time.After(1*time.Second)
 
         rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
-
-        /*rtContact1 := d7024e.NewRoutingTable(contact1)
-        rtContact2 := d7024e.NewRoutingTable(contact2)
-        rtContact3 := d7024e.NewRoutingTable(contact3)
-        rtContact4 := d7024e.NewRoutingTable(contact4)
-        rtContact5 := d7024e.NewRoutingTable(contact5)
-        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)*/
-
-        /* */ 
-        
-        //contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        //routingTableContact := d7024e.NewRoutingTable(contact)
-
-        /*done := make(chan bool)
-        var port = flag.String("port", defaultPort,"Test")
-        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
-        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
-        flag.Parse()*/
-        /*Create contact*/
-	//var contact d7024e.Contact
-       /* address := GetIPContainer() + ":" + *port
-        fmt.Println("addressen for noden: ")
-        fmt.Println(address)
-        contact := d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        contactNetwork := d7024e.NewNetwork(contact)
-        /*create network and kademlianetwork*/        
-       /* bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
-        bootstrapContact := d7024e.NewContact(d7024e.NewRandomKademliaID(), bootstrapAddress)
-        network := d7024e.NewNetwork(bootstrapContact)
-        bootstrapRoutingTable := d7024e.NewRoutingTable(bootstrapContact)
-        kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, bootstrapRoutingTable, 20, 3, done)
-        /*Call on LookUpContact*/
-        /*i, _ := strconv.Atoi(*port)
-        fmt.Println("Här kommer listan:")
-        go kademliaNetwork.LookupContact(&contact,&contactNetwork, i)
-        <- done
-        network.Listen(address, i)*/
-
-       /**/
         done := make(chan bool)
         network := d7024e.NewNetwork(bootstrapContact)
         go network.Listen(bootstrapContact.Address, 8000)
         kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
-        //go network.Listen("localhost:8000", 8000) 
-        //go network.Listen("localhost:8002", 8002) 
         <- time.After(1*time.Second)
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact1, &ntContact1, 8002)
@@ -90,6 +49,40 @@ func main() {
         kademliaNetwork.LookupContact(&contact4, &ntContact4, 8002)
         fmt.Println("Här kommer listan:")
         kademliaNetwork.LookupContact(&contact5, &ntContact5, 8002)
+
+        /*Temp store functionality until the other containers work*/
+
+
+        reader := bufio.NewReader(os.Stdin)
+        fmt.Println("Type operation below, you can choose between following: store, find, put, get, exit")
+        fmt.Println("---------------------")
+
+  //for {
+        fmt.Print("-> ")
+                text, _ := reader.ReadString('\n')
+                text = strings.TrimRight(text, "\n")
+                
+                switch text {
+                        case "store":
+                                fmt.Println("enter store")
+                                
+                                fmt.Print("Enter data to store: ")
+                                data, _ := reader.ReadString('\n')
+                                data = strings.TrimRight(text, "\n")
+                                sendData := []byte(data + "\n")
+                                kademliaNetwork.Store(sendData)
+                        case "find":
+                                fmt.Println("enter find")
+                        case "put":
+                                fmt.Println("enter put")
+                        case "get":
+                                fmt.Println("enter get")
+                        case "exit":
+                                fmt.Println("enter exit")
+                        default:
+                                fmt.Println("Please type correct operation, you can choose between following: store, find, put, get, exit")
+                }
+
 
 }
 
