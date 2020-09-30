@@ -44,8 +44,8 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network,
 		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
 	/*Network joining*/
-	kademlia.routingTable.AddContact(*target)
-	targetNetwork.routingTable.AddContact(*kademlia.contact)
+	/*kademlia.routingTable.AddContact(*target)
+	targetNetwork.routingTable.AddContact(*kademlia.contact)*/
 
 	/*Node lookup*/
 	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *targetNetwork, *target)

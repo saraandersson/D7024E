@@ -11,6 +11,8 @@ services:
     image: kadlab:latest
     stdin_open: true
     tty: true
+    environment: 
+      - BOOTSTRAPNODE=1
     hostname: kademliaBootstrapHost
     deploy:
       resources:
@@ -21,6 +23,8 @@ services:
     image: kadlab:latest # Make sure your Docker image has this name.
     stdin_open: true
     tty: true
+    environment: 
+      - BOOTSTRAPNODE=0
     links:
      - kademliaBootstrap:kademliaBootstrapHost
     deploy:       
@@ -40,10 +44,7 @@ services:
     links: 
       - kademliaBootstrap:kademliaBootstrapHost
 #    ports:
-#      - "4000:80"
-    networks:
-      - kademlia_network
-   
+#      - "4000:80"   
 networks:
   kademlia_network:
 

@@ -60,27 +60,24 @@ func (network *Network) Listen(ip string, port int) {
             fmt.Println(err)
             return
     }
-    connection, err := net.ListenUDP("udp4", s)
+	connection, err := net.ListenUDP("udp4", s)
     if err != nil {
             fmt.Println(err)
             return
     }
     defer connection.Close()
-    buffer := make([]byte, 1024)
-	n, addr, err := connection.ReadFromUDP(buffer)
-	newMessage := &protobuf.Message{}
-	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
-	if errorMessage!=nil {
-		fmt.Println(errorMessage)
-	}
-	//fmt.Print("\n", string(buffer[0:n-1]))
-	fmt.Print(newMessage)
-	go network.MessageHandler("Ping", newMessage)
-	data := []byte("Hello from " + ip + "\n")
-	_, err = connection.WriteToUDP(data, addr)
-	if err != nil {
-			fmt.Println(err)
-			return
+	buffer := make([]byte, 1024)
+	for {
+		n, _, _ := connection.ReadFromUDP(buffer)
+		fmt.Println("Listen lyssnar")
+		newMessage := &protobuf.Message{}
+		errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
+		if errorMessage!=nil {
+			fmt.Println(errorMessage)
+		}
+		//fmt.Print("\n", string(buffer[0:n-1]))
+		fmt.Print(newMessage)
+		go network.MessageHandler("Ping", newMessage)
 	}
 }
 
@@ -99,7 +96,7 @@ func (network *Network) createProtoBufMessage(contact *Contact) *protobuf.Messag
 func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
 	go network.Listen(contact.Address, port) //Gör egen tråd
-	<- time.After(5*time.Second)
+	<- time.After(2*time.Second)
 	server, err := net.ResolveUDPAddr("udp4", contact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 	if err != nil {
@@ -116,14 +113,6 @@ func (network *Network) SendPingMessage(contact *Contact, port int, donePing cha
 			fmt.Println(err)
 			return
 	}
-
-	buffer := make([]byte, 1024)
-	n, _, err := conn.ReadFromUDP(buffer)
-	if err != nil {
-			fmt.Println(err)
-			return
-		}
-	fmt.Printf("Answer: %s", string(buffer[0:n]))
 	donePing <- true
 }
 

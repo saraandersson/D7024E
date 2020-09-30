@@ -1,89 +1,67 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-        //"flag"
-	"net"
-	"os"
-	"time"
-        "d7024e"
-        //"strconv"
-        "strings"
+	//"bufio"
+    "fmt"
+    "flag"
+     "net"
+     "os"
+     //"time"
+     "d7024e"
+     "strconv"
 )
-
-//import "d7024e"
 
 const defaultPort ="8000"
 
 func main() {
-        /*Add contacts and create routing tables*/
-        bootstrapContact :=  d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), "localhost:8000")
-        contact1 := d7024e.NewContact(d7024e.NewKademliaID("1111111100000000000000000000000000000000"), "localhost:8002")
-        contact2 := d7024e.NewContact(d7024e.NewKademliaID("1111111200000000000000000000000000000000"), "localhost:8002")
-        contact3 := d7024e.NewContact(d7024e.NewKademliaID("1111111500000000000000000000000000000000"), "localhost:8002")
-        contact4 := d7024e.NewContact(d7024e.NewKademliaID("1111111400000000000000000000000000000000"), "localhost:8002")
-        contact5 := d7024e.NewContact(d7024e.NewKademliaID("2111111400000000000000000000000000000000"), "localhost:8002")
-        
-        ntContact1 := d7024e.NewNetwork(contact1)
-        ntContact2 := d7024e.NewNetwork(contact2)
-        ntContact3 := d7024e.NewNetwork(contact3)
-        ntContact4 := d7024e.NewNetwork(contact4)
-        ntContact5 := d7024e.NewNetwork(contact5)
+        /*Input flags*/
+        var port = flag.String("port", defaultPort,"Test")
+        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
+        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
+	flag.Parse()
 
-        <- time.After(1*time.Second)
+        bootstrapNodeValue := os.Getenv("BOOTSTRAPNODE")
+        var contact d7024e.Contact
+        var address string
+        var currentPort int
+        /*If bootstrapNodeValue == "1" => boostrapNode
+          Else => kademliaNode
+        */
+        if (bootstrapNodeValue == "1"){
+                currentPort, _ = strconv.Atoi(defaultPort)
+                /*create boostrapcontact*/        
+                address = *bootstrapIP +":"+ *bootstrapPort
+                contact = d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), address)
+                 /*Create network, routingtable for bootstrap node*/
 
-        rtBootstrap := d7024e.NewRoutingTable(bootstrapContact)
+        } else {
+                currentPort, _ = strconv.Atoi(*port)
+                /*create a new contact for the node*/
+                address = GetIPContainer() + ":" + *port
+                contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
+        }
+
+        network := d7024e.NewNetwork(contact)
+        routingtable := d7024e.NewRoutingTable(contact)
+        /*Create kademlia network for bootstrap node*/
         done := make(chan bool)
-        network := d7024e.NewNetwork(bootstrapContact)
-        go network.Listen(bootstrapContact.Address, 8000)
-        kademliaNetwork := d7024e.NewKademlia(&network, &bootstrapContact, rtBootstrap, 20, 3, done)
-        <- time.After(1*time.Second)
-        fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact1, &ntContact1, 8002)
-        fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact2, &ntContact2, 8002)
-        fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact3, &ntContact3, 8002)
-        fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact4, &ntContact4, 8002)
-        fmt.Println("Här kommer listan:")
-        kademliaNetwork.LookupContact(&contact5, &ntContact5, 8002)
+        kademliaNetwork := d7024e.NewKademlia(&network, &contact, routingtable, 20, 3, done)
 
-        /*Temp store functionality until the other containers work*/
+        //go network.Listen(address, currentPort)
+        //<-time.After(2*time.Second) 
 
-
-        reader := bufio.NewReader(os.Stdin)
-        fmt.Println("Type operation below, you can choose between following: store, find, put, get, exit")
-        fmt.Println("---------------------")
-
-  //for {
-        fmt.Print("-> ")
-                text, _ := reader.ReadString('\n')
-                text = strings.TrimRight(text, "\n")
-                
-                switch text {
-                        case "store":
-                                fmt.Println("enter store")
-                                
-                                fmt.Print("Enter data to store: ")
-                                data, _ := reader.ReadString('\n')
-                                data = strings.TrimRight(text, "\n")
-                                sendData := []byte(data + "\n")
-                                kademliaNetwork.Store(sendData)
-                        case "find":
-                                fmt.Println("enter find")
-                        case "put":
-                                fmt.Println("enter put")
-                        case "get":
-                                fmt.Println("enter get")
-                        case "exit":
-                                fmt.Println("enter exit")
-                        default:
-                                fmt.Println("Please type correct operation, you can choose between following: store, find, put, get, exit")
-                }
-
-
+        /*Perform node lookup and network join if not a bootstrap node*/
+        if (bootstrapNodeValue != "1"){
+                fmt.Println("Här kommer listan:")
+                bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
+                bootstrapContact := d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), bootstrapAddress)
+                routingtable.AddContact(bootstrapContact)
+                donePing := make(chan bool)
+                boostrapPortPing, _ := strconv.Atoi(defaultPort)
+                go network.SendPingMessage(&bootstrapContact,boostrapPortPing,donePing)
+                kademliaNetwork.LookupContact(&contact, &network, currentPort)
+                <- donePing
+        }
 }
 
 func GetIPContainer() string{
@@ -92,4 +70,3 @@ func GetIPContainer() string{
         fmt.Println("Container IP address: " + addrs[0])
         return addrs[0]
 }
-

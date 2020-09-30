@@ -1,12 +1,9 @@
 FROM golang
-#RUN go get -u google.golang.org/grpc
 RUN go get github.com/golang/protobuf/proto
 RUN go get -u github.com/golang/protobuf/protoc-gen-go
-#RUN go install google.golang.org/protobuf/cmd/protoc-gen-go
 WORKDIR /go/src/main
+COPY cli /go/src/cli
 COPY protobuf /go/src/protobuf
-#SHELL ["/bin/sh", "-c"]
-#RUN  protoc -I ./ --go_out=. message.proto
 COPY d7024e /go/src/d7024e
 COPY main /go/src/main
 RUN go build main.go
