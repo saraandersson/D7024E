@@ -72,18 +72,25 @@ func (network *Network) Listen(ip string, port int) {
     }
 	connection, err := net.ListenUDP("udp4", s)
 	fmt.Println("connection i listen")
-	fmt.Println(connection)
+	//fmt.Println(connection.LocalAddr().String())
     if err != nil {
             fmt.Println(err)
             return
     }
     defer connection.Close()
-	buffer := make([]byte, 1024)
 	for {
-		n, _, _ := connection.ReadFromUDP(buffer)
 		fmt.Println("Listen lyssnar")
+		buffer := make([]byte, 1024)
+		n, addr, err := connection.ReadFrom(buffer)
 		newMessage := &protobuf.Message{}
 		errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
+		if addr != nil {
+			fmt.Println("addressen")
+			fmt.Println(addr)
+		}
+		if err != nil {
+			fmt.Println(err)
+		}
 		if errorMessage!=nil {
 			fmt.Println(errorMessage)
 		}
@@ -91,6 +98,7 @@ func (network *Network) Listen(ip string, port int) {
 		fmt.Print(newMessage)
 		go network.MessageHandler("Ping", newMessage)
 	}
+	fmt.Println("exit for loop in listen")
 }
 
 func createProtoBufMessage(senderContact *Contact, receiverContact *Contact) *protobuf.Message {
@@ -145,11 +153,11 @@ func (network *Network) SendStoreMessage(data []byte) {
 	// TODO
 }
 
-func NewNetwork(contact Contact) Network {
+func NewNetwork(contact Contact, routingTable RoutingTable) Network {
 	//sendPing := make(chan bool)
 	network := Network{}
 	network.contact=&contact
-	network.routingTable= NewRoutingTable(contact)
+	network.routingTable= &routingTable
 	//go network.SendPingMessage(bootstrapContact, sendPing)
 	//<- sendPing
 	return network

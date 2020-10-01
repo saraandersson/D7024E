@@ -153,11 +153,11 @@ func (kademlia *Kademlia) Store(data []byte) {
 	// TODO
 }
 
-func NewKademlia(network *Network, contact *Contact, routingTable *RoutingTable, k int, alpha int, done chan bool) Kademlia{
+func NewKademlia(network *Network, contact *Contact, k int, alpha int, done chan bool) Kademlia{
 	kademlia := Kademlia{}
 	kademlia.network=network
 	kademlia.contact = contact
-	kademlia.routingTable = routingTable
+	kademlia.routingTable = network.routingTable
 	kademlia.k = k
 	kademlia.alpha = alpha
 	kademlia.done = done

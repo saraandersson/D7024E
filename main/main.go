@@ -21,7 +21,7 @@ func main() {
         flag.Parse()*/
         
         bootstrapID := "FFFFFFFF00000000000000000000000000000000"
-        bootstrapIP := "172.0.0.1"
+        bootstrapIP := "172.19.0.2"
 
         bootstrapNodeValue := os.Getenv("BOOTSTRAPNODE")
         var contact d7024e.Contact
@@ -36,7 +36,8 @@ func main() {
                 address = bootstrapIP +":"+ defaultPort
                 contact = d7024e.NewContact(d7024e.NewKademliaID(bootstrapID), address)
                  /*Create network, routingtable for bootstrap node*/
-                 network := d7024e.NewNetwork(contact)
+                 routingtable := d7024e.NewRoutingTable(contact)
+                 network := d7024e.NewNetwork(contact, *routingtable)
                  go network.Listen(address, currentPort)
                  <-time.After(2*time.Second) 
 
@@ -44,12 +45,13 @@ func main() {
                 currentPort = 8080
                 /*create a new contact for the node*/
                 address = GetIPContainer() + ":" + "8080"
+                //address = "0.0.0.0:8080"
                 contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-                network := d7024e.NewNetwork(contact)
                 routingtable := d7024e.NewRoutingTable(contact)
+                network := d7024e.NewNetwork(contact, *routingtable)
                 /*Create kademlia network for bootstrap node*/
                 done := make(chan bool)
-                kademliaNetwork := d7024e.NewKademlia(&network, &contact, routingtable, 20, 3, done)
+                kademliaNetwork := d7024e.NewKademlia(&network, &contact, 20, 3, done)
                 go network.Listen(address, currentPort)
                 <-time.After(2*time.Second) 
                 /*Perform node lookup and network join if not a bootstrap node*/
@@ -69,6 +71,7 @@ func main() {
 
         }
 }
+
 
 func GetIPContainer() string{
         containerHostname, _ := os.Hostname()
