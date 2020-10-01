@@ -5,7 +5,7 @@ import (
 	//"bufio"
 	"net"
 	//"os"
-	"time"
+	//"time"
 	"strconv"
 	"github.com/golang/protobuf/proto"
 	"protobuf"
@@ -44,9 +44,15 @@ func (network *Network) StoreDataOnNode(file File) {
 func (network *Network) MessageHandler(funcType string, message *protobuf.Message) {
 	switch funcType {
 	case "Ping":
-		fmt.Printf("Ping! kommer till messagehandler")
+		fmt.Println("Ping! kommer till messagehandler")
+		fmt.Println("Network id")
+		fmt.Println(network.contact.ID.String())
+		fmt.Println("Message.SenderID")
+		fmt.Println(message.SenderID)
 		contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
 		network.routingTable.AddContact(contact)
+		fmt.Println("RoutingTable")
+		fmt.Println(network.routingTable)
 	default:
 		fmt.Println("Error in MessageHandler: Wrong message type")
 	}
@@ -54,6 +60,10 @@ func (network *Network) MessageHandler(funcType string, message *protobuf.Messag
 
 func (network *Network) Listen(ip string, port int) {
 	fmt.Println("kommer till listen")
+	fmt.Println("ip i listen:")
+	fmt.Println(ip)
+	fmt.Println("Port i listen")
+	fmt.Println(port)
 	port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
@@ -61,6 +71,8 @@ func (network *Network) Listen(ip string, port int) {
             return
     }
 	connection, err := net.ListenUDP("udp4", s)
+	fmt.Println("connection i listen")
+	fmt.Println(connection)
     if err != nil {
             fmt.Println(err)
             return
@@ -81,32 +93,37 @@ func (network *Network) Listen(ip string, port int) {
 	}
 }
 
-func (network *Network) createProtoBufMessage(contact *Contact) *protobuf.Message {
+func createProtoBufMessage(senderContact *Contact, receiverContact *Contact) *protobuf.Message {
 	/*protoBufMessage := []string {
 		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
 	//var text = "hello"
 	protoBufMessage := &protobuf.Message {
-			SenderID: network.contact.ID.String(),
-			SenderAddress: network.contact.Address,
-			ReceiverID: contact.ID.String(),
-			ReceiverAddress: contact.Address}
+			SenderID: senderContact.ID.String(),
+			SenderAddress: senderContact.Address,
+			ReceiverID: receiverContact.ID.String(),
+			ReceiverAddress: receiverContact.Address}
 	return protoBufMessage
 }
 
-func (network *Network) SendPingMessage(contact *Contact, port int, donePing chan bool) {
+func SendPingMessage(senderContact *Contact, receiverContact *Contact, port int, donePing chan bool) {
 	fmt.Println("Kommer till ping!")
-	go network.Listen(contact.Address, port) //Gör egen tråd
-	<- time.After(2*time.Second)
-	server, err := net.ResolveUDPAddr("udp4", contact.Address)
+	/*go network.Listen(contact.Address, port) //Gör egen tråd
+	<- time.After(2*time.Second)*/
+	fmt.Println("Kontaktaddress")
+	fmt.Println(receiverContact.Address)
+	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
+
 	if err != nil {
 			fmt.Println(err)
 			return
 	}
 	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
 	defer conn.Close()
-	message := network.createProtoBufMessage(contact)
+	message := createProtoBufMessage(senderContact, receiverContact)
 	data,_ := proto.Marshal(message)
+	fmt.Println("meddelande som skickas")
+	fmt.Println(message)
 	//data := []byte("Ping " + "\n")
 	_, err = conn.Write(data)
 	if err != nil {

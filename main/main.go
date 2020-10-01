@@ -3,10 +3,10 @@ package main
 import (
 	//"bufio"
     "fmt"
-    "flag"
+    //"flag"
      "net"
      "os"
-     //"time"
+     "time"
      "d7024e"
      "strconv"
 )
@@ -15,10 +15,13 @@ const defaultPort ="8000"
 
 func main() {
         /*Input flags*/
-        var port = flag.String("port", defaultPort,"Test")
+        /*var port = flag.String("port", defaultPort,"Test")
         var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
         var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
-	flag.Parse()
+        flag.Parse()*/
+        
+        bootstrapID := "FFFFFFFF00000000000000000000000000000000"
+        bootstrapIP := "172.0.0.1"
 
         bootstrapNodeValue := os.Getenv("BOOTSTRAPNODE")
         var contact d7024e.Contact
@@ -30,37 +33,40 @@ func main() {
         if (bootstrapNodeValue == "1"){
                 currentPort, _ = strconv.Atoi(defaultPort)
                 /*create boostrapcontact*/        
-                address = *bootstrapIP +":"+ *bootstrapPort
-                contact = d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), address)
+                address = bootstrapIP +":"+ defaultPort
+                contact = d7024e.NewContact(d7024e.NewKademliaID(bootstrapID), address)
                  /*Create network, routingtable for bootstrap node*/
+                 network := d7024e.NewNetwork(contact)
+                 go network.Listen(address, currentPort)
+                 <-time.After(2*time.Second) 
 
         } else {
-                currentPort, _ = strconv.Atoi(*port)
+                currentPort = 8080
                 /*create a new contact for the node*/
-                address = GetIPContainer() + ":" + *port
+                address = GetIPContainer() + ":" + "8080"
                 contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
-        }
-
-        network := d7024e.NewNetwork(contact)
-        routingtable := d7024e.NewRoutingTable(contact)
-        /*Create kademlia network for bootstrap node*/
-        done := make(chan bool)
-        kademliaNetwork := d7024e.NewKademlia(&network, &contact, routingtable, 20, 3, done)
-
-        //go network.Listen(address, currentPort)
-        //<-time.After(2*time.Second) 
-
-        /*Perform node lookup and network join if not a bootstrap node*/
-        if (bootstrapNodeValue != "1"){
+                network := d7024e.NewNetwork(contact)
+                routingtable := d7024e.NewRoutingTable(contact)
+                /*Create kademlia network for bootstrap node*/
+                done := make(chan bool)
+                kademliaNetwork := d7024e.NewKademlia(&network, &contact, routingtable, 20, 3, done)
+                go network.Listen(address, currentPort)
+                <-time.After(2*time.Second) 
+                /*Perform node lookup and network join if not a bootstrap node*/
                 fmt.Println("Här kommer listan:")
-                bootstrapAddress := *bootstrapIP +":"+ *bootstrapPort
+                bootstrapAddress := bootstrapIP +":"+ defaultPort
                 bootstrapContact := d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), bootstrapAddress)
                 routingtable.AddContact(bootstrapContact)
                 donePing := make(chan bool)
                 boostrapPortPing, _ := strconv.Atoi(defaultPort)
-                go network.SendPingMessage(&bootstrapContact,boostrapPortPing,donePing)
-                kademliaNetwork.LookupContact(&contact, &network, currentPort)
-                <- donePing
+                d7024e.SendPingMessage(&contact,&bootstrapContact,boostrapPortPing,donePing)
+                kademliaNetwork.LookupContact(currentPort)
+                fmt.Println("Lookup done!")
+                //<- donePing
+        }
+
+        for {
+
         }
 }
 

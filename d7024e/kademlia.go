@@ -32,8 +32,8 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 */
 
 /*Network joining and node lookup*/
-func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network, port int){
-	contacts := kademlia.routingTable.FindClosestContacts(target.ID, kademlia.k)
+func (kademlia *Kademlia) LookupContact(port int){
+	contacts := kademlia.routingTable.FindClosestContacts(kademlia.network.contact.ID, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
 	
 
@@ -48,15 +48,15 @@ func (kademlia *Kademlia) LookupContact(target *Contact, targetNetwork *Network,
 	targetNetwork.routingTable.AddContact(*kademlia.contact)*/
 
 	/*Node lookup*/
-	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *targetNetwork, *target)
+	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *kademlia.network.contact)
 	fmt.Println(contactsToAdd)
 	for i:=0; i<len(contactsToAdd); i++ {
-		targetNetwork.routingTable.AddContact(contactsToAdd[i])
+		kademlia.network.routingTable.AddContact(contactsToAdd[i])
 	}
 }
 
 /*NodeLookUp function*/
-func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Contact, contactNetwork Network, currentContact Contact) []Contact {
+func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Contact, currentContact Contact) []Contact {
 	/*Base case*/
 	if (len(alphaContacts)==0) {
 		return addedContacts
@@ -66,7 +66,7 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	stringListAlpha := strings.Split(alphaContacts[0].Address, ":")
 	portStringAlpha := stringListAlpha[1]
 	portAlpha, _ := strconv.Atoi(portStringAlpha)
-	go contactNetwork.SendPingMessage(&alphaContacts[0], portAlpha, pingAlphaNode)
+	go SendPingMessage(&currentContact,&alphaContacts[0], portAlpha, pingAlphaNode)
 	select {
 	case <-pingAlphaNode:
 		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
@@ -91,7 +91,7 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 				stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
 				portString := stringList[1]
 				port, _ := strconv.Atoi(portString)
-				go contactNetwork.SendPingMessage(&kContactsFromAlpha[i], port, donePing)
+				go SendPingMessage(&currentContact,&kContactsFromAlpha[i], port, donePing)
 				select {
 				case <- donePing:
 					addedContacts = append(addedContacts,kContactsFromAlpha[i])
@@ -114,7 +114,7 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	} else {
 		alphaContacts = make([]Contact, 0)
 	}
-	return kademlia.NodeLookUp(alphaContacts, addedContacts, contactNetwork, currentContact)
+	return kademlia.NodeLookUp(alphaContacts, addedContacts, currentContact)
 
 }
 
