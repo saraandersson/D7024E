@@ -49,10 +49,14 @@ func (network *Network) MessageHandler(funcType string, message *protobuf.Messag
 		fmt.Println(network.contact.ID.String())
 		fmt.Println("Message.SenderID")
 		fmt.Println(message.SenderID)
+		fmt.Println("Message.SenderAddress")
+		fmt.Println(message.SenderAddress)
 		contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
 		network.routingTable.AddContact(contact)
-		fmt.Println("RoutingTable")
-		fmt.Println(network.routingTable)
+		fmt.Println("Contact to add in Messagehandler")
+		fmt.Println(contact.Address)
+		fmt.Println("Contact inserted in RoutingTable")
+		//fmt.Println(network.routingTable)
 	default:
 		fmt.Println("Error in MessageHandler: Wrong message type")
 	}

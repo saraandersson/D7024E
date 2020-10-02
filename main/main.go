@@ -55,16 +55,17 @@ func main() {
                 go network.Listen(address, currentPort)
                 <-time.After(2*time.Second) 
                 /*Perform node lookup and network join if not a bootstrap node*/
-                fmt.Println("Här kommer listan:")
                 bootstrapAddress := bootstrapIP +":"+ defaultPort
                 bootstrapContact := d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), bootstrapAddress)
+                routingtable.AddContact(contact)
                 routingtable.AddContact(bootstrapContact)
                 donePing := make(chan bool)
                 boostrapPortPing, _ := strconv.Atoi(defaultPort)
-                d7024e.SendPingMessage(&contact,&bootstrapContact,boostrapPortPing,donePing)
+                go d7024e.SendPingMessage(&contact,&bootstrapContact,boostrapPortPing,donePing)
+                <- donePing
                 kademliaNetwork.LookupContact(currentPort)
                 fmt.Println("Lookup done!")
-                //<- donePing
+                
         }
 
         for {

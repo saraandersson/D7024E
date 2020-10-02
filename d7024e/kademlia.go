@@ -31,9 +31,19 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 
 */
 
+
+/*Store-fråga: 
+	- Ska man kunna välja vilken nod man vill spara på? Blir det på nätverket? 
+	- Ska man använda sig av docker exec, gå in i den noden för att spara eller ska användaren skriva in id?
+
+*/
+
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(port int){
-	contacts := kademlia.routingTable.FindClosestContacts(kademlia.network.contact.ID, kademlia.k)
+	/*Vilket routingtable ska pekas på för att det ska bli rätt?*/
+	contacts := kademlia.network.routingTable.FindClosestContacts(kademlia.network.contact.ID, kademlia.k)
+	fmt.Println("KClosest")
+	fmt.Println(contacts)
 	addAlphaContacts := make([]Contact, 0)
 	
 
@@ -49,6 +59,7 @@ func (kademlia *Kademlia) LookupContact(port int){
 
 	/*Node lookup*/
 	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *kademlia.network.contact)
+	fmt.Println("Här kommer slutlistan")
 	fmt.Println(contactsToAdd)
 	for i:=0; i<len(contactsToAdd); i++ {
 		kademlia.network.routingTable.AddContact(contactsToAdd[i])
@@ -70,7 +81,9 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	select {
 	case <-pingAlphaNode:
 		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
-		kContactsFromAlpha := kademlia.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)
+		kContactsFromAlpha := kademlia.network.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)
+		fmt.Println("KContacts from alpha")
+		fmt.Println(kContactsFromAlpha)
 		/*Loop through all k nodes*/
 		for i:=0; i<len(kContactsFromAlpha); i++ {
 			isInList := false
