@@ -25,7 +25,8 @@ type File struct {
 }
 
 type Message struct {
-	contacts []Contacts
+	contactsID 		[]string
+	contactsAddress []string
 }
 
 func NewFile(key KademliaID, data []byte, contact Contact) File{
@@ -49,9 +50,6 @@ func (network *Network) MessageHandlerPing(message *protobuf.Message) {
 		network.routingTable.AddContact(contact)
 }
 
-func (network *Network) MessageHandlerAlpha(message *protobuf.Message, returnedMessage chan(Message)){
-	returnedMessage <- network.routingTable.FindClosestContacts(network.contact.ID, 20)
-}
 
 func (network *Network) Listen(ip string, port int, returnedMessage chan(Message)) {
 	fmt.Println("kommer till listen")
@@ -76,7 +74,7 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 	for {
 		fmt.Println("Listen lyssnar")
 		buffer := make([]byte, 1024)
-		n, addr, err := connection.ReadFrom(buffer)
+		n, addr, err := connection.ReadFromUDP(buffer)
 		newMessage := &protobuf.Message{}
 		errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
 		if addr != nil {
@@ -95,8 +93,16 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 			go network.MessageHandlerPing(newMessage)
 		}
 		if (newMessage.MessageType == "Alpha"){
-			returnedMessage.contacts <- network.routingTable.FindClosestContacts(network.contact.ID, 20)
-			data := []byte(returnedMessage.contacts)
+			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
+			contactId :=  make([]string, len(contacts))
+			contactAddress := make([]string, len(contacts))
+			for i:=0; i<len(contacts); i++{
+				contactId[i] = contacts[i].ID.String()
+				contactAddress[i] = contacts[i].Address
+			}
+			message := createProtoBufMessageForContacts(contactId, contactAddress)
+			data,_ := proto.Marshal(message)
+			//data := []byte(returnedMessage.contacts)
             _, err = connection.WriteToUDP(data, addr)
             if err != nil {
                     fmt.Println(err)
@@ -108,6 +114,16 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 	fmt.Println("exit for loop in listen")
 }
 
+func createProtoBufMessageForContacts(contactId []string, contactAddress []string) *protobuf.ContactsMessage {
+	/*protoBufMessage := []string {
+		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
+	//var text = "hello"
+	protoBufMessage := &protobuf.ContactsMessage{
+			ContactsID: contactId,
+			ContactsAddress: contactAddress}
+	return protoBufMessage
+}
+
 func createProtoBufMessage(senderContact *Contact, receiverContact *Contact, messageType string) *protobuf.Message {
 	/*protoBufMessage := []string {
 		network.contact.ID.String(), network.contact.Address, contact.ID.String(), contact.Address}*/
@@ -116,7 +132,7 @@ func createProtoBufMessage(senderContact *Contact, receiverContact *Contact, mes
 			SenderID: senderContact.ID.String(),
 			SenderAddress: senderContact.Address,
 			ReceiverID: receiverContact.ID.String(),
-			ReceiverAddress: receiverContact.Address
+			ReceiverAddress: receiverContact.Address,
 			MessageType: messageType}
 	return protoBufMessage
 }
@@ -149,7 +165,7 @@ func SendPingMessage(senderContact *Contact, receiverContact *Contact, port int,
 	donePing <- true
 }
 
-func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port int, donePing chan bool, returnMessage chan(Message)){
+func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port int, returnMessage chan []Contact){
 	fmt.Println("Kommer till sendFindAlphaMessage!")
 	/*go network.Listen(contact.Address, port) //Gör egen tråd
 	<- time.After(2*time.Second)*/
@@ -174,9 +190,34 @@ func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port
 			fmt.Println(err)
 			return
 	}
+	buffer := make([]byte, 1024)
+	n, _, err := conn.ReadFromUDP(buffer)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	newMessage := &protobuf.ContactsMessage{}
+	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
+	fmt.Println(errorMessage)
+	fmt.Println("Answer: %s", newMessage.ContactsID)
+	contacts := make([]Contact, len(newMessage.ContactsID))
+	for i:=0; i<len(newMessage.ContactsID); i++ {
+		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
+	}
+	fmt.Println("Här kommer alla kontakter som hittades")
+	fmt.Println(contacts)
 
+	returnMessage <- contacts
+	fmt.Println("Här kommer returnmessage")
+	fmt.Println(returnMessage)
 
-	donePing <- true
+}
+
+func NewMessage(contactsID []string, contactsAddress []string) Message{
+	newMessage := Message{}
+	newMessage.contactsID = contactsID
+	newMessage.contactsAddress = contactsAddress
+	return newMessage
 }
 
 func (network *Network) SendFindContactMessage(contact *Contact) {

@@ -38,6 +38,10 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 
 */
 
+/*TODO:
+- Ta bort bootstrap och sig själv från slutlistan! Kolla if-satserna!
+*/
+
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(port int){
 	/*Vilket routingtable ska pekas på för att det ska bli rätt?
@@ -82,51 +86,61 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	select {
 	case <-pingAlphaNode:
 		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
-		kContactsFromAlpha := kademlia.network.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)
-		/*kContactsFromAplha = channelvärdet från message*/
-		addAlphaContacts := make([]Contact, 0)
-		/*Picks alpha first nodes from the k closest*/
-		if (len(contacts)>kademlia.alpha) {
-			addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha[0:kademlia.alpha]...)
-		} else {
-			addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha...)
-		}
-		kContactsFromAlpha = addAlphaContacts
-		fmt.Println("KContacts from alpha")
-		fmt.Println(kContactsFromAlpha)
-		/*Loop through all k nodes*/
-		for i:=0; i<len(kContactsFromAlpha); i++ {
-			isInList := false
-			if (len(addedContacts) > 0) {
-				/*Loop through all nodes in addedContacts*/
-				for x:=0; x<len(addedContacts); x++ {
-					/*Check that a node is not already in addedContacts*/
-					if (kContactsFromAlpha[i].ID.String() == addedContacts[x].ID.String()){
-						isInList = true
+		/*kContactsFromAlpha := kademlia.network.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)*/
+		returnMessage := make(chan []Contact)
+		go SendFindAlphaMessage(&currentContact, &alphaContacts[0], portAlpha, returnMessage)
+		select {
+		case kContactsFromAlpha := <- returnMessage:
+			//close(returnMessage)
+			fmt.Println("Hämtat Alpha contacts!")
+			fmt.Println(kContactsFromAlpha)
+
+			/*kContactsFromAplha = channelvärdet från message*/
+			var addAlphaContacts []Contact
+			/*Picks alpha first nodes from the k closest*/
+			if (len(kContactsFromAlpha)>kademlia.alpha) {
+				addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha[0:kademlia.alpha]...)
+			} else {
+				addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha...)
+			}
+			kContactsFromAlpha = addAlphaContacts
+			fmt.Println("KContacts from alpha")
+			fmt.Println(kContactsFromAlpha)
+			/*Loop through all k nodes*/
+			for i:=0; i<len(kContactsFromAlpha); i++ {
+				isInList := false
+				if (len(addedContacts) > 0) {
+					/*Loop through all nodes in addedContacts*/
+					for x:=0; x<len(addedContacts); x++ {
+						/*Check that a node is not already in addedContacts*/
+						if (kContactsFromAlpha[i].ID.String() == addedContacts[x].ID.String()){
+							isInList = true
+						}
+					}
+				}
+				/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
+					add node to addedContacts
+				*/
+				if ((isInList==false) && (kContactsFromAlpha[i].ID.String() != currentContact.ID.String())) {
+					donePing := make(chan bool)
+					stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
+					portString := stringList[1]
+					port, _ := strconv.Atoi(portString)
+					go SendPingMessage(&currentContact,&kContactsFromAlpha[i], port, donePing)
+					select {
+					case <- donePing:
+						addedContacts = append(addedContacts,kContactsFromAlpha[i])
+					/*If node does not answer in 10 seconds, the node is dead*/
+					case <-time.After(10*time.Second):
+						/*Send ping again??*/
+						fmt.Println("TIMEOUT")
+						continue
 					}
 				}
 			}
-			/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
-				add node to addedContacts
-			*/
-			if ((isInList==false) && (kContactsFromAlpha[i].ID.String() != currentContact.ID.String())) {
-				donePing := make(chan bool)
-				stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
-				portString := stringList[1]
-				port, _ := strconv.Atoi(portString)
-				go SendPingMessage(&currentContact,&kContactsFromAlpha[i], port, donePing)
-				select {
-				case <- donePing:
-					addedContacts = append(addedContacts,kContactsFromAlpha[i])
-				/*If node does not answer in 10 seconds, the node is dead*/
-				case <-time.After(10*time.Second):
-					/*Send ping again??*/
-					fmt.Println("TIMEOUT")
-					continue
-				}
-			}
 
-		}
+	}
+	fmt.Println("Jag har gått förbi select-caset")
 	/*If node does not answer in 10 seconds, remove alpha node from list*/
 	case <-time.After(10*time.Second):
 		addedContacts = RemoveFromList(addedContacts, alphaContacts[0])

@@ -38,7 +38,8 @@ func main() {
                  /*Create network, routingtable for bootstrap node*/
                  routingtable := d7024e.NewRoutingTable(contact)
                  network := d7024e.NewNetwork(contact, *routingtable)
-                 go network.Listen(address, currentPort)
+                 returnMessage := make(chan d7024e.Message)
+                 go network.Listen(address, currentPort, returnMessage)
                  <-time.After(2*time.Second) 
 
         } else {
@@ -52,7 +53,8 @@ func main() {
                 /*Create kademlia network for bootstrap node*/
                 done := make(chan bool)
                 kademliaNetwork := d7024e.NewKademlia(&network, &contact, 20, 3, done)
-                go network.Listen(address, currentPort)
+                returnMessage := make(chan d7024e.Message)
+                go network.Listen(address, currentPort, returnMessage)
                 <-time.After(2*time.Second) 
                 /*Perform node lookup and network join if not a bootstrap node*/
                 bootstrapAddress := bootstrapIP +":"+ defaultPort
