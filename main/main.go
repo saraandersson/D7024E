@@ -31,10 +31,10 @@ func main() {
           Else => kademliaNode
         */
         if (bootstrapNodeValue == "1"){
-                currentPort, _ = strconv.Atoi(defaultPort)
+                 currentPort, _ = strconv.Atoi(defaultPort)
                 /*create boostrapcontact*/        
-                address = bootstrapIP +":"+ defaultPort
-                contact = d7024e.NewContact(d7024e.NewKademliaID(bootstrapID), address)
+                 address = bootstrapIP +":"+ defaultPort
+                 contact = d7024e.NewContact(d7024e.NewKademliaID(bootstrapID), address)
                  /*Create network, routingtable for bootstrap node*/
                  routingtable := d7024e.NewRoutingTable(contact)
                  network := d7024e.NewNetwork(contact, *routingtable)

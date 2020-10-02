@@ -40,7 +40,8 @@ KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa.
 
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(port int){
-	/*Vilket routingtable ska pekas på för att det ska bli rätt?*/
+	/*Vilket routingtable ska pekas på för att det ska bli rätt?
+	--> Current kademlia node*/
 	contacts := kademlia.network.routingTable.FindClosestContacts(kademlia.network.contact.ID, kademlia.k)
 	fmt.Println("KClosest")
 	fmt.Println(contacts)
@@ -82,6 +83,15 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	case <-pingAlphaNode:
 		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
 		kContactsFromAlpha := kademlia.network.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)
+		/*kContactsFromAplha = channelvärdet från message*/
+		addAlphaContacts := make([]Contact, 0)
+		/*Picks alpha first nodes from the k closest*/
+		if (len(contacts)>kademlia.alpha) {
+			addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha[0:kademlia.alpha]...)
+		} else {
+			addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha...)
+		}
+		kContactsFromAlpha = addAlphaContacts
 		fmt.Println("KContacts from alpha")
 		fmt.Println(kContactsFromAlpha)
 		/*Loop through all k nodes*/

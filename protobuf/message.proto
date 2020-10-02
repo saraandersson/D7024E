@@ -5,4 +5,5 @@ message Message {
   string senderAddress = 2;
   string receiverID = 3;
   string receiverAddress = 4;
+  string messageType = 5;
 }
