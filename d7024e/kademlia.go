@@ -14,41 +14,14 @@ type Kademlia struct {
 	routingTable 	*RoutingTable
 	k 				int
 	alpha			int
-	done 			chan bool
 }
 
-/*Node Lookup:
-- Findkclosest
-- take first alhpa contacts from k-closest
-- send nodelookup request to the k-closest to the alpha nodes
-- Check so no duplicates are added to the node, since the alpha nodes can have common
-  k closest nodes it can be duplicates
-- End recursion when all alpha k closest nodes have received response from their nodes
-- Use SendFindContactMessage to add contact to the other nodes k buckets
-- Use channels to define when a node is contacted
+/*TODO: Fixa findValue (likt NodeLookUp) och ändra ping så den skickar fillistan tillbaka som ett meddelande*/
 
-KademliaRandomId fungerar ej som den ska, vissa blir samma id, får fixa. 
-
-*/
-
-
-/*Store-fråga: 
-	- Ska man kunna välja vilken nod man vill spara på? Blir det på nätverket? 
-	- Ska man använda sig av docker exec, gå in i den noden för att spara eller ska användaren skriva in id?
-
-*/
-
-/*TODO:
-- Ta bort bootstrap och sig själv från slutlistan! Kolla if-satserna!
-*/
 
 /*Network joining and node lookup*/
-func (kademlia *Kademlia) LookupContact(port int){
-	/*Vilket routingtable ska pekas på för att det ska bli rätt?
-	--> Current kademlia node*/
-	contacts := kademlia.network.routingTable.FindClosestContacts(kademlia.network.contact.ID, kademlia.k)
-	fmt.Println("KClosest")
-	fmt.Println(contacts)
+func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
+	contacts := kademlia.network.routingTable.FindClosestContacts(&kademliaId, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
 	
 
@@ -58,17 +31,14 @@ func (kademlia *Kademlia) LookupContact(port int){
 	} else {
 		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
-	/*Network joining*/
-	/*kademlia.routingTable.AddContact(*target)
-	targetNetwork.routingTable.AddContact(*kademlia.contact)*/
 
 	/*Node lookup*/
 	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *kademlia.network.contact)
-	fmt.Println("Här kommer slutlistan")
-	fmt.Println(contactsToAdd)
+
 	for i:=0; i<len(contactsToAdd); i++ {
 		kademlia.network.routingTable.AddContact(contactsToAdd[i])
 	}
+	return contactsToAdd
 }
 
 /*NodeLookUp function*/
@@ -86,15 +56,10 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 	select {
 	case <-pingAlphaNode:
 		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
-		/*kContactsFromAlpha := kademlia.network.routingTable.FindClosestContacts(alphaContacts[0].ID, kademlia.k)*/
 		returnMessage := make(chan []Contact)
 		go SendFindAlphaMessage(&currentContact, &alphaContacts[0], portAlpha, returnMessage)
 		select {
 		case kContactsFromAlpha := <- returnMessage:
-			//close(returnMessage)
-			fmt.Println("Hämtat Alpha contacts!")
-			fmt.Println(kContactsFromAlpha)
-
 			/*kContactsFromAplha = channelvärdet från message*/
 			var addAlphaContacts []Contact
 			/*Picks alpha first nodes from the k closest*/
@@ -104,8 +69,6 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 				addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha...)
 			}
 			kContactsFromAlpha = addAlphaContacts
-			fmt.Println("KContacts from alpha")
-			fmt.Println(kContactsFromAlpha)
 			/*Loop through all k nodes*/
 			for i:=0; i<len(kContactsFromAlpha); i++ {
 				isInList := false
@@ -140,7 +103,6 @@ func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Co
 			}
 
 	}
-	fmt.Println("Jag har gått förbi select-caset")
 	/*If node does not answer in 10 seconds, remove alpha node from list*/
 	case <-time.After(10*time.Second):
 		addedContacts = RemoveFromList(addedContacts, alphaContacts[0])
@@ -170,33 +132,64 @@ func RemoveFromList(contacts []Contact, contactToRemove Contact) []Contact {
 }
 
 
-func (kademlia *Kademlia) LookupData(hash string) {
-	// TODO
+func (kademlia *Kademlia) LookupData(hash string) []byte{
+	fmt.Println("Enter LookupData")
+	dataKey := NewKademliaID(hash)
+	data := kademlia.network.FindData(*dataKey)
+	if (data!=nil){
+		fmt.Println("Data found on node!")
+		fmt.Println(data)
+		return data
+	} else{
+		contacts := kademlia.network.routingTable.FindClosestContacts(&dataKey, kademlia.k)
+		addAlphaContacts := make([]Contact, 0)
+		/*Picks alpha first nodes from the k closest*/
+		if (len(contacts)>kademlia.alpha) {
+			addAlphaContacts = append(addAlphaContacts, contacts[0:kademlia.alpha]...)
+		} else {
+			addAlphaContacts = append(addAlphaContacts, contacts...)
+		}
+		LookupKClosestData(dataKey, addAlphaContacts)
+	}
+}
+
+func (kademlia *Kademlia) LookupKClosestData(dataKey KademliaID, addAlphaContacts []Contact) []byte{
+
+
+
 }
 
 func (kademlia *Kademlia) Store(data []byte) {
 	fmt.Println("Enter store")
 	fmt.Print(data)
-	fileKey := NewKademliaID("2111111400000000000000000000000000000000")
-	clostestK := kademlia.routingTable.FindClosestContacts(fileKey, kademlia.k)
+	fileKey := NewRandomKademliaID()
+	fmt.Println("Filekey: " + fileKey.String())
+	clostestK := kademlia.LookupContact(*fileKey)
 	fmt.Println("Närmsta k noderna:")
 	fmt.Println(clostestK)
 	for i:=0; i<len(clostestK); i++ {
-		file := NewFile(*fileKey, data, clostestK[i])
-		kademlia.network.StoreDataOnNode(file)
+		//file := NewFile(*clostestK[i].ID, data, clostestK[i])
+		//kademlia.network.StoreDataOnNode(file)
+		doneStorePing := make(chan bool)
+		go SendPingStoreMessage(&clostestK[i], data, 8080, doneStorePing)
+		select {
+		case <-doneStorePing:
+			fmt.Println("File stored on node: " +clostestK[i].ID.String())
+		case <-time.After(10*time.Second):
+			fmt.Println("TIMEOUT IN STORE")
+		}
 	}
 
 
 	// TODO
 }
 
-func NewKademlia(network *Network, contact *Contact, k int, alpha int, done chan bool) Kademlia{
+func NewKademlia(network *Network, contact *Contact, k int, alpha int) Kademlia{
 	kademlia := Kademlia{}
 	kademlia.network=network
 	kademlia.contact = contact
 	kademlia.routingTable = network.routingTable
 	kademlia.k = k
 	kademlia.alpha = alpha
-	kademlia.done = done
 	return kademlia
 }

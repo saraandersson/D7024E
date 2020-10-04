@@ -1,0 +1,6 @@
+syntax = "proto3";
+package protobuf;
+message StoreMessage {
+  bytes data = 1;
+  string messageType = 2;
+}

@@ -14,11 +14,6 @@ import (
 const defaultPort ="8000"
 
 func main() {
-        /*Input flags*/
-        /*var port = flag.String("port", defaultPort,"Test")
-        var bootstrapIP = flag.String("bootstrap_ip", "kademliaBootstrapHost", "Test")
-        var bootstrapPort = flag.String("bootstrap_port", defaultPort, "Test")
-        flag.Parse()*/
         
         bootstrapID := "FFFFFFFF00000000000000000000000000000000"
         bootstrapIP := "172.19.0.2"
@@ -51,22 +46,23 @@ func main() {
                 routingtable := d7024e.NewRoutingTable(contact)
                 network := d7024e.NewNetwork(contact, *routingtable)
                 /*Create kademlia network for bootstrap node*/
-                done := make(chan bool)
-                kademliaNetwork := d7024e.NewKademlia(&network, &contact, 20, 3, done)
+                kademliaNetwork := d7024e.NewKademlia(&network, &contact, 20, 3)
                 returnMessage := make(chan d7024e.Message)
                 go network.Listen(address, currentPort, returnMessage)
                 <-time.After(2*time.Second) 
                 /*Perform node lookup and network join if not a bootstrap node*/
                 bootstrapAddress := bootstrapIP +":"+ defaultPort
                 bootstrapContact := d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), bootstrapAddress)
+                /*Network joining*/
                 routingtable.AddContact(contact)
                 routingtable.AddContact(bootstrapContact)
                 donePing := make(chan bool)
                 boostrapPortPing, _ := strconv.Atoi(defaultPort)
                 go d7024e.SendPingMessage(&contact,&bootstrapContact,boostrapPortPing,donePing)
                 <- donePing
-                kademliaNetwork.LookupContact(currentPort)
-                fmt.Println("Lookup done!")
+                lookUpContactResult :=  kademliaNetwork.LookupContact(*contact.ID)
+                fmt.Println("Lookup done! Contacts found: ")
+                fmt.Println(lookUpContactResult)
                 
         }
 
