@@ -9,6 +9,7 @@ import (
      "time"
      "d7024e"
      "strconv"
+     "cli"
 )
 
 const defaultPort ="8000"
@@ -57,18 +58,20 @@ func main() {
                 routingtable.AddContact(contact)
                 routingtable.AddContact(bootstrapContact)
                 donePing := make(chan bool)
-                boostrapPortPing, _ := strconv.Atoi(defaultPort)
-                go d7024e.SendPingMessage(&contact,&bootstrapContact,boostrapPortPing,donePing)
+                //boostrapPortPing, _ := strconv.Atoi(defaultPort)
+                go d7024e.SendPingMessage(&contact,&bootstrapContact,donePing)
                 <- donePing
                 lookUpContactResult :=  kademliaNetwork.LookupContact(*contact.ID)
                 fmt.Println("Lookup done! Contacts found: ")
-                fmt.Println(lookUpContactResult)
-                
+                fmt.Println(lookUpContactResult) 
+                go cli.Cli(kademliaNetwork)      
         }
 
         for {
 
         }
+
+
 }
 
 

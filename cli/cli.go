@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
   "bufio"
@@ -7,13 +7,13 @@ import (
   "strings"
   "d7024e"
   "net"
-  "time"
+  //"time"
   //"strconv"
 )
 
-func main() {
+func Cli(kademlia d7024e.Kademlia) {
 
-	address := GetIPContainer() + ":" + "8080"
+	/*address := GetIPContainer() + ":" + "8080"
 	contact := d7024e.NewContact(d7024e.NewKademliaID("1111111100000000000000000000000000000000"), address)
 	routingtable := d7024e.NewRoutingTable(contact)
 	network := d7024e.NewNetwork(contact, *routingtable)
@@ -21,7 +21,6 @@ func main() {
 	returnMessage := make(chan d7024e.Message)
 	go network.Listen(address, 8080, returnMessage)
 	<-time.After(2*time.Second) 
-	/*Perform node lookup and network join if not a bootstrap node*/
 	bootstrapIP := "172.19.0.2"
 	bootstrapAddress := bootstrapIP +":8000"
 	bootstrapContact := d7024e.NewContact(d7024e.NewKademliaID("FFFFFFFF00000000000000000000000000000000"), bootstrapAddress)
@@ -29,13 +28,13 @@ func main() {
 	routingtable.AddContact(bootstrapContact)
 	donePing := make(chan bool)
 	//boostrapPortPing, _ := strconv.Atoi(defaultPort)
-	go d7024e.SendPingMessage(&contact,&bootstrapContact,8000,donePing)
+	go d7024e.SendPingMessage(&contact,&bootstrapContact,donePing)
 	<- donePing
 	kademliaNetwork.LookupContact(*contact.ID)
-	fmt.Println("Lookup done!")
+	fmt.Println("Lookup done!")*/
 	
   reader := bufio.NewReader(os.Stdin)
-  fmt.Println("Type operation below, you can choose between following: store, find, put, get, exit")
+  fmt.Println("Type operation below, you can choose between following: put, get, exit")
   fmt.Println("---------------------")
 
   for {
@@ -44,31 +43,31 @@ func main() {
 	text = strings.TrimRight(text, "\n")
 	
 	switch text {
-		case "store":
-			fmt.Println("enter store")
-			fmt.Print("Enter data to store: ")
+		case "put":
+			fmt.Print("Enter data to put: ")
 			data, _ := reader.ReadString('\n')
 			data = strings.TrimRight(data, "\n")
 			sendData := []byte(data + "\n")
-			kademliaNetwork.Store(sendData)
-		case "find":
-			fmt.Println("enter find")
-			fmt.Print("Enter key to data: ")
+			donePut := make(chan bool)
+			go kademlia.Store(sendData, donePut)
+			select {
+			case <-donePut:
+				fmt.Println("Put is done!")
+				break
+			}
+		case "get":
+			fmt.Print("Enter key to get data: ")
 			datakey, _ := reader.ReadString('\n')
 			datakey = strings.TrimRight(datakey, "\n")
-			fmt.Println("datakey: " +datakey)
-			//sendData := []byte(data + "\n")
-			file := kademliaNetwork.LookupData(datakey)
+			file := kademlia.LookupData(datakey)
 			fmt.Println("File found! Data: ")
 			fmt.Println(file)
-		case "put":
-			fmt.Println("enter put")
-		case "get":
-			fmt.Println("enter get")
+			fmt.Println("Get is done!")
+			break
 		case "exit":
 			fmt.Println("enter exit")
 		default:
-			fmt.Println("Please type correct operation, you can choose between following: store, find, put, get, exit")
+			fmt.Println("Please type correct operation, you can choose between following: put, get, exit")
 	}
 
   }

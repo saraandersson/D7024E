@@ -6,5 +6,6 @@ message Message {
   string receiverID = 3;
   string receiverAddress = 4;
   bytes data = 5;
-  string messageType = 6;
+  string key = 6;
+  string messageType = 7;
 }

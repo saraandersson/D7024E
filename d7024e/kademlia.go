@@ -2,9 +2,10 @@ package d7024e
 
 import (
 	"fmt"
-	"strings"
-	"strconv"
+	//"strings"
+	//"strconv"
 	"time"
+	"math/rand"
 
 )
 
@@ -21,6 +22,7 @@ type Kademlia struct {
 
 /*Network joining and node lookup*/
 func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
+	fmt.Println("kommer till lookUpContact")
 	contacts := kademlia.network.routingTable.FindClosestContacts(&kademliaId, kademlia.k)
 	addAlphaContacts := make([]Contact, 0)
 	
@@ -32,89 +34,144 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
 
-	/*Node lookup*/
-	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, addAlphaContacts, *kademlia.network.contact)
+	fmt.Println("Alpha contacts")
+	fmt.Println(addAlphaContacts)
 
-	for i:=0; i<len(contactsToAdd); i++ {
+	/*Node lookup*/
+	temp := make([]Contact, 0)
+	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, temp)
+	//contactsToAdd = sortList(contactsToAdd)
+
+	for i:=len(contactsToAdd)-1; i>0; i-- {
 		kademlia.network.routingTable.AddContact(contactsToAdd[i])
 	}
+	fmt.Println("slutlistan:")
+	fmt.Println(contactsToAdd)
 	return contactsToAdd
+}
+/*ShortList = Nodes to contact*/
+func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Contact) []Contact {
+	if (len(shortList)==0){
+		contactedContacts = kademlia.sortList(contactedContacts)
+		return contactedContacts
+	}
+	nextRound := make([]Contact, 0)
+	shortList, contactedContacts = kademlia.NodeLookUpRound(shortList, contactedContacts,nextRound)
+	return kademlia.NodeLookUp(shortList, contactedContacts)
 }
 
 /*NodeLookUp function*/
-func (kademlia *Kademlia) NodeLookUp(alphaContacts []Contact, addedContacts []Contact, currentContact Contact) []Contact {
+func (kademlia *Kademlia) NodeLookUpRound(shortList []Contact, contactedContacts []Contact, nextRound []Contact) ([]Contact, []Contact) {
 	/*Base case*/
-	if (len(alphaContacts)==0) {
-		return addedContacts
+	if (len(shortList)==0) {
+		nextRound = kademlia.sortList(nextRound)
+		if (len(nextRound)>kademlia.alpha) {
+			nextRound = append(nextRound, nextRound[0:kademlia.alpha]...)
+		}
+		return nextRound, contactedContacts
 	}
-	/*Ping alpha node to see if it is alive*/
-	pingAlphaNode := make(chan bool)
-	stringListAlpha := strings.Split(alphaContacts[0].Address, ":")
-	portStringAlpha := stringListAlpha[1]
-	portAlpha, _ := strconv.Atoi(portStringAlpha)
-	go SendPingMessage(&currentContact,&alphaContacts[0], portAlpha, pingAlphaNode)
+	returnMessage := make(chan []Contact)
+	go SendFindNodeMessage(kademlia.network.contact, &shortList[0], returnMessage)
 	select {
-	case <-pingAlphaNode:
-		/*If alpha-node is alive, fetch k clostest nodes to the alpha node*/
-		returnMessage := make(chan []Contact)
-		go SendFindAlphaMessage(&currentContact, &alphaContacts[0], portAlpha, returnMessage)
-		select {
-		case kContactsFromAlpha := <- returnMessage:
-			/*kContactsFromAplha = channelvärdet från message*/
-			var addAlphaContacts []Contact
-			/*Picks alpha first nodes from the k closest*/
-			if (len(kContactsFromAlpha)>kademlia.alpha) {
-				addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha[0:kademlia.alpha]...)
-			} else {
-				addAlphaContacts = append(addAlphaContacts, kContactsFromAlpha...)
-			}
-			kContactsFromAlpha = addAlphaContacts
-			/*Loop through all k nodes*/
-			for i:=0; i<len(kContactsFromAlpha); i++ {
-				isInList := false
-				if (len(addedContacts) > 0) {
-					/*Loop through all nodes in addedContacts*/
-					for x:=0; x<len(addedContacts); x++ {
-						/*Check that a node is not already in addedContacts*/
-						if (kContactsFromAlpha[i].ID.String() == addedContacts[x].ID.String()){
-							isInList = true
-						}
-					}
-				}
-				/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
-					add node to addedContacts
-				*/
-				if ((isInList==false) && (kContactsFromAlpha[i].ID.String() != currentContact.ID.String())) {
-					donePing := make(chan bool)
-					stringList := strings.Split(kContactsFromAlpha[i].Address, ":")
-					portString := stringList[1]
-					port, _ := strconv.Atoi(portString)
-					go SendPingMessage(&currentContact,&kContactsFromAlpha[i], port, donePing)
-					select {
-					case <- donePing:
-						addedContacts = append(addedContacts,kContactsFromAlpha[i])
-					/*If node does not answer in 10 seconds, the node is dead*/
-					case <-time.After(10*time.Second):
-						/*Send ping again??*/
-						fmt.Println("TIMEOUT")
-						continue
-					}
-				}
-			}
+	case kContactsReturned := <- returnMessage:
+		contactedContacts = append(contactedContacts, shortList[0])
+		/*kContactsFromAplha = channelvärdet från message*/
+		var alphaContacts []Contact
+		/*Picks alpha first nodes from the k closest*/
+		if (len(kContactsReturned)>kademlia.alpha) {
+			alphaContacts = append(alphaContacts, kContactsReturned[0:kademlia.alpha]...)
+		} else {
+			alphaContacts = append(alphaContacts, kContactsReturned...)
+		}
+		/*Loop through all k nodes*/
+		for i:=0; i<len(alphaContacts); i++ {
+			isInList := false
+			if (len(contactedContacts) > 0) {
+				/*Loop through all nodes in shortList*/
+				for x:=0; x<len(contactedContacts); x++ {
+					/*Check that a node is not already in shortList*/
 
-	}
-	/*If node does not answer in 10 seconds, remove alpha node from list*/
+					if (alphaContacts[i].ID.String() == contactedContacts[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			if (len(nextRound) > 0) {
+				/*Loop through all nodes in shortList*/
+				for x:=0; x<len(nextRound); x++ {
+					/*Check that a node is not already in shortList*/
+					if (alphaContacts[i].ID.String() == nextRound[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			if (len(shortList) > 0) {
+				for x:=0; x<len(shortList); x++ {
+					if (alphaContacts[i].ID.String() == shortList[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
+				add node to shortList
+			*/
+			if (isInList==false) {
+				nextRound = append(nextRound,alphaContacts[i])
+				nextRound = kademlia.sortList(nextRound)
+			}
+		}
 	case <-time.After(10*time.Second):
-		addedContacts = RemoveFromList(addedContacts, alphaContacts[0])
+		fmt.Println("TIMEOUT")
+
 	}
 	/*Remove first element from list and continue recursion*/
-	if (len(alphaContacts) > 1) {
-		alphaContacts = alphaContacts[1:]
+	if (len(shortList) > 1) {
+		shortList = shortList[1:]
 	} else {
-		alphaContacts = make([]Contact, 0)
+		shortList = make([]Contact, 0)
 	}
-	return kademlia.NodeLookUp(alphaContacts, addedContacts, currentContact)
+	return kademlia.NodeLookUpRound(shortList, contactedContacts, nextRound)
 
+}
+
+
+
+func (kademlia *Kademlia) sortList(shortList []Contact) []Contact{
+	distanceList := make([]KademliaID, len(shortList))
+	for i:=0; i<len(shortList); i++{
+		distance := kademlia.network.contact.ID.CalcDistance(shortList[i].ID)
+		distanceList[i] = *distance
+	}
+	shortList = quicksort(distanceList, shortList)
+	return shortList
+}
+
+func quicksort(distanceList []KademliaID, shortList []Contact) []Contact {
+    if len(shortList) < 2 {
+        return shortList
+    }
+      
+    left, right := 0, len(distanceList)-1
+      
+    pivot := rand.Int() % len(distanceList)
+      
+	distanceList[pivot], distanceList[right] = distanceList[right], distanceList[pivot]
+	shortList[pivot], shortList[right] = shortList[right], shortList[pivot]
+      
+    for i, _ := range distanceList {
+        if distanceList[i].Less(&distanceList[right]) {
+			distanceList[left], distanceList[i] = distanceList[i], distanceList[left]
+			shortList[left], shortList[i] = shortList[i], shortList[left]
+            left++
+        }
+    }
+	distanceList[left], distanceList[right] = distanceList[right], distanceList[left]
+	shortList[left], shortList[right] = shortList[right], shortList[left]
+      
+    quicksort(distanceList[:left],shortList[:left] )
+    quicksort(distanceList[left+1:], shortList[left+1:])
+      
+    return shortList
 }
 
 /*Help functinon, remove a contact from a list of contacts */
@@ -141,7 +198,7 @@ func (kademlia *Kademlia) LookupData(hash string) []byte{
 		fmt.Println(data)
 		return data
 	} else{
-		contacts := kademlia.network.routingTable.FindClosestContacts(&dataKey, kademlia.k)
+		contacts := kademlia.network.routingTable.FindClosestContacts(dataKey, kademlia.k)
 		addAlphaContacts := make([]Contact, 0)
 		/*Picks alpha first nodes from the k closest*/
 		if (len(contacts)>kademlia.alpha) {
@@ -149,36 +206,38 @@ func (kademlia *Kademlia) LookupData(hash string) []byte{
 		} else {
 			addAlphaContacts = append(addAlphaContacts, contacts...)
 		}
-		LookupKClosestData(dataKey, addAlphaContacts)
+		//result := kademlia.LookupKClosestData(*dataKey, addAlphaContacts,addAlphaContacts, kademlia.network.contact)
+		return nil
 	}
+	return nil
 }
 
-func (kademlia *Kademlia) LookupKClosestData(dataKey KademliaID, addAlphaContacts []Contact) []byte{
-
-
-
+func (kademlia *Kademlia) LookupKClosestData(dataKey KademliaID, addAlphaContacts []Contact, pingedContacts []Contact, currentContact Contact) []byte{
+	return nil
 }
 
-func (kademlia *Kademlia) Store(data []byte) {
+func (kademlia *Kademlia) Store(data []byte, donePut chan bool) {
 	fmt.Println("Enter store")
 	fmt.Print(data)
 	fileKey := NewRandomKademliaID()
 	fmt.Println("Filekey: " + fileKey.String())
-	clostestK := kademlia.LookupContact(*fileKey)
+	clostest := kademlia.LookupContact(*fileKey)
 	fmt.Println("Närmsta k noderna:")
-	fmt.Println(clostestK)
-	for i:=0; i<len(clostestK); i++ {
+	fmt.Println(clostest)
+	for i:=0; i<len(clostest); i++ {
 		//file := NewFile(*clostestK[i].ID, data, clostestK[i])
 		//kademlia.network.StoreDataOnNode(file)
 		doneStorePing := make(chan bool)
-		go SendPingStoreMessage(&clostestK[i], data, 8080, doneStorePing)
+		go SendStoreMessage(kademlia.network.contact, &clostest[i], data, doneStorePing)
 		select {
 		case <-doneStorePing:
-			fmt.Println("File stored on node: " +clostestK[i].ID.String())
+			fmt.Println("File stored on node: " +clostest[i].ID.String())
 		case <-time.After(10*time.Second):
 			fmt.Println("TIMEOUT IN STORE")
 		}
 	}
+	fmt.Println("Går ur loopen")
+	donePut <- true
 
 
 	// TODO

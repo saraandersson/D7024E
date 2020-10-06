@@ -33,8 +33,6 @@ func NewFile(key KademliaID, data []byte) File{
 	file := File{}
 	file.key = key
 	file.data = data
-	fmt.Println("FILE:")
-	fmt.Println(file)
 	return file
 }
 
@@ -56,12 +54,11 @@ func (network *Network) FindData(key KademliaID) []byte {
 
 func (network *Network) StoreDataOnNode(file File) {
 	network.fileList = append(network.fileList, file)
-	fmt.Println("file-listan")
-	fmt.Println(network.fileList)
 }
 
-func (network *Network) MessageHandlerPing(message *protobuf.Message) {
+func (network *Network) UpdateKBucket(message *protobuf.Message) {
 		contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
+		/*See if bucket is full -> Ping last node in bucket, if no response, add contact, if response, SKIT I DET!*/	
 		network.routingTable.AddContact(contact)
 }
 
@@ -81,23 +78,18 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
     defer connection.Close()
 	for {
 		buffer := make([]byte, 1024)
-		n, addr, err := connection.ReadFromUDP(buffer)
+		n, addr, _ := connection.ReadFromUDP(buffer)
 		newMessage := &protobuf.Message{}
 		errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
-		if addr != nil {
-			fmt.Println("addressen")
-			fmt.Println(addr)
-		}
-		if err != nil {
-			fmt.Println(err)
-		}
 		if errorMessage!=nil {
 			fmt.Println(errorMessage)
 		}
-		if (newMessage.MessageType == "Ping"){
+
+		go network.UpdateKBucket(newMessage)
+		/*if (newMessage.MessageType == "Ping"){
 			go network.MessageHandlerPing(newMessage)
-		}
-		if (newMessage.MessageType == "Alpha"){
+		}*/
+		if (newMessage.MessageType == "FindNode"){
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
 			contactId :=  make([]string, len(contacts))
 			contactAddress := make([]string, len(contacts))
@@ -107,19 +99,32 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 			}
 			message := createProtoBufMessageForContacts(contactId, contactAddress)
 			data,_ := proto.Marshal(message)
-            _, err = connection.WriteToUDP(data, addr)
-            if err != nil {
-                    fmt.Println(err)
-                    return
-            }
+			_, err = connection.WriteToUDP(data, addr)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
 		}
 		if (newMessage.MessageType == "Store") {
 			newFile := NewFile(*network.contact.ID, newMessage.Data)
 			network.fileList = append(network.fileList, newFile)
-			fmt.Println("New file added to node with kademliaID: " + network.contact.ID.String())
+			//fmt.Println("New file added to node with kademliaID: " + network.contact.ID.String())
+		}
+
+		if (newMessage.MessageType == "Find"){
+			newKey := NewKademliaID(newMessage.Key)
+			fileData := network.FindData(*newKey)
+			message := createProtoBufStoreMessage(nil ,fileData, "Find")
+			data,_ := proto.Marshal(message)
+			_, err = connection.WriteToUDP(data, addr)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
 		}
 
 	}
+	
 }
 
 func createProtoBufMessageForContacts(contactId []string, contactAddress []string) *protobuf.ContactsMessage {
@@ -139,15 +144,27 @@ func createProtoBufMessage(senderContact *Contact, receiverContact *Contact, mes
 	return protoBufMessage
 }
 
-func createProtoBufStoreMessage(data []byte, messageType string) *protobuf.Message {
+func createProtoBufStoreMessage(senderContact *Contact, data []byte, messageType string) *protobuf.Message {
 	protoBufMessage := &protobuf.Message {
-			Data: data,
-			MessageType: messageType}
+		SenderID: senderContact.ID.String(),
+		SenderAddress: senderContact.Address,
+		Data: data,
+		MessageType: messageType}
 
 	return protoBufMessage
 }
 
-func SendPingMessage(senderContact *Contact, receiverContact *Contact, port int, donePing chan bool) {
+func createProtoBufFindMessage(senderContact *Contact, key KademliaID, messageType string) *protobuf.Message {
+	protoBufMessage := &protobuf.Message {
+		SenderID: senderContact.ID.String(),
+		SenderAddress: senderContact.Address,	
+		Key: key.String(),
+		MessageType: messageType}
+
+	return protoBufMessage
+}
+
+func SendPingMessage(senderContact *Contact, receiverContact *Contact, donePing chan bool) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -167,7 +184,7 @@ func SendPingMessage(senderContact *Contact, receiverContact *Contact, port int,
 	donePing <- true
 }
 
-func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port int, returnMessage chan []Contact){
+func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, returnMessage chan []Contact){
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -177,7 +194,7 @@ func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port
 	}
 	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
 	defer conn.Close()
-	message := createProtoBufMessage(senderContact, receiverContact, "Alpha")
+	message := createProtoBufMessage(senderContact, receiverContact, "FindNode")
 	data,_ := proto.Marshal(message)
 	_, err = conn.Write(data)
 	if err != nil {
@@ -204,7 +221,7 @@ func SendFindAlphaMessage(senderContact *Contact, receiverContact *Contact, port
 
 }
 
-func SendPingStoreMessage(receiverContact *Contact, data []byte, port int, donePing chan bool) {
+func SendStoreMessage(senderContact *Contact, receiverContact *Contact, data []byte, donePing chan bool) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -214,7 +231,7 @@ func SendPingStoreMessage(receiverContact *Contact, data []byte, port int, doneP
 	}
 	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
 	defer conn.Close()
-	message := createProtoBufStoreMessage(data, "Store")
+	message := createProtoBufStoreMessage(senderContact,data, "Store")
 	dataMarshal,_ := proto.Marshal(message)
 	_, err = conn.Write(dataMarshal)
 	if err != nil {
@@ -223,6 +240,39 @@ func SendPingStoreMessage(receiverContact *Contact, data []byte, port int, doneP
 	}
 	donePing <- true
 }
+
+func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key KademliaID, findValue chan []byte) {
+	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
+	conn, err := net.DialUDP("udp4", nil, server)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("The UDP server is %s\n", conn.RemoteAddr().String())
+	defer conn.Close()
+	message := createProtoBufFindMessage(senderContact, key, "Find")
+	dataMarshal,_ := proto.Marshal(message)
+	_, err = conn.Write(dataMarshal)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	buffer := make([]byte, 1024)
+	n, _, err := conn.ReadFromUDP(buffer)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	newMessage := &protobuf.Message{}
+	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
+	if (errorMessage !=nil){
+		fmt.Println(errorMessage)
+	}
+
+	findValue <- newMessage.Data
+}
+
 
 
 func NewMessage(contactsID []string, contactsAddress []string) Message{
