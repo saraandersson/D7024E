@@ -38,8 +38,8 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 	fmt.Println(addAlphaContacts)
 
 	/*Node lookup*/
-	temp := make([]Contact, 0)
-	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, temp)
+	contactedContacts := make([]Contact, 0)
+	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, contactedContacts)
 	//contactsToAdd = sortList(contactsToAdd)
 
 	for i:=len(contactsToAdd)-1; i>0; i-- {
@@ -206,14 +206,109 @@ func (kademlia *Kademlia) LookupData(hash string) []byte{
 		} else {
 			addAlphaContacts = append(addAlphaContacts, contacts...)
 		}
-		//result := kademlia.LookupKClosestData(*dataKey, addAlphaContacts,addAlphaContacts, kademlia.network.contact)
-		return nil
+		contactedContacts := make([]Contact, 0)
+		result := kademlia.NodeLookUpData(addAlphaContacts, contactedContacts, *dataKey)
+		return result
 	}
 	return nil
 }
 
-func (kademlia *Kademlia) LookupKClosestData(dataKey KademliaID, addAlphaContacts []Contact, pingedContacts []Contact, currentContact Contact) []byte{
-	return nil
+/*ShortList = Nodes to contact*/
+func (kademlia *Kademlia) NodeLookUpData(shortList []Contact, contactedContacts []Contact, dataKey KademliaID) []byte {
+	if (len(shortList)==0){
+		return nil
+	}
+	nextRound := make([]Contact, 0)
+	var data []byte
+	shortList, contactedContacts, data = kademlia.NodeLookUpRoundData(shortList, contactedContacts,nextRound, dataKey)
+	if (data!=nil){
+		return data
+	}
+	return kademlia.NodeLookUpData(shortList, contactedContacts, dataKey)
+}
+
+/*NodeLookUp function*/
+func (kademlia *Kademlia) NodeLookUpRoundData(shortList []Contact, contactedContacts []Contact, nextRound []Contact, dataKey KademliaID) ([]Contact, []Contact, []byte) {
+	/*Base case*/
+	if (len(shortList)==0) {
+		nextRound = kademlia.sortList(nextRound)
+		if (len(nextRound)>kademlia.alpha) {
+			nextRound = append(nextRound, nextRound[0:kademlia.alpha]...)
+		}
+		return nextRound, contactedContacts, nil
+	}
+	returnData:= make(chan []byte)
+	go SendFindDataMessage(kademlia.network.contact, &shortList[0], dataKey, returnData)
+	select {
+	case returnedData := <- returnData:
+		if (returnedData!=nil){
+			return nextRound, contactedContacts, returnedData
+		}
+	case <-time.After(10*time.Second):
+		fmt.Println("TIMEOUT")
+	}
+	returnMessage := make(chan []Contact)
+	go SendFindNodeMessage(kademlia.network.contact, &shortList[0], returnMessage)
+	select {
+	case kContactsReturned := <- returnMessage:
+		contactedContacts = append(contactedContacts, shortList[0])
+		/*kContactsFromAplha = channelvärdet från message*/
+		var alphaContacts []Contact
+		/*Picks alpha first nodes from the k closest*/
+		if (len(kContactsReturned)>kademlia.alpha) {
+			alphaContacts = append(alphaContacts, kContactsReturned[0:kademlia.alpha]...)
+		} else {
+			alphaContacts = append(alphaContacts, kContactsReturned...)
+		}
+		/*Loop through all k nodes*/
+		for i:=0; i<len(alphaContacts); i++ {
+			isInList := false
+			if (len(contactedContacts) > 0) {
+				/*Loop through all nodes in shortList*/
+				for x:=0; x<len(contactedContacts); x++ {
+					/*Check that a node is not already in shortList*/
+
+					if (alphaContacts[i].ID.String() == contactedContacts[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			if (len(nextRound) > 0) {
+				/*Loop through all nodes in shortList*/
+				for x:=0; x<len(nextRound); x++ {
+					/*Check that a node is not already in shortList*/
+					if (alphaContacts[i].ID.String() == nextRound[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			if (len(shortList) > 0) {
+				for x:=0; x<len(shortList); x++ {
+					if (alphaContacts[i].ID.String() == shortList[x].ID.String()){
+						isInList = true
+					}
+				}
+			}
+			/*If the node is not in list and the node is not currentNode, ping the node and if it is alive,
+				add node to shortList
+			*/
+			if (isInList==false) {
+				nextRound = append(nextRound,alphaContacts[i])
+				nextRound = kademlia.sortList(nextRound)
+			}
+		}
+	case <-time.After(10*time.Second):
+		fmt.Println("TIMEOUT")
+
+	}
+	/*Remove first element from list and continue recursion*/
+	if (len(shortList) > 1) {
+		shortList = shortList[1:]
+	} else {
+		shortList = make([]Contact, 0)
+	}
+	return kademlia.NodeLookUpRoundData(shortList, contactedContacts, nextRound, dataKey)
+
 }
 
 func (kademlia *Kademlia) Store(data []byte, donePut chan bool) {
@@ -228,7 +323,7 @@ func (kademlia *Kademlia) Store(data []byte, donePut chan bool) {
 		//file := NewFile(*clostestK[i].ID, data, clostestK[i])
 		//kademlia.network.StoreDataOnNode(file)
 		doneStorePing := make(chan bool)
-		go SendStoreMessage(kademlia.network.contact, &clostest[i], data, doneStorePing)
+		go SendStoreMessage(kademlia.network.contact, &clostest[i], data, *fileKey, doneStorePing)
 		select {
 		case <-doneStorePing:
 			fmt.Println("File stored on node: " +clostest[i].ID.String())

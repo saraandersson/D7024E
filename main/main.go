@@ -57,9 +57,9 @@ func main() {
                 /*Network joining*/
                 routingtable.AddContact(contact)
                 routingtable.AddContact(bootstrapContact)
-                donePing := make(chan bool)
+                donePing := make(chan []d7024e.Contact)
                 //boostrapPortPing, _ := strconv.Atoi(defaultPort)
-                go d7024e.SendPingMessage(&contact,&bootstrapContact,donePing)
+                go d7024e.SendFindNodeMessage(&contact,&bootstrapContact,donePing)
                 <- donePing
                 lookUpContactResult :=  kademliaNetwork.LookupContact(*contact.ID)
                 fmt.Println("Lookup done! Contacts found: ")
