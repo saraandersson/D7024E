@@ -252,8 +252,12 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 		fmt.Println(errorMessage)
 	}
 	contacts := make([]Contact, len(newMessage.ContactsID))
+	fmt.Println("LENGTH")
+	fmt.Println(len(newMessage.ContactsID))
 	for i:=0; i<len(newMessage.ContactsID); i++ {
 		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
+		fmt.Println("IIIIII")
+		fmt.Println(i)
 	}
 
 	returnMessage <- contacts
