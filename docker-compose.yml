@@ -41,14 +41,6 @@ services:
         window: 10s
     networks: 
       - kademlia_network
-  kademliaCli:
-    image: cli:latest
-    stdin_open: true
-    tty: true
-    links: 
-      - kademliaBootstrap:kademliaBootstrapHost
-    networks: 
-      - kademlia_network
 #    ports:
 #      - "4000:80"   
 networks:
