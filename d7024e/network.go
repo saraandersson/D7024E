@@ -166,6 +166,10 @@ func createProtoBufDataReturnMessage(data []byte, messageType string) *protobuf.
 }
 
 func createProtoBufMessageForContacts(contactId []string, contactAddress []string) *protobuf.ContactsMessage {
+	fmt.Println("PROTOBUF MESSAGE CONTACTID")
+	fmt.Println(len(contactId))
+	fmt.Println("PROTOBUF MESSAGE ADDRESS")
+	fmt.Println(len(contactAddress))
 	protoBufMessage := &protobuf.ContactsMessage{
 			ContactsID: contactId,
 			ContactsAddress: contactAddress}
