@@ -65,7 +65,7 @@ func Cli(kademlia d7024e.Kademlia) {
 			fmt.Println("Get is done!")
 			break
 		case "exit":
-			fmt.Println("enter exit")
+			os.Exit(0)
 		default:
 			fmt.Println("Please type correct operation, you can choose between following: put, get, exit")
 	}
