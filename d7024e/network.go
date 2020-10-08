@@ -8,7 +8,7 @@ import (
 	"time"
 	"strconv"
 	"github.com/golang/protobuf/proto"
-	"protobuf"
+	"../protobuf"
 )
 
 type Network struct {
