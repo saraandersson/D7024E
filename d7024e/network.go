@@ -113,10 +113,6 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 		}
 		if (newMessage.MessageType == "FindNode"){
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
-			fmt.Println("KONTAKTERNA: ")
-			fmt.Println(contacts)
-			fmt.Println("KONTAKERNA LÄNGD")
-			fmt.Println(len(contacts))
 			contactId :=  make([]string, len(contacts))
 			contactAddress := make([]string, len(contacts))
 			count := 0
@@ -125,8 +121,6 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 				contactId[i] = contacts[i].ID.String()
 				contactAddress[i] = contacts[i].Address
 			}
-			fmt.Println("COUNTER")
-			fmt.Println(count)
 			message := createProtoBufMessageForContacts(contactId, contactAddress)
 			data,_ := proto.Marshal(message)
 			_, err = connection.WriteToUDP(data, addr)
@@ -166,10 +160,6 @@ func createProtoBufDataReturnMessage(data []byte, messageType string) *protobuf.
 }
 
 func createProtoBufMessageForContacts(contactId []string, contactAddress []string) *protobuf.ContactsMessage {
-	fmt.Println("PROTOBUF MESSAGE CONTACTID")
-	fmt.Println(len(contactId))
-	fmt.Println("PROTOBUF MESSAGE ADDRESS")
-	fmt.Println(len(contactAddress))
 	protoBufMessage := &protobuf.ContactsMessage{
 			ContactsID: contactId,
 			ContactsAddress: contactAddress}
@@ -264,16 +254,12 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 		fmt.Println(errorMessage)
 	}
 	contacts := make([]Contact, len(newMessage.ContactsID))
-	fmt.Println("LENGTH")
+	fmt.Println("LENGTH CONTACTSID")
 	fmt.Println(len(newMessage.ContactsID))
-	fmt.Println("CONTACTSID")
-	fmt.Println(newMessage.ContactsID)
-	fmt.Println("CONTACTADDRESS")
-	fmt.Println(newMessage.ContactsAddress)
+	fmt.Println("LENGTH CONTACTSADDRESS")
+	fmt.Println(len(newMessage.ContactsAddress))
 	for i:=0; i<len(newMessage.ContactsID); i++ {
 		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
-		fmt.Println("IIIIII")
-		fmt.Println(i)
 	}
 
 	returnMessage <- contacts
