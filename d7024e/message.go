@@ -2,7 +2,7 @@ package d7024e
 
 import (
 	//"github.com/golang/protobuf/proto"
-	"../protobuf"
+	"protobuf"
 )
 
 func createProtoBufDataReturnMessage(data []byte, messageType string) *protobuf.Message {
