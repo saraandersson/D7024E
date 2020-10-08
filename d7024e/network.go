@@ -115,12 +115,18 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
 			fmt.Println("KONTAKTERNA: ")
 			fmt.Println(contacts)
+			fmt.Println("KONTAKERNA LÄNGD")
+			fmt.Println(len(contacts))
 			contactId :=  make([]string, len(contacts))
 			contactAddress := make([]string, len(contacts))
+			count := 0
 			for i:=0; i<len(contacts); i++{
+				count = count +1
 				contactId[i] = contacts[i].ID.String()
 				contactAddress[i] = contacts[i].Address
 			}
+			fmt.Println("COUNTER")
+			fmt.Println(count)
 			message := createProtoBufMessageForContacts(contactId, contactAddress)
 			data,_ := proto.Marshal(message)
 			_, err = connection.WriteToUDP(data, addr)
