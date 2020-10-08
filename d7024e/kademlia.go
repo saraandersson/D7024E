@@ -40,7 +40,7 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 	//contactsToAdd = sortList(contactsToAdd)
 
 	for i:=len(contactsToAdd)-1; i>0; i-- {
-		kademlia.network.UpdateKBucket(contact);
+		kademlia.network.UpdateKBucket(contactToAdd[i]);
 		//kademlia.network.routingTable.AddContact(contactsToAdd[i])
 	}
 	return contactsToAdd
