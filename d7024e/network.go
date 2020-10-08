@@ -113,6 +113,8 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 		}
 		if (newMessage.MessageType == "FindNode"){
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
+			fmt.Println("KONTAKTERNA: ")
+			fmt.Println(contacts)
 			contactId :=  make([]string, len(contacts))
 			contactAddress := make([]string, len(contacts))
 			for i:=0; i<len(contacts); i++{
@@ -123,8 +125,8 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 			data,_ := proto.Marshal(message)
 			_, err = connection.WriteToUDP(data, addr)
 			if err != nil {
-					fmt.Println(err)
-					return
+				fmt.Println(err)
+				return
 			}
 		}
 		if (newMessage.MessageType == "Store") {
