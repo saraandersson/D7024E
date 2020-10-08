@@ -62,6 +62,8 @@ func (network *Network) UpdateKBucket(message *protobuf.Message) {
 		bucket := network.routingTable.buckets[bucketIndex]
 		bucketLen := bucket.Len();
 		contactList := bucket.list
+		fmt.Println("LÄNGD: ")
+		fmt.Println(bucketLen)
 		if (bucketLen < 20){
 			network.routingTable.AddContact(contact)
 		} else {
