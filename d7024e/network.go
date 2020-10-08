@@ -55,21 +55,16 @@ func (network *Network) StoreDataOnNode(file File) {
 	network.fileList = append(network.fileList, file)
 }
 
-func (network *Network) UpdateKBucket(message *protobuf.Message) {
-		contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
+func (network *Network) UpdateKBucket(contact Contact) {
+		//contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
 		/*See if bucket is full -> Ping last node in bucket, if no response, add contact, if response, SKIT I DET!*/
 		bucketIndex := network.routingTable.getBucketIndex(contact.ID)
 		bucket := network.routingTable.buckets[bucketIndex]
 		bucketLen := bucket.Len();
 		contactList := bucket.list
-		fmt.Println("LÄNGD: ")
-		fmt.Println(bucketLen)
 		if (bucketLen < 20){
 			network.routingTable.AddContact(contact)
 		} else {
-			fmt.Println("BUCKETLIST")
-			fmt.Println(contactList.Back().Value.(Contact).ID)
-			fmt.Println(contactList.Back().Value.(Contact).Address)
 			contactLast := bucket.list.Back().Value.(Contact)
 			alive := make(chan bool)
 			go SendPingMessage(&contactLast, alive)
@@ -110,7 +105,8 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 		if (newMessage.MessageType == "Ping"){
 			
 		} else{
-			go network.UpdateKBucket(newMessage)
+			contact := NewContact(NewKademliaID(newMessage.SenderID), newMessage.SenderAddress)
+			go network.UpdateKBucket(contact)
 		}
 		if (newMessage.MessageType == "FindNode"){
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
@@ -255,10 +251,6 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 		fmt.Println(errorMessage)
 	}
 	contacts := make([]Contact, len(newMessage.ContactsID))
-	fmt.Println("LENGTH CONTACTSID")
-	fmt.Println(len(newMessage.ContactsID))
-	fmt.Println("LENGTH CONTACTSADDRESS")
-	fmt.Println(len(newMessage.ContactsAddress))
 	for i:=0; i<len(newMessage.ContactsID); i++ {
 		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
 	}

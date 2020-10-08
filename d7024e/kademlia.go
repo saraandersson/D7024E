@@ -34,19 +34,15 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 		addAlphaContacts = append(addAlphaContacts, contacts...)
 	}
 
-	fmt.Println("Alpha contacts")
-	fmt.Println(addAlphaContacts)
-
 	/*Node lookup*/
 	contactedContacts := make([]Contact, 0)
 	contactsToAdd := kademlia.NodeLookUp(addAlphaContacts, contactedContacts)
 	//contactsToAdd = sortList(contactsToAdd)
 
 	for i:=len(contactsToAdd)-1; i>0; i-- {
-		kademlia.network.routingTable.AddContact(contactsToAdd[i])
+		kademlia.network.UpdateKBucket(contact);
+		//kademlia.network.routingTable.AddContact(contactsToAdd[i])
 	}
-	fmt.Println("slutlistan:")
-	fmt.Println(contactsToAdd)
 	return contactsToAdd
 }
 /*ShortList = Nodes to contact*/
@@ -317,8 +313,6 @@ func (kademlia *Kademlia) Store(data []byte, donePut chan bool) {
 	fileKey := NewRandomKademliaID()
 	fmt.Println("Filekey: " + fileKey.String())
 	clostest := kademlia.LookupContact(*fileKey)
-	fmt.Println("Närmsta k noderna:")
-	fmt.Println(clostest)
 	for i:=0; i<len(clostest); i++ {
 		//file := NewFile(*clostestK[i].ID, data, clostestK[i])
 		//kademlia.network.StoreDataOnNode(file)
@@ -331,7 +325,6 @@ func (kademlia *Kademlia) Store(data []byte, donePut chan bool) {
 			fmt.Println("TIMEOUT IN STORE")
 		}
 	}
-	fmt.Println("Går ur loopen")
 	donePut <- true
 
 
