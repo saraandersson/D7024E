@@ -242,7 +242,7 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 			fmt.Println(err)
 			return
 	}
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 4096)
 	n, _, err := conn.ReadFromUDP(buffer)
 	if err != nil {
 			fmt.Println(err)
