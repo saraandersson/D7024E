@@ -70,14 +70,13 @@ func (network *Network) UpdateKBucket(message *protobuf.Message) {
 			fmt.Println("BUCKETLIST")
 			fmt.Println(contactList.Back().Value.(Contact).ID)
 			fmt.Println(contactList.Back().Value.(Contact).Address)
-			bucketLast := network.routingTable.buckets[20]
-			contactLast := bucketLast.list.Back().Value.(Contact)
+			contactLast := bucket.list.Back().Value.(Contact)
 			alive := make(chan bool)
 			go SendPingMessage(&contactLast, alive)
 			select{
 			case <- alive:
 			case <- time.After(5*time.Second):
-				contactList.Remove(bucketLast.list.Back())
+				contactList.Remove(bucket.list.Back())
 				network.routingTable.AddContact(contact)
 			}
 
