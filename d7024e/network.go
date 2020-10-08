@@ -2,13 +2,11 @@ package d7024e
 
 import (
 	"fmt"
-	//"bufio"
 	"net"
-	//"os"
 	"time"
 	"strconv"
 	"github.com/golang/protobuf/proto"
-	"../protobuf"
+	"protobuf"
 )
 
 type Network struct {
@@ -56,8 +54,7 @@ func (network *Network) StoreDataOnNode(file File) {
 }
 
 func (network *Network) UpdateKBucket(contact Contact) {
-		//contact := NewContact(NewKademliaID(message.SenderID), message.SenderAddress)
-		/*See if bucket is full -> Ping last node in bucket, if no response, add contact, if response, SKIT I DET!*/
+		/*See if bucket is full -> Ping last node in bucket, if no response, add contact, if response, skip*/
 		bucketIndex := network.routingTable.getBucketIndex(contact.ID)
 		bucket := network.routingTable.buckets[bucketIndex]
 		bucketLen := bucket.Len();
@@ -78,6 +75,7 @@ func (network *Network) UpdateKBucket(contact Contact) {
 		}
 }
 
+/*Listen function, handles messageInput*/
 
 func (network *Network) Listen(ip string, port int, returnedMessage chan(Message)) {
 	port2 := ":" + strconv.Itoa(port)
@@ -91,7 +89,8 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
             fmt.Println(err)
             return
     }
-    defer connection.Close()
+	defer connection.Close()
+	/*Read udp message and unMarshal*/
 	for {
 		buffer := make([]byte, 1024)
 		n, addr, _ := connection.ReadFromUDP(buffer)
@@ -100,14 +99,14 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 		if errorMessage!=nil {
 			fmt.Println(errorMessage)
 		}
-
-		
 		if (newMessage.MessageType == "Ping"){
-			
+			/*Check if node is alive*/
 		} else{
+			/*Update K-bucket for node with the sender contact */
 			contact := NewContact(NewKademliaID(newMessage.SenderID), newMessage.SenderAddress)
 			go network.UpdateKBucket(contact)
 		}
+		/*Finds k-closest nodes and sends the answer back via udp*/
 		if (newMessage.MessageType == "FindNode"){
 			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
 			contactId :=  make([]string, len(contacts))
@@ -126,12 +125,13 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 				return
 			}
 		}
+		/*Create new file with the given key and data and add it to the network*/
 		if (newMessage.MessageType == "Store") {
 			newFile := NewFile(*NewKademliaID(newMessage.Key), newMessage.Data)
 			network.fileList = append(network.fileList, newFile)
-			//fmt.Println("New file added to node with kademliaID: " + network.contact.ID.String())
 		}
-
+		/*Finds the node with the given key and sends back nil if data is not found on current node,
+		 if data exists, data is sent back to the node via UDP*/
 		if (newMessage.MessageType == "Find"){
 			newKey := NewKademliaID(newMessage.Key)
 			fileData := network.FindData(*newKey)
@@ -148,60 +148,7 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 	
 }
 
-func createProtoBufDataReturnMessage(data []byte, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
-		Data: data,
-		MessageType: messageType}
-
-	return protoBufMessage
-}
-
-func createProtoBufMessageForContacts(contactId []string, contactAddress []string) *protobuf.ContactsMessage {
-	protoBufMessage := &protobuf.ContactsMessage{
-			ContactsID: contactId,
-			ContactsAddress: contactAddress}
-	return protoBufMessage
-}
-
-func createProtoBufMessage(senderContact *Contact, receiverContact *Contact, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
-			SenderID: senderContact.ID.String(),
-			SenderAddress: senderContact.Address,
-			ReceiverID: receiverContact.ID.String(),
-			ReceiverAddress: receiverContact.Address,
-			MessageType: messageType}
-	return protoBufMessage
-}
-
-func createProtoBufPingMessage(receiverContact *Contact, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
-			ReceiverID: receiverContact.ID.String(),
-			ReceiverAddress: receiverContact.Address,
-			MessageType: messageType}
-	return protoBufMessage
-}
-
-func createProtoBufDataMessage(senderContact *Contact, data []byte, key KademliaID, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
-		SenderID: senderContact.ID.String(),
-		SenderAddress: senderContact.Address,
-		Data: data,
-		Key: key.String(),
-		MessageType: messageType}
-
-	return protoBufMessage
-}
-
-func createProtoBufFindMessage(senderContact *Contact, key KademliaID, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
-		SenderID: senderContact.ID.String(),
-		SenderAddress: senderContact.Address,	
-		Key: key.String(),
-		MessageType: messageType}
-
-	return protoBufMessage
-}
-
+/*Classic ping, check if node is alive*/
 func SendPingMessage(receiverContact *Contact, alive chan bool) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
@@ -222,6 +169,7 @@ func SendPingMessage(receiverContact *Contact, alive chan bool) {
 	alive <- true
 }
 
+/*Find closest k-nodes to the receivercontact (NodeLookUp) via udp request*/
 func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, returnMessage chan []Contact){
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
@@ -246,19 +194,21 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 			return
 	}
 	newMessage := &protobuf.ContactsMessage{}
+	/*Message is returned with a list of contacts id and addresses*/
 	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
 	if (errorMessage !=nil){
 		fmt.Println(errorMessage)
 	}
 	contacts := make([]Contact, len(newMessage.ContactsID))
+	/*Creates new contacts with the id and address that was returned, adds it to a contact list*/
 	for i:=0; i<len(newMessage.ContactsID); i++ {
 		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
 	}
 
 	returnMessage <- contacts
-
 }
 
+/*Store message, sends a store request with given data and key*/
 func SendStoreMessage(senderContact *Contact, receiverContact *Contact, data []byte, key KademliaID, donePing chan bool) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
@@ -279,6 +229,7 @@ func SendStoreMessage(senderContact *Contact, receiverContact *Contact, data []b
 	donePing <- true
 }
 
+/*Finds data connected to the key and if data is found on node, it is returned, otherwise nil is returned*/
 func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key KademliaID, findValue chan []byte) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
@@ -293,14 +244,14 @@ func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key K
 	dataMarshal,_ := proto.Marshal(message)
 	_, err = conn.Write(dataMarshal)
 	if err != nil {
-			fmt.Println(err)
-			return
+		fmt.Println(err)
+		return
 	}
 	buffer := make([]byte, 1024)
 	n, _, err := conn.ReadFromUDP(buffer)
 	if err != nil {
-			fmt.Println(err)
-			return
+		fmt.Println(err)
+		return
 	}
 	newMessage := &protobuf.Message{}
 	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
@@ -311,8 +262,7 @@ func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key K
 	findValue <- newMessage.Data
 }
 
-
-
+/*Creates a new message that contains contacts id and addresses*/
 func NewMessage(contactsID []string, contactsAddress []string) Message{
 	newMessage := Message{}
 	newMessage.contactsID = contactsID
@@ -320,24 +270,10 @@ func NewMessage(contactsID []string, contactsAddress []string) Message{
 	return newMessage
 }
 
-func (network *Network) SendFindContactMessage(contact *Contact) {
-	//rt.AddContact(NewContact(NewKademliaID(currentPacket.SourceID), currentPacket.SourceAddress))
-}
-
-func (network *Network) SendFindDataMessage(hash string) {
-	// TODO
-}
-
-func (network *Network) SendStoreMessage(data []byte) {
-	// TODO
-}
-
+/*Create a new network for given contact*/
 func NewNetwork(contact Contact, routingTable RoutingTable) Network {
-	//sendPing := make(chan bool)
 	network := Network{}
 	network.contact=&contact
 	network.routingTable= &routingTable
-	//go network.SendPingMessage(bootstrapContact, sendPing)
-	//<- sendPing
 	return network
 }
