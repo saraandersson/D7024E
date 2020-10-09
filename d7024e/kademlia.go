@@ -46,28 +46,33 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		contactedContacts = kademlia.sortList(contactedContacts)
 		return contactedContacts
 	}
-	returnedContacts := make([]Contact, 0)
-	returnedContactedContacts := make([]Contact, 0)
+	//returnedContacts := make([]Contact, 0)
+	//returnedContactedContacts := make([]Contact, 0)
 	sortedContactsToAdd := make([]Contact, 0)
 	contactsToAdd := make([]Contact, 0)
 	returnMessage := make(chan []Contact)
 	contactedContactsRound := make(chan []Contact)
 	for i := range shortList { 
-		go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
+		/*go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
 		returnedContacts = <- returnMessage
-		returnedContactedContacts = <- contactedContactsRound
+		returnedContactedContacts = <- contactedContactsRound*/
+		kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
+		temp := <-returnMessage
+		contactsToAdd = append(contactsToAdd,temp...)
+		temp1 := <-contactedContactsRound
+		contactedContacts = append(contactedContacts, temp1...)
 	}
 	fmt.Println("returnedContacts")
-	fmt.Println(returnedContacts)
+	//fmt.Println(returnedContacts)
 	fmt.Println("ConcatedContacts")
 	fmt.Println(contactedContactsRound)
 	
-	for i := range returnedContacts { 
+	/*for i := range returnedContacts { 
 		contactsToAdd = append(contactsToAdd, returnedContacts[i])
 	}
 	for i := range returnedContactedContacts { 
 		contactedContacts = append(contactedContacts, returnedContactedContacts[i])
-	}
+	}*/
 	
 	fmt.Println("contactsToAdd")
 	fmt.Println(contactsToAdd)
