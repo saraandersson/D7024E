@@ -1,9 +1,7 @@
 package main
 
 import (
-	//"bufio"
     "fmt"
-    //"flag"
      "net"
      "os"
      "time"
@@ -42,7 +40,6 @@ func main() {
                 currentPort = 8080
                 /*create a new contact for the node*/
                 address = GetIPContainer() + ":" + "8080"
-                //address = "0.0.0.0:8080"
                 contact = d7024e.NewContact(d7024e.NewRandomKademliaID(), address)
                 routingtable := d7024e.NewRoutingTable(contact)
                 network := d7024e.NewNetwork(contact, *routingtable)
@@ -64,6 +61,7 @@ func main() {
                 lookUpContactResult :=  kademliaNetwork.LookupContact(*contact.ID)
                 fmt.Println("Lookup done! Contacts found: ")
                 fmt.Println(lookUpContactResult) 
+
                 go cli.Cli(kademliaNetwork)      
         }
 
@@ -74,7 +72,7 @@ func main() {
 
 }
 
-
+/*Fetch IP-address for container*/
 func GetIPContainer() string{
         containerHostname, _ := os.Hostname()
         addrs, _ := net.LookupHost(containerHostname)
