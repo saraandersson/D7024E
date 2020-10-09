@@ -15,6 +15,8 @@ type Kademlia struct {
 	alpha			int
 }
 
+/*TODO: Spara inte dubletter i både svarslistan och contactedContactslistan */
+
 
 /*Node lookup*/
 func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
