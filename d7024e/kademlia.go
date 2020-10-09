@@ -56,7 +56,7 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		/*go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
 		returnedContacts = <- returnMessage
 		returnedContactedContacts = <- contactedContactsRound*/
-		kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
+		go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
 		temp := <-returnMessage
 		contactsToAdd = append(contactsToAdd,temp...)
 		temp1 := <-contactedContactsRound
