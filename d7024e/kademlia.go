@@ -132,7 +132,7 @@ func removeDuplicates(contactedContacts []Contact) []Contact {
 		isInList := false
 		newList := contactedContacts[i+1:]
 		for x := range newList {
-			if (contactedContacts[i] == newList[i]){
+			if (contactedContacts[i] == newList[x]){
 				isInList = true
 			} 
 		}
