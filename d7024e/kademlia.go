@@ -108,7 +108,7 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 }
 
 func unique(contactedContacts []Contact) []Contact {
-    keys := make(map[Contact]bool)
+    keys := make(map[Contact.ID]bool)
     list := []Contact{} 
     for _, entry := range contactedContacts {
         if _, value := keys[entry]; !value {
