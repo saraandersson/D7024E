@@ -83,6 +83,13 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 				}
 			}
 		}
+		if (len(shortList) > 0) {
+			for x:=0; x<len(shortList); x++ {
+				if (contactsToAdd[i].ID.String() == shortList[x].ID.String()){
+					isInList = true
+				}
+			}
+		}
 
 		if (isInList == false){
 			sortedContactsToAdd = append(sortedContactsToAdd, contactsToAdd[i])
