@@ -57,12 +57,11 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		returnedContacts = <- returnMessage
 		returnedContactedContacts = <- contactedContactsRound*/
 		//go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
-		go kademlia.network.SendFindNodeMessage(kademlia.network.contact, &shortList[i], returnMessage)
+		go SendFindNodeMessage(kademlia.network.contact, &shortList[i], returnMessage)
 		select {
 		case temp := <- returnMessage:
 			fmt.Println(temp)
-			 test := <- kademlia.network.addedContacts
-			 returnedContacts = append(returnedContacts, test...)
+			 returnedContacts = append(returnedContacts, temp...)
 			 contactedContacts = append(contactedContacts, shortList[i])
 		case <-time.After(5*time.Second):
 			fmt.Println("TIMEOUT")
@@ -165,7 +164,7 @@ func (kademlia *Kademlia) NodeLookUpRound(contact Contact, contactedContact chan
 	/*Perform FIND-NODE RPC, returns the k-clostest nodes to the target node*/
 	returnMessage := make(chan []Contact)
 	//kClosestReturnedFromFindNode := make([]Contact, 0)
-	go kademlia.network.SendFindNodeMessage(kademlia.network.contact, &contact, returnMessage)
+	go SendFindNodeMessage(kademlia.network.contact, &contact, returnMessage)
 	select {
 	case kClosestReturnedFromFindNode := <- returnMessage:
 		kClosestReturned <- kClosestReturnedFromFindNode
@@ -288,7 +287,7 @@ func (kademlia *Kademlia) NodeLookUpRoundData(shortList []Contact, contactedCont
 		fmt.Println("TIMEOUT")
 	}
 	returnMessage := make(chan []Contact)
-	go kademlia.network.SendFindNodeMessage(kademlia.network.contact, &shortList[0], returnMessage)
+	go SendFindNodeMessage(kademlia.network.contact, &shortList[0], returnMessage)
 	select {
 	case kContactsReturned := <- returnMessage:
 		contactedContacts = append(contactedContacts, shortList[0])
