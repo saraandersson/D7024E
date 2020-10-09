@@ -78,6 +78,7 @@ func (network *Network) UpdateKBucket(contact Contact) {
 /*Listen function, handles messageInput*/
 
 func (network *Network) Listen(ip string, port int, returnedMessage chan(Message)) {
+	fmt.Println("Kommer till listen")
 	port2 := ":" + strconv.Itoa(port)
     s, err := net.ResolveUDPAddr("udp4", port2)
     if err != nil {
