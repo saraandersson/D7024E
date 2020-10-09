@@ -88,9 +88,9 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 			sortedContactsToAdd = append(sortedContactsToAdd, contactsToAdd[i])
 		}
 	}
-
+	sortedContactsToAdd = removeDuplicates(sortedContactsToAdd)
 	sortedContactsToAdd = kademlia.sortList(contactsToAdd)
-	sortedContactsToAdd = unique(sortedContactsToAdd)
+	//sortedContactsToAdd = unique(sortedContactsToAdd)
 
 	/*Picks alpha first nodes from the k closest*/
 	if (len(sortedContactsToAdd)>kademlia.alpha) {
@@ -107,7 +107,7 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 	return kademlia.NodeLookUp(sortedContactsToAdd, contactedContacts)
 }
 
-func unique(contactedContacts []Contact) []Contact {
+/*func unique(contactedContacts []Contact) []Contact {
     keys := make(map[Contact.ID]bool)
     list := []Contact{} 
     for _, entry := range contactedContacts {
@@ -117,7 +117,25 @@ func unique(contactedContacts []Contact) []Contact {
         }
     }    
     return list
+}*/
+
+func removeDuplicates(contactedContacts []Contact) []Contact {
+	resultList := make([]Contact, 0)
+	for i := range contactedContacts {
+		isInList := false
+		newList := contactedContacts[i+1:]
+		for x := range newList {
+			if (contactedContacts[i] == newList[i]){
+				isInList = true
+			} 
+		}
+		if (isInList == false){
+			resultList = append(resultList, contactedContacts[i])
+		}
+	}
+	return resultList
 }
+
 
 /*NodeLookUpRound function*/
 /*ShortList = Nodes to contact, contactedContacts = nodes that has been contacted,
