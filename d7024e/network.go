@@ -14,6 +14,7 @@ type Network struct {
 	routingTable 	*RoutingTable 
 	kademlia 		*Kademlia
 	fileList 		[]File
+	addedContacts	chan []Contact
 }
 
 type File struct {
@@ -150,7 +151,7 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 }
 
 /*Classic ping, check if node is alive*/
-func SendPingMessage(receiverContact *Contact, alive chan bool) {
+func  SendPingMessage(receiverContact *Contact, alive chan bool) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -171,7 +172,7 @@ func SendPingMessage(receiverContact *Contact, alive chan bool) {
 }
 
 /*Find closest k-nodes to the receivercontact (NodeLookUp) via udp request*/
-func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, returnMessage chan []Contact){
+func (network *Network) SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, returnMessage chan []Contact){
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -205,7 +206,7 @@ func SendFindNodeMessage(senderContact *Contact, receiverContact *Contact, retur
 	for i:=0; i<len(newMessage.ContactsID); i++ {
 		contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
 	}
-
+	network.addedContacts <- contacts
 	returnMessage <- contacts
 }
 
