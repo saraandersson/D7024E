@@ -42,11 +42,14 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 /*ShortList = Nodes to contact, contactedContaces = node that has been contacted*/
 func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Contact) []Contact {
 	/*If no nodes left to contact, sort the contactedContact list and return the sorted list*/
+	fmt.Println("shortlist")
+	fmt.Println(shortList)
+	
 	if (len(shortList)==0){
 		contactedContacts = kademlia.sortList(contactedContacts)
 		return contactedContacts
 	}
-	returnedContacts := make([]Contact, 0)
+	//returnedContacts := make([]Contact, 0)
 	//returnedContactedContacts := make([]Contact, 0)
 	sortedContactsToAdd := make([]Contact, 0)
 	contactsToAdd := make([]Contact, 0)
@@ -61,17 +64,13 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		select {
 		case temp := <- returnMessage:
 			fmt.Println(temp)
-			 returnedContacts = append(returnedContacts, temp...)
+			 contactsToAdd = append(contactsToAdd, temp...)
 			 contactedContacts = append(contactedContacts, shortList[i])
 		case <-time.After(5*time.Second):
 			fmt.Println("TIMEOUT")
 
 		}
 	}
-	fmt.Println("returnedContacts")
-	fmt.Println(returnedContacts)
-	fmt.Println("ConcatedContacts")
-	fmt.Println(contactedContacts)
 	
 	/*for i := range returnedContacts { 
 		contactsToAdd = append(contactsToAdd, returnedContacts[i])
@@ -107,7 +106,7 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		}
 	}
 	sortedContactsToAdd = removeDuplicates(sortedContactsToAdd)
-	sortedContactsToAdd = kademlia.sortList(contactsToAdd)
+	sortedContactsToAdd = kademlia.sortList(sortedContactsToAdd)
 	//sortedContactsToAdd = unique(sortedContactsToAdd)
 
 	/*Picks alpha first nodes from the k closest*/
