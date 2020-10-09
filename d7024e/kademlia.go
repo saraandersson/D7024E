@@ -57,6 +57,10 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		returnedContacts = <- returnMessage
 		returnedContactedContacts = <- contactedContactsRound
 	}
+	fmt.Println("returnedContacts")
+	fmt.Println(returnedContacts)
+	fmt.Println("ConcatedContacts")
+	fmt.Println(contactedContactsRound)
 	
 	for i := range returnedContacts { 
 		contactsToAdd = append(contactsToAdd, returnedContacts[i])
@@ -65,6 +69,11 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		contactedContacts = append(contactedContacts, returnedContactedContacts[i])
 	}
 	
+	fmt.Println("contactsToAdd")
+	fmt.Println(contactsToAdd)
+	fmt.Println("ConcatedContacts")
+	fmt.Println(contactedContacts)
+
 	for i:=0; i<len(contactsToAdd); i++ {
 		isInList := false
 		if (len(contactedContacts) > 0) {
@@ -93,6 +102,8 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 	 and calls recursively with the returned lists*/
 	//nextRoundShortList := make([]Contact, 0)
 	//shortList, contactedContacts = kademlia.NodeLookUpRound(shortList, contactedContacts,nextRoundShortList)
+	fmt.Println("INNAN RETURN sortedContacts")
+	fmt.Println(sortedContactsToAdd)
 	return kademlia.NodeLookUp(sortedContactsToAdd, contactedContacts)
 }
 
