@@ -49,7 +49,13 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 	
 	if (len(shortList)==0){
 		contactedContacts = kademlia.sortList(contactedContacts)
-		return contactedContacts
+		kClostestContactedContacts := make([]Contact, 0)
+		if (len(contactedContacts)>kademlia.k) {
+			kClostestContactedContacts = append(kClostestContactedContacts, contactedContacts[0:kademlia.alpha]...)
+		} else {
+			kClostestContactedContacts = append(kClostestContactedContacts, contactedContacts...)
+		}
+		return kClostestContactedContacts
 	}
 	//returnedContacts := make([]Contact, 0)
 	//returnedContactedContacts := make([]Contact, 0)
