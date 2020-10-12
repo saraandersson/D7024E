@@ -43,10 +43,7 @@ func (kademlia *Kademlia) LookupContact(kademliaId KademliaID) []Contact{
 }
 /*ShortList = Nodes to contact, contactedContaces = node that has been contacted*/
 func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Contact) []Contact {
-	/*If no nodes left to contact, sort the contactedContact list and return the sorted list*/
-	fmt.Println("shortlist")
-	fmt.Println(shortList)
-	
+	/*If no nodes left to contact, sort the contactedContact list and return the sorted list containing k closets nodes*/
 	if (len(shortList)==0){
 		contactedContacts = kademlia.sortList(contactedContacts)
 		kClostestContactedContacts := make([]Contact, 0)
@@ -57,43 +54,24 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 		}
 		return kClostestContactedContacts
 	}
-	//returnedContacts := make([]Contact, 0)
-	//returnedContactedContacts := make([]Contact, 0)
 	sortedContactsToAdd := make([]Contact, 0)
 	contactsToAdd := make([]Contact, 0)
 	returnMessage := make(chan []Contact)
-	//contactedContactsRound := make(chan []Contact)
+	/*Perform find node RPC for all contacts in shortlist*/
 	for i := range shortList { 
-		/*go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
-		returnedContacts = <- returnMessage
-		returnedContactedContacts = <- contactedContactsRound*/
-		//go kademlia.NodeLookUpRound(shortList[i], contactedContactsRound, returnMessage)
 		go SendFindNodeMessage(kademlia.network.contact, &shortList[i], returnMessage)
 		select {
-		case temp := <- returnMessage:
-			fmt.Println(temp)
-			 contactsToAdd = append(contactsToAdd, temp...)
+		case result := <- returnMessage:
+			/*If response, add the contacts found to contactsToAdd and add the contacted contact in the contactedContacts list*/
+			 contactsToAdd = append(contactsToAdd, result...)
 			 contactedContacts = append(contactedContacts, shortList[i])
 		case <-time.After(5*time.Second):
 			fmt.Println("TIMEOUT")
 
 		}
 	}
-	
-	/*for i := range returnedContacts { 
-		contactsToAdd = append(contactsToAdd, returnedContacts[i])
-	}
-	for i := range returnedContactedContacts { 
-		contactedContacts = append(contactedContacts, returnedContactedContacts[i])
-	}*/
-	
-	fmt.Println("contactsToAdd")
-	fmt.Println(contactsToAdd)
-	fmt.Println("ConcatedContacts")
-	fmt.Println(contactedContacts)
-	fmt.Println("shortlist")
-	fmt.Println(shortList)
-
+	contactsToAddNextRound := make([]Contact, 0)
+	/*Filtering the contactsToAdd so no contact is contaced twice, (check if the contact is not in contactedContacts and in shortList)*/
 	for i:=0; i<len(contactsToAdd); i++ {
 		isInList := false
 		if (len(contactedContacts) > 0) {
@@ -110,48 +88,28 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 				}
 			}
 		}
-
+		/*If not in any of the of the list, add to contactsToAddNextRound*/
 		if (isInList == false){
-			sortedContactsToAdd = append(sortedContactsToAdd, contactsToAdd[i])
+			contactsToAddNextRound = append(contactsToAddNextRound, contactsToAdd[i])
 		}
 	}
-	fmt.Println("SORTEDCONTACTSTOADD")
-	fmt.Println(sortedContactsToAdd)
-	sortedContactsToAdd = removeDuplicates(sortedContactsToAdd)
-	sortedContactsToAdd = kademlia.sortList(sortedContactsToAdd)
-	//sortedContactsToAdd = unique(sortedContactsToAdd)
+	/*Remove duplicates and sort the list*/
+	contactsToAddNextRound = removeDuplicates(contactsToAddNextRound)
+	sortedContactsToAdd = kademlia.sortList(contactsToAddNextRound)
 
-	/*Picks alpha first nodes from the k closest*/
+	/*Picks alpha first nodes from the k closest to contact next round*/
 	sortedContactsToAddAlpha := make([]Contact, 0)
 	if (len(sortedContactsToAdd)>kademlia.alpha) {
 		sortedContactsToAddAlpha = append(sortedContactsToAddAlpha, sortedContactsToAdd[0:kademlia.alpha]...)
 	} else {
 		sortedContactsToAddAlpha = append(sortedContactsToAddAlpha, sortedContactsToAdd...)
 	}
-	/*Perform a node lookup for the current round that returns a updated shortList and contactedContacts,
-	 and calls recursively with the returned lists*/
-	//nextRoundShortList := make([]Contact, 0)
-	//shortList, contactedContacts = kademlia.NodeLookUpRound(shortList, contactedContacts,nextRoundShortList)
-	fmt.Println("INNAN RETURN sortedContactsToAddAlpha")
-	fmt.Println(sortedContactsToAddAlpha)
+
 	return kademlia.NodeLookUp(sortedContactsToAddAlpha, contactedContacts)
 }
 
-/*func unique(contactedContacts []Contact) []Contact {
-    keys := make(map[Contact.ID]bool)
-    list := []Contact{} 
-    for _, entry := range contactedContacts {
-        if _, value := keys[entry]; !value {
-            keys[entry] = true
-            list = append(list, entry)
-        }
-    }    
-    return list
-}*/
 
 func removeDuplicates(contactedContacts []Contact) []Contact {
-	fmt.Println("contactedContacs IN RD")
-	fmt.Println(contactedContacts)
 	resultList := make([]Contact, 0)
 	for i := range contactedContacts {
 		isInList := false
@@ -165,34 +123,7 @@ func removeDuplicates(contactedContacts []Contact) []Contact {
 			resultList = append(resultList, contactedContacts[i])
 		}
 	}
-	fmt.Println("RESULTLIST IN RD")
-	fmt.Println(resultList)
 	return resultList
-}
-
-
-/*NodeLookUpRound function*/
-/*ShortList = Nodes to contact, contactedContacts = nodes that has been contacted,
- nextRoundShortList = contains the next round of nodes that should be contacted*/
-func (kademlia *Kademlia) NodeLookUpRound(contact Contact, contactedContact chan []Contact, kClosestReturned chan []Contact) {
-	/*Base case, check if shortList has any nodes to contact*/
-
-	/*Perform FIND-NODE RPC, returns the k-clostest nodes to the target node*/
-	returnMessage := make(chan []Contact)
-	//kClosestReturnedFromFindNode := make([]Contact, 0)
-	go SendFindNodeMessage(kademlia.network.contact, &contact, returnMessage)
-	select {
-	case kClosestReturnedFromFindNode := <- returnMessage:
-		kClosestReturned <- kClosestReturnedFromFindNode
-		contactedContacts := make([]Contact, 0)
-		contactedContacts = append(contactedContacts, contact)
-		contactedContact <- contactedContacts
-		/*If no answer from FIND-NODE RPC, perform timeout*/
-	case <-time.After(5*time.Second):
-		fmt.Println("TIMEOUT")
-		returnList := make([]Contact, 0)
-		kClosestReturned <- returnList
-	}
 }
 
 
