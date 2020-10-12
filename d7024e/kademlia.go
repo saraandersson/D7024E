@@ -85,6 +85,8 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 	fmt.Println(contactsToAdd)
 	fmt.Println("ConcatedContacts")
 	fmt.Println(contactedContacts)
+	fmt.Println("shortlist")
+	fmt.Println(shortList)
 
 	for i:=0; i<len(contactsToAdd); i++ {
 		isInList := false
@@ -107,23 +109,26 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 			sortedContactsToAdd = append(sortedContactsToAdd, contactsToAdd[i])
 		}
 	}
+	fmt.Println("SORTEDCONTACTSTOADD")
+	fmt.Println(sortedContactsToAdd)
 	sortedContactsToAdd = removeDuplicates(sortedContactsToAdd)
 	sortedContactsToAdd = kademlia.sortList(sortedContactsToAdd)
 	//sortedContactsToAdd = unique(sortedContactsToAdd)
 
 	/*Picks alpha first nodes from the k closest*/
+	sortedContactsToAddAlpha := make([]Contact, 0)
 	if (len(sortedContactsToAdd)>kademlia.alpha) {
-		sortedContactsToAdd = append(sortedContactsToAdd, sortedContactsToAdd[0:kademlia.alpha]...)
+		sortedContactsToAddAlpha = append(sortedContactsToAddAlpha, sortedContactsToAdd[0:kademlia.alpha]...)
 	} else {
-		sortedContactsToAdd = append(sortedContactsToAdd, sortedContactsToAdd...)
+		sortedContactsToAddAlpha = append(sortedContactsToAddAlpha, sortedContactsToAdd...)
 	}
 	/*Perform a node lookup for the current round that returns a updated shortList and contactedContacts,
 	 and calls recursively with the returned lists*/
 	//nextRoundShortList := make([]Contact, 0)
 	//shortList, contactedContacts = kademlia.NodeLookUpRound(shortList, contactedContacts,nextRoundShortList)
-	fmt.Println("INNAN RETURN sortedContacts")
-	fmt.Println(sortedContactsToAdd)
-	return kademlia.NodeLookUp(sortedContactsToAdd, contactedContacts)
+	fmt.Println("INNAN RETURN sortedContactsToAddAlpha")
+	fmt.Println(sortedContactsToAddAlpha)
+	return kademlia.NodeLookUp(sortedContactsToAddAlpha, contactedContacts)
 }
 
 /*func unique(contactedContacts []Contact) []Contact {
@@ -139,12 +144,14 @@ func (kademlia *Kademlia) NodeLookUp(shortList []Contact, contactedContacts []Co
 }*/
 
 func removeDuplicates(contactedContacts []Contact) []Contact {
+	fmt.Println("contactedContacs IN RD")
+	fmt.Println(contactedContacts)
 	resultList := make([]Contact, 0)
 	for i := range contactedContacts {
 		isInList := false
 		newList := contactedContacts[i+1:]
 		for x := range newList {
-			if (contactedContacts[i] == newList[x]){
+			if (contactedContacts[i].ID.String() == newList[x].ID.String()){
 				isInList = true
 			} 
 		}
@@ -152,6 +159,8 @@ func removeDuplicates(contactedContacts []Contact) []Contact {
 			resultList = append(resultList, contactedContacts[i])
 		}
 	}
+	fmt.Println("RESULTLIST IN RD")
+	fmt.Println(resultList)
 	return resultList
 }
 
