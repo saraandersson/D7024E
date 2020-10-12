@@ -136,7 +136,16 @@ func (network *Network) Listen(ip string, port int, returnedMessage chan(Message
 		if (newMessage.MessageType == "Find"){
 			newKey := NewKademliaID(newMessage.Key)
 			fileData := network.FindData(*newKey)
-			message := createProtoBufDataReturnMessage(fileData, "Find")
+			contacts := network.routingTable.FindClosestContacts(network.contact.ID, 20)
+			contactId :=  make([]string, len(contacts))
+			contactAddress := make([]string, len(contacts))
+			count := 0
+			for i:=0; i<len(contacts); i++{
+				count = count +1
+				contactId[i] = contacts[i].ID.String()
+				contactAddress[i] = contacts[i].Address
+			}
+			message := createProtoBufDataReturnMessage(fileData, contactId, contactAddress)
 			data,_ := proto.Marshal(message)
 			_, err = connection.WriteToUDP(data, addr)
 			if err != nil {
@@ -230,7 +239,7 @@ func SendStoreMessage(senderContact *Contact, receiverContact *Contact, data []b
 }
 
 /*Finds data connected to the key and if data is found on node, it is returned, otherwise nil is returned*/
-func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key KademliaID, findValue chan []byte) {
+func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key KademliaID, findValue chan []byte, returnMessage chan []Contact) {
 	server, err := net.ResolveUDPAddr("udp4", receiverContact.Address)
 	conn, err := net.DialUDP("udp4", nil, server)
 
@@ -253,13 +262,21 @@ func SendFindDataMessage(senderContact *Contact, receiverContact *Contact, key K
 		fmt.Println(err)
 		return
 	}
-	newMessage := &protobuf.Message{}
+	newMessage := &protobuf.ContactsMessage{}
 	errorMessage := proto.Unmarshal(buffer[0:n], newMessage)
-	if (errorMessage !=nil){
+	if (errorMessage != nil){
 		fmt.Println(errorMessage)
 	}
 
-	findValue <- newMessage.Data
+	if (newMessage.Data != nil){
+		findValue <- newMessage.Data
+	}else{
+		contacts := make([]Contact, len(newMessage.ContactsID))
+		for i:=0; i<len(newMessage.ContactsID); i++ {
+			contacts[i] = NewContact(NewKademliaID(newMessage.ContactsID[i]), newMessage.ContactsAddress[i])
+		}
+		returnMessage <- contacts
+	}
 }
 
 /*Creates a new message that contains contacts id and addresses*/

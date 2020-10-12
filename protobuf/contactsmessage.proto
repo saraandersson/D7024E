@@ -3,4 +3,5 @@ package protobuf;
 message ContactsMessage {
   repeated string contactsID = 1;
   repeated string contactsAddress = 2;
+  bytes data = 3;
 }

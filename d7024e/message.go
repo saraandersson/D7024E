@@ -5,11 +5,11 @@ import (
 	"protobuf"
 )
 
-func createProtoBufDataReturnMessage(data []byte, messageType string) *protobuf.Message {
-	protoBufMessage := &protobuf.Message {
+func createProtoBufDataReturnMessage(data []byte, contactId []string, contactAddress []string) *protobuf.ContactsMessage {
+	protoBufMessage := &protobuf.ContactsMessage {
 		Data: data,
-		MessageType: messageType}
-
+		ContactsID: contactId,
+		ContactsAddress: contactAddress}
 	return protoBufMessage
 }
 
