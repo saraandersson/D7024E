@@ -8,8 +8,9 @@ import (
 func TestDataReturnMessage(t *testing.T) {
 	data := "testingMessage"
 	sendData := []byte(data)
-	messageType:= "Test"
-	messageReturned := createProtoBufDataReturnMessage(sendData, messageType) 
+	contactId := []string{"FFFFFFFF00000000000000000000000000000000", "1111111100000000000000000000000000000000"}
+	contactAddress := []string{"localhost:8002", "localhost:8003"}
+	messageReturned := createProtoBufDataReturnMessage(sendData, contactId, contactAddress) 
 	fmt.Println(messageReturned)
 }
 
