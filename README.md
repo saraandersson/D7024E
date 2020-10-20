@@ -5,7 +5,7 @@
 - docker-compose up --scale kademliaNodes=49
 ### To enter a node: 
 - cd d7024e
-- docker attach d7024e_kademliaNodes_1
+- docker attach d7024e_kademliaNodes_1 <br>
 If you would like to enter another node then just change the node number 1 to a number between 1-49.
 ### Cli-commands inside a kademlia node
 - put
